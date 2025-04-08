@@ -1,6 +1,38 @@
-[gd_scene load_steps=2 format=3 uid="uid://c70ak7v506o3r"]
+[gd_scene load_steps=6 format=3 uid="uid://c70ak7v506o3r"]
 
 [ext_resource type="Script" uid="uid://l1prvo2ud6dg" path="res://Scenes/Credits/Credits.cs" id="1_3l5n4"]
+[ext_resource type="Shader" uid="uid://dnox0thh7iu8c" path="res://Assets/Shaders/Space/space_2d.gdshader" id="2_3l4m5"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1"]
+shader = ExtResource("2_3l4m5")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1"]
+bg_color = Color(0.2, 0.2, 0.2, 0.8)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.4, 0.4, 0.4, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.3)
+shadow_size = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2"]
+bg_color = Color(0.3, 0.3, 0.3, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.5, 0.5, 0.5, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0, 0, 0, 0.3)
+shadow_size = 4
 
 [node name="Credits" type="Control"]
 layout_mode = 3
@@ -11,7 +43,31 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_3l5n4")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="Background" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_1")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -150.0
+offset_right = 200.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_1")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -19,19 +75,24 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -150.0
-offset_top = -150.0
+offset_top = -100.0
 offset_right = 150.0
-offset_bottom = 150.0
+offset_bottom = 100.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 20
 
-[node name="Label" type="Label" parent="VBoxContainer"]
+[node name="Label" type="Label" parent="Panel/VBoxContainer"]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 32
 text = "Credits"
 horizontal_alignment = 1
 
-[node name="CreditsText" type="Label" parent="VBoxContainer"]
+[node name="CreditsText" type="Label" parent="Panel/VBoxContainer"]
 layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
 text = "Game Developed By:
 Bitshift
 For MGCSGJ2025
@@ -39,6 +100,13 @@ For MGCSGJ2025
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="BackButton" type="Button" parent="VBoxContainer"]
+[node name="BackButton" type="Button" parent="Panel/VBoxContainer"]
 layout_mode = 2
+theme_override_colors/font_hover_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.6, 0.6, 0.6, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/hover = SubResource("StyleBoxFlat_2")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_2")
+theme_override_styles/normal = SubResource("StyleBoxFlat_2")
 text = "Back to Main Menu"

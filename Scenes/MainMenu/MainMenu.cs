@@ -8,9 +8,9 @@ public partial class MainMenu : Control
 	{
 		_gameManager = GetNode<GameManager>("/root/GameManager");
 		
-		var startButton = GetNode<Button>("VBoxContainer/StartButton");
-		var creditsButton = GetNode<Button>("VBoxContainer/CreditsButton");
-		var quitButton = GetNode<Button>("VBoxContainer/QuitButton");
+		var startButton = GetNode<Button>("Panel/VBoxContainer/StartButton");
+		var creditsButton = GetNode<Button>("Panel/VBoxContainer/CreditsButton");
+		var quitButton = GetNode<Button>("Panel/VBoxContainer/QuitButton");
 
 		startButton.Pressed += OnStartButtonPressed;
 		creditsButton.Pressed += OnCreditsButtonPressed;
