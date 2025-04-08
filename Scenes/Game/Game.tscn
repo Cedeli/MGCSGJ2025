@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://j4kvo1b7egck"]
+[gd_scene load_steps=8 format=3 uid="uid://j4kvo1b7egck"]
 
-[ext_resource type="PackedScene" uid="uid://ot7w0gu3tabp" path="res://Entity/CelestialBody.tscn" id="1_r150o"]
+[ext_resource type="Script" uid="uid://cwc4n1u7db367" path="res://Scenes/Game/Game.cs" id="1_gwu2e"]
+[ext_resource type="PackedScene" uid="uid://dsix13euckuf1" path="res://Entity/CelestialBody.tscn" id="1_r150o"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_r150o"]
 resource_local_to_scene = true
@@ -24,6 +25,7 @@ resource_local_to_scene = true
 radius = 5.0
 
 [node name="Main" type="Node3D"]
+script = ExtResource("1_gwu2e")
 
 [node name="SolarSystem" type="Node3D" parent="."]
 
