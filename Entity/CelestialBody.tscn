@@ -4,14 +4,15 @@
 
 [sub_resource type="SphereMesh" id="SphereMesh_s3lym"]
 resource_local_to_scene = true
+radius = 5.0
+height = 10.0
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_s3lym"]
 resource_local_to_scene = true
+radius = 5.0
 
-[node name="CelestialBody" type="RigidBody3D" node_paths=PackedStringArray("_meshInstance", "_collisionShape")]
+[node name="CelestialBody" type="RigidBody3D"]
 script = ExtResource("1_s3lym")
-_meshInstance = NodePath("MeshInstance3D")
-_collisionShape = NodePath("CollisionShape3D")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("SphereMesh_s3lym")
