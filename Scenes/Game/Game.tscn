@@ -1,0 +1,61 @@
+[gd_scene load_steps=8 format=3 uid="uid://j4kvo1b7egck"]
+
+[ext_resource type="Script" uid="uid://cwc4n1u7db367" path="res://Scenes/Game/Game.cs" id="1_gwu2e"]
+[ext_resource type="PackedScene" uid="uid://dsix13euckuf1" path="res://Entity/CelestialBody.tscn" id="1_r150o"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_r150o"]
+resource_local_to_scene = true
+radius = 5.0
+height = 10.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r150o"]
+albedo_color = Color(0.270588, 0.521569, 1, 1)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_idj7w"]
+resource_local_to_scene = true
+radius = 5.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_kln2b"]
+resource_local_to_scene = true
+radius = 5.0
+height = 10.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_rgh2o"]
+resource_local_to_scene = true
+radius = 5.0
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_gwu2e")
+
+[node name="SolarSystem" type="Node3D" parent="."]
+
+[node name="Earth" parent="SolarSystem" instance=ExtResource("1_r150o")]
+InitialMass = 5000.0
+Radius = 10.0
+GravitationalConstant = 1.0
+
+[node name="MeshInstance3D" parent="SolarSystem/Earth" index="0"]
+mesh = SubResource("SphereMesh_r150o")
+surface_material_override/0 = SubResource("StandardMaterial3D_r150o")
+
+[node name="CollisionShape3D" parent="SolarSystem/Earth" index="1"]
+shape = SubResource("SphereShape3D_idj7w")
+
+[node name="Moon" parent="SolarSystem" instance=ExtResource("1_r150o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 0, 0)
+Radius = 2.5
+InitialVelocity = Vector3(0, 0, 20)
+GravitationalConstant = 1.0
+
+[node name="MeshInstance3D" parent="SolarSystem/Moon" index="0"]
+mesh = SubResource("SphereMesh_kln2b")
+
+[node name="CollisionShape3D" parent="SolarSystem/Moon" index="1"]
+shape = SubResource("SphereShape3D_rgh2o")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 220, 0)
+fov = 90.0
+
+[editable path="SolarSystem/Earth"]
+[editable path="SolarSystem/Moon"]
