@@ -31,10 +31,10 @@ target_position = Vector3(0, -1.4, 0)
 
 [node name="Pivot" type="Node3D" parent="."]
 
-[node name="Camera3D" type="Camera3D" parent="Pivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.448501, -0.140782)
-
-[node name="SpotLight3D" type="SpotLight3D" parent="Pivot/Camera3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00518227, 0.446727, -0.185212)
+[node name="SpotLight3D" type="SpotLight3D" parent="Pivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00518227, 0.447023, -0.325994)
 spot_range = 1.13344
 spot_angle = 58.5292
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.746174, 0.665751, 0, -0.665751, 0.746174, -0.951245, 1.96581, 1.48508)
