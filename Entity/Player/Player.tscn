@@ -8,10 +8,14 @@
 radius = 0.223407
 height = 0.710147
 
-[node name="Player" type="RigidBody3D" node_paths=PackedStringArray("_controller")]
+[node name="Player" type="RigidBody3D" node_paths=PackedStringArray("_controller", "_cameraPivot", "_groundCast")]
+mass = 2.0
 lock_rotation = true
 script = ExtResource("1_ic0o1")
+_speed = 25.0
 _controller = NodePath("PlayerController")
+_cameraPivot = NodePath("Pivot")
+_groundCast = NodePath("GroundCast")
 
 [node name="CharacterModel" parent="." instance=ExtResource("2_rj2x4")]
 
@@ -21,17 +25,16 @@ shape = SubResource("CapsuleShape3D_rpqav")
 
 [node name="PlayerController" parent="." instance=ExtResource("3_rj2x4")]
 
-[node name="RayCast3D" type="RayCast3D" parent="."]
+[node name="GroundCast" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.326809, 0)
 target_position = Vector3(0, -1.4, 0)
 
 [node name="Pivot" type="Node3D" parent="."]
 
 [node name="Camera3D" type="Camera3D" parent="Pivot"]
-transform = Transform3D(0.998832, 0, -0.0483094, 0.0305721, 0.774282, 0.632102, 0.0374051, -0.63284, 0.773378, 0.0303712, 1.671, 1.24149)
-current = true
-fov = 74.9142
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.448501, -0.140782)
 
-[node name="SpotLight3D" type="SpotLight3D" parent="Pivot"]
+[node name="SpotLight3D" type="SpotLight3D" parent="Pivot/Camera3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00518227, 0.446727, -0.185212)
-spot_range = 0.857038
-spot_angle = 25.3125
+spot_range = 1.13344
+spot_angle = 58.5292
