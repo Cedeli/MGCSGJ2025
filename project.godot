@@ -19,8 +19,14 @@ config/icon="res://icon.svg"
 
 project/assembly_name="MGCSGJ2025"
 
+[global_group]
+
+celestial_bodies=""
+
 [physics]
 
+common/physics_ticks_per_second=120
+3d/physics_engine="Jolt Physics"
 3d/default_gravity=0.0
 3d/default_gravity_vector=Vector3(0, 0, 0)
 3d/default_linear_damp=0.0

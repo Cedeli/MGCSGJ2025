@@ -4,8 +4,9 @@ using Godot;
 public partial class CelestialBody : RigidBody3D
 {
     [Export] public float SurfaceGravity = 10.0f;
+    [Export] public float InitialMass = 1000.0f;
     [Export] public Vector3 InitialVelocity = Vector3.Zero;
-    [Export] public float GravitationalConstant = 1.0f;
+    [Export] public float GravitationalConstant = 0.1f;
     [Export] public CelestialBody OrbitParent;
     [Export] public bool AutoCalculateOrbitalVelocity;
     
@@ -35,18 +36,23 @@ public partial class CelestialBody : RigidBody3D
         
         if (Engine.IsEditorHint()) return;
         
-        Mass = SurfaceGravity * (Radius * Radius) / GravitationalConstant;
-        
-        GD.Print($"Mass for { Name }: { Mass }");
-        
         if (AutoCalculateOrbitalVelocity && OrbitParent != null)
         {
             OrbitalVelocity();
+            Mass = SurfaceGravity * (Radius * Radius) / GravitationalConstant;
         }
         else
         {
             LinearVelocity = InitialVelocity;
+            Mass = InitialMass;
         }
+        
+        var positionOffset = GlobalPosition - OrbitParent.GlobalPosition;
+        var distance = positionOffset.Length();
+        
+        GD.Print($"Global position for {Name} is: {GlobalPosition}");
+        GD.Print($"Mass for { Name }: { Mass }");
+        GD.Print($"Distance from {Name} to {OrbitParent.Name}: {distance} units");
         
         ContactMonitor = true;
         MaxContactsReported = 8;
@@ -76,8 +82,6 @@ public partial class CelestialBody : RigidBody3D
         LinearVelocity += OrbitParent.LinearVelocity;
     
         GD.Print($"Orbital velocity for {Name} around {OrbitParent.Name}: {LinearVelocity.Length()} m/s");
-        GD.Print($"Global position for {Name} is: {GlobalPosition}");
-        GD.Print($"Distance from {Name} to {OrbitParent.Name}: {distance} units");
         GD.Print($"Mass ratio {Name}/{OrbitParent.Name}: {Mass/OrbitParent.Mass}");
     }
     
