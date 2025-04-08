@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://cxp38asbwvcqm"]
+
+[ext_resource type="Script" uid="uid://c61lfqgsai4rn" path="res://Scenes/Gravity/GravityNode.cs" id="1_m3u6p"]
+[ext_resource type="Script" uid="uid://c0ps3mxsuhr0c" path="res://Scenes/Gravity/GravityShape.cs" id="2_nsw76"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_gwu2e"]
+radius = 0.58801
+
+[node name="GravityNode" type="Area3D"]
+gravity_space_override = 3
+gravity_point = true
+gravity_point_unit_distance = 0.049
+gravity_point_center = Vector3(0, 0, 0)
+gravity_direction = Vector3(0, 0, 0)
+script = ExtResource("1_m3u6p")
+
+[node name="GravityShape" type="CollisionShape3D" parent="."]
+transform = Transform3D(1000, 0, 0, 0, 1000, 0, 0, 0, 1000, 0, 0, 0)
+shape = SubResource("SphereShape3D_gwu2e")
+script = ExtResource("2_nsw76")
