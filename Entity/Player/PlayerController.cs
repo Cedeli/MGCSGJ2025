@@ -1,5 +1,7 @@
 using Godot;
 using System;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 public partial class PlayerController : Node3D
 {
@@ -21,9 +23,12 @@ public partial class PlayerController : Node3D
     private float _mouseYRotation;
     // Ground
     private CelestialBody _ground;
+    private CelestialBody[] _bodies;
     private Vector3 _surfacePos;
     // State
     private bool _isGrounded;
+    //Forces
+    private Vector3 _closestForce;
     
 
     public void SetPlayer(RigidBody3D player, float speed, float mass, float thrust, float autoOrientSpeed,
@@ -46,6 +51,8 @@ public partial class PlayerController : Node3D
     public override void _Ready()
     {
         GD.Print("Player Controller Ready");
+        GD.Print(GetTree().GetNodesInGroup("celestial_bodies"));
+        
     }
     
     public override void _PhysicsProcess(double delta)
@@ -53,6 +60,28 @@ public partial class PlayerController : Node3D
         PlayerMovement();
         CameraMovement();
 
+        var closestForceMagnitude = 0f;
+        _closestForce = Vector3.Zero;
+
+        foreach (Node planet in GetTree().GetNodesInGroup("celestial_bodies"))
+        {
+            if (planet is CelestialBody body)
+            {
+                var force = body.GetAccelerationAtPosition(GlobalPosition) * _mass;
+                _player.ApplyCentralForce(force);
+
+                if (body.GlobalPosition.DistanceTo(_player.GlobalPosition) < 2f * body.Radius)
+                {
+                    var magnitude = force.Length();
+                    if (magnitude > closestForceMagnitude)
+                    {
+                        closestForceMagnitude = magnitude;
+                        _closestForce = force;
+                    }
+                    
+                }
+            }
+        }
         // Model Direction
     
 
@@ -80,7 +109,7 @@ public partial class PlayerController : Node3D
         //     Input.GetActionStrength("back") - Input.GetActionStrength("front")
         // ).Normalized();
         
-        _velocity = (_movement.Normalized() * _speed * _sprintSpeed)/9.8f;
+        _velocity = _movement.Normalized() * _speed * _sprintSpeed;
         _player.ApplyCentralForce(_velocity);
         if (_movement != Vector3.Zero) _player.ApplyCentralForce(_thrust * _movement);
         
@@ -109,7 +138,32 @@ public partial class PlayerController : Node3D
 
     private void AutoOrient(double delta)
     {
-        
+        var inZeroG = _closestForce == Vector3.Zero;
+
+        if (inZeroG)
+        {
+            var dx = Mathf.Lerp(0, -_mouseYRotation, _autoOrientSpeed * (float)delta);
+            _mouseYRotation += dx;
+            
+            _pivot.RotateX(Mathf.DegToRad(-dx));
+            _player.Rotate(_pivot.GlobalTransform.Basis.X, Mathf.DegToRad(dx));
+        }
+        else
+        {
+            var upDirection = -_closestForce.Normalized();
+            var orientation = new Quaternion(_player.GlobalTransform.Basis.Y, upDirection) 
+                              * GlobalTransform.Basis.GetRotationQuaternion();
+            if (_isGrounded)
+            {
+                _player.GlobalRotation = orientation.Normalized().GetEuler();
+            }
+            else
+            {
+                var rotation = _player.GlobalTransform.Basis.GetRotationQuaternion().Slerp(
+                    orientation.Normalized(), _autoOrientSpeed * (float)delta);
+                _player.GlobalRotation = rotation.GetEuler();
+            }
+        }
     }
     
     // Input Handler
@@ -119,10 +173,6 @@ public partial class PlayerController : Node3D
         _sprintSpeed = @event.IsActionPressed("Sprint")
             ? _sprintSpeed = 35.0f
             : _sprintSpeed = 2.0f;
-        
-        // Player Thruster
-        if (_isGrounded && @event.IsActionReleased("Up")) 
-            _player.ApplyCentralImpulse(Input.GetActionStrength("Up") * _movement);
         
         // Mouse Motion Capture
         if (@event is InputEventMouseMotion mouseMotion) _mouseDelta = mouseMotion.Relative;

@@ -9,7 +9,8 @@ public partial class CelestialBody : RigidBody3D
     [Export] public float GravitationalConstant = 0.1f;
     [Export] public CelestialBody OrbitParent;
     [Export] public bool AutoCalculateOrbitalVelocity;
-    
+
+    private float _gravitationalMass;
     private float _radius = 5.0f;
     [Export]
     public float Radius
@@ -49,6 +50,7 @@ public partial class CelestialBody : RigidBody3D
         
         var positionOffset = GlobalPosition - OrbitParent.GlobalPosition;
         var distance = positionOffset.Length();
+        _gravitationalMass = SurfaceGravity * Radius * Radius;
         
         GD.Print($"Global position for {Name} is: {GlobalPosition}");
         GD.Print($"Mass for { Name }: { Mass }");
@@ -142,5 +144,11 @@ public partial class CelestialBody : RigidBody3D
         {
             GD.PrintErr($"CollisionShape '{_collisionShape.Name}' does not have a SphereShape3D assigned.");
         }
+    }
+
+    public Vector3 GetAccelerationAtPosition(Vector3 globalPosition)
+    {
+        var distance = globalPosition - this.GlobalPosition;
+        return distance.Normalized() * _gravitationalMass / distance.LengthSquared();
     }
 }

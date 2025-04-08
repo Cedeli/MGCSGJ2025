@@ -13,9 +13,6 @@ public partial class Player : RigidBody3D
     [ExportCategory("Settings")] 
     [Export] private float _mouseSens = 0.5f;
     private Vector2 _mouseDelta;
-    private float _cameraXRotation;
-    private float _cameraYRotation;
-    
     
     [ExportCategory("Nodes")]
     [Export] private PlayerController _controller;

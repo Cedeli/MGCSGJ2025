@@ -16,7 +16,7 @@ _cameraPivot = NodePath("Pivot")
 _groundCast = NodePath("GroundCast")
 
 [node name="CharacterModel" parent="." instance=ExtResource("2_rj2x4")]
-transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, 0, 0, 0)
+transform = Transform3D(-100, 0, 8.74228e-06, 0, 100, 0, -8.74228e-06, 0, -100, 0, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(100, 0, 0, 0, 100, 0, 0, 0, 100, -0.00216365, 28.6516, 0.037021)
@@ -31,7 +31,7 @@ target_position = Vector3(0, -1.4, 0)
 [node name="Pivot" type="Node3D" parent="."]
 
 [node name="Camera3D" type="Camera3D" parent="Pivot"]
-transform = Transform3D(1, 0, 0, 0, 0.913503, 0.406832, 0, -0.406832, 0.913503, -0.951245, 123.404, 111.352)
+transform = Transform3D(-1, -5.55112e-17, 8.74228e-08, 3.93652e-08, 0.892885, 0.450285, -7.80585e-08, 0.450285, -0.892885, -8.32005, 136.374, -137.586)
 
 [node name="SpotLight3D" type="SpotLight3D" parent="Pivot/Camera3D"]
 transform = Transform3D(1, 0, 0, 0, 0.999998, -0.00207631, 0, 0.00207631, 0.999998, 9.90985, -0.402981, -14.4452)
