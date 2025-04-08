@@ -1,0 +1,6 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://da702vpfuu0ob"]
+
+[ext_resource type="Shader" path="res://Assets/Shaders/Space/black_background.gdshader" id="1_qu2lx"]
+
+[resource]
+shader = ExtResource("1_qu2lx")
