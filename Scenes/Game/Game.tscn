@@ -71,10 +71,11 @@ environment = SubResource("Environment_kln2b")
 
 [node name="SolarSystem" type="Node3D" parent="."]
 
-[node name="Sun" parent="SolarSystem" groups=["celestial_bodies"] instance=ExtResource("1_r150o")]
+[node name="Sun" parent="SolarSystem" node_paths=PackedStringArray("OrbitParent") groups=["celestial_bodies"] instance=ExtResource("1_r150o")]
 SurfaceGravity = 100.0
 InitialMass = 4e+07
 GravitationalConstant = 0.1
+OrbitParent = NodePath(".")
 Radius = 250.0
 
 [node name="MeshInstance3D" parent="SolarSystem/Sun" index="0"]

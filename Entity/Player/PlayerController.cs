@@ -96,7 +96,7 @@ public partial class PlayerController : Node3D
         _mouseXRotation -= deltaY;
         _mouseXRotation = Mathf.Clamp(_mouseXRotation, -90f, 90f);
         
-        _player.RotateX(Mathf.DegToRad(-deltaX));
+        _player.RotateY(Mathf.DegToRad(-deltaX));
         
         if (_pivot != null)
         {
