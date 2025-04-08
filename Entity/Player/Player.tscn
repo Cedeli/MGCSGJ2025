@@ -21,4 +21,5 @@ shape = SubResource("CapsuleShape3D_rpqav")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.255304, 0.452554, 1.63)
 fov = 74.9142
 
-[node name="PlayerController" parent="." instance=ExtResource("3_rj2x4")]
+[node name="PlayerController" parent="." node_paths=PackedStringArray("_player") instance=ExtResource("3_rj2x4")]
+_player = NodePath("..")
