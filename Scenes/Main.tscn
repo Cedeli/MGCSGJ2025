@@ -21,6 +21,8 @@ glow_enabled = true
 
 [sub_resource type="SphereMesh" id="SphereMesh_r150o"]
 resource_local_to_scene = true
+radius = 20.0
+height = 40.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_idj7w"]
 albedo_color = Color(1, 0, 0, 1)
@@ -31,24 +33,31 @@ rim_enabled = true
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_kln2b"]
 resource_local_to_scene = true
+radius = 20.0
 
 [sub_resource type="SphereMesh" id="SphereMesh_idj7w"]
 resource_local_to_scene = true
+radius = 8.0
+height = 16.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kln2b"]
 albedo_color = Color(0.0117647, 0.533333, 1, 1)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_rgh2o"]
 resource_local_to_scene = true
+radius = 8.0
 
 [sub_resource type="SphereMesh" id="SphereMesh_kln2b"]
 resource_local_to_scene = true
+radius = 2.0
+height = 4.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rgh2o"]
 albedo_color = Color(0.627451, 0.627451, 0.627451, 1)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_pbw6q"]
 resource_local_to_scene = true
+radius = 2.0
 
 [node name="Main" type="Node3D"]
 
@@ -81,8 +90,8 @@ omni_range = 4096.0
 
 [node name="Earth" parent="SolarSystem" instance=ExtResource("1_r150o")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200, 0, 0)
-Radius = 8.0
 InitialVelocity = Vector3(0, 0, 5)
+Radius = 8.0
 
 [node name="MeshInstance3D" parent="SolarSystem/Earth" index="0"]
 mesh = SubResource("SphereMesh_idj7w")
@@ -94,8 +103,8 @@ shape = SubResource("SphereShape3D_rgh2o")
 [node name="Moon" parent="SolarSystem" instance=ExtResource("1_r150o")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 240, 0, 0)
 InitialMass = 50.0
-Radius = 2.0
 InitialVelocity = Vector3(0, 0, 2.5)
+Radius = 2.0
 
 [node name="MeshInstance3D" parent="SolarSystem/Moon" index="0"]
 mesh = SubResource("SphereMesh_kln2b")

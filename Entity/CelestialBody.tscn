@@ -4,9 +4,12 @@
 
 [sub_resource type="SphereMesh" id="SphereMesh_s3lym"]
 resource_local_to_scene = true
+radius = 5.0
+height = 10.0
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_s3lym"]
 resource_local_to_scene = true
+radius = 5.0
 
 [node name="CelestialBody" type="RigidBody3D" node_paths=PackedStringArray("_meshInstance", "_collisionShape")]
 script = ExtResource("1_s3lym")
