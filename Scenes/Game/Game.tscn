@@ -1,6 +1,7 @@
-[gd_scene load_steps=14 format=3 uid="uid://j4kvo1b7egck"]
+[gd_scene load_steps=16 format=3 uid="uid://j4kvo1b7egck"]
 
-[ext_resource type="PackedScene" uid="uid://ot7w0gu3tabp" path="res://Entity/CelestialBody.tscn" id="1_r150o"]
+[ext_resource type="PackedScene" uid="uid://dsix13euckuf1" path="res://Entity/CelestialBody.tscn" id="1_r150o"]
+[ext_resource type="PackedScene" uid="uid://bdwrog1ualcnb" path="res://Entity/Player/Player.tscn" id="2_gwu2e"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_r150o"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -37,6 +38,8 @@ rim_enabled = true
 resource_local_to_scene = true
 radius = 250.0
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_gwu2e"]
+
 [sub_resource type="SphereMesh" id="SphereMesh_idj7w"]
 resource_local_to_scene = true
 radius = 50.0
@@ -68,9 +71,6 @@ environment = SubResource("Environment_kln2b")
 
 [node name="SolarSystem" type="Node3D" parent="."]
 
-[node name="Camera3D" type="Camera3D" parent="SolarSystem"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 2081.84, 0)
-
 [node name="Sun" parent="SolarSystem" groups=["celestial_bodies"] instance=ExtResource("1_r150o")]
 SurfaceGravity = 100.0
 InitialMass = 4e+07
@@ -91,6 +91,14 @@ light_specular = 1.0
 shadow_enabled = true
 shadow_blur = 5.0
 omni_range = 8192.0
+
+[node name="Area3D" type="Area3D" parent="SolarSystem/Sun"]
+gravity_space_override = 3
+gravity = 27.901
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SolarSystem/Sun/Area3D"]
+transform = Transform3D(1000, 0, 0, 0, 1000, 0, 0, 0, 1000, 0, 0, 0)
+shape = SubResource("SphereShape3D_gwu2e")
 
 [node name="Earth" parent="SolarSystem" node_paths=PackedStringArray("OrbitParent") groups=["celestial_bodies"] instance=ExtResource("1_r150o")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 0, 0)
@@ -121,6 +129,9 @@ surface_material_override/0 = SubResource("StandardMaterial3D_rgh2o")
 
 [node name="CollisionShape3D" parent="SolarSystem/Moon" index="1"]
 shape = SubResource("SphereShape3D_pbw6q")
+
+[node name="Player" parent="SolarSystem" instance=ExtResource("2_gwu2e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 401.74, 0, 0)
 
 [editable path="SolarSystem/Sun"]
 [editable path="SolarSystem/Earth"]

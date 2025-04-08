@@ -31,6 +31,6 @@ public partial class Player : RigidBody3D
     {
         GD.Print("Player Ready!");
         _controller.SetPlayer(this, _speed, Mass, _thrust, _orientSpeed, _mouseSens, _mouseDelta, IsGrounded,
-            Ground);
+            Ground, _cameraPivot);
     }
 }
