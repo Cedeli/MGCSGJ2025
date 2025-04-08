@@ -3,9 +3,11 @@ using Godot;
 [Tool]
 public partial class CelestialBody : RigidBody3D
 {
-    [Export] public float InitialMass = 500.0f;
+    [Export] public float SurfaceGravity = 10.0f;
     [Export] public Vector3 InitialVelocity = Vector3.Zero;
-    [Export] public float GravitationalConstant = (float)ProjectSettings.GetSetting("physics/3d/default_gravity");
+    [Export] public float GravitationalConstant = 1.0f;
+    [Export] public CelestialBody OrbitParent;
+    [Export] public bool AutoCalculateOrbitalVelocity;
     
     private float _radius = 5.0f;
     [Export]
@@ -32,11 +34,51 @@ public partial class CelestialBody : RigidBody3D
         UpdateShapeAndMesh();
         
         if (Engine.IsEditorHint()) return;
-        Mass = InitialMass;
-        LinearVelocity = InitialVelocity;
+        
+        Mass = SurfaceGravity * (Radius * Radius) / GravitationalConstant;
+        
+        GD.Print($"Mass for { Name }: { Mass }");
+        
+        if (AutoCalculateOrbitalVelocity && OrbitParent != null)
+        {
+            OrbitalVelocity();
+        }
+        else
+        {
+            LinearVelocity = InitialVelocity;
+        }
+        
         ContactMonitor = true;
         MaxContactsReported = 8;
         AddToGroup(CelestialGroup);
+    }
+    
+    private void OrbitalVelocity()
+    {
+        if (OrbitParent == null) return;
+    
+        var positionOffset = GlobalPosition - OrbitParent.GlobalPosition;
+        var distance = positionOffset.Length();
+    
+        if (distance < 0.001f)
+        {
+            GD.PrintErr("Cannot calculate orbital velocity: Too close to parent body!");
+            return;
+        }
+        
+        var velocityMagnitude = Mathf.Sqrt(GravitationalConstant * OrbitParent.Mass / distance);
+
+        var orbitDirection = Mathf.Abs(positionOffset.Normalized().Dot(Vector3.Up)) > 0.99f ? 
+            positionOffset.Cross(Vector3.Forward).Normalized() : 
+            positionOffset.Cross(Vector3.Up).Normalized();
+        
+        LinearVelocity = orbitDirection * velocityMagnitude;
+        LinearVelocity += OrbitParent.LinearVelocity;
+    
+        GD.Print($"Orbital velocity for {Name} around {OrbitParent.Name}: {LinearVelocity.Length()} m/s");
+        GD.Print($"Global position for {Name} is: {GlobalPosition}");
+        GD.Print($"Distance from {Name} to {OrbitParent.Name}: {distance} units");
+        GD.Print($"Mass ratio {Name}/{OrbitParent.Name}: {Mass/OrbitParent.Mass}");
     }
     
     public override void _IntegrateForces(PhysicsDirectBodyState3D state)
