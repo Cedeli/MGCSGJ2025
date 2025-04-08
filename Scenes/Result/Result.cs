@@ -8,8 +8,8 @@ public partial class Result : Control
     {
         _gameManager = GetNode<GameManager>("/root/GameManager");
         
-        var mainMenuButton = GetNode<Button>("VBoxContainer/HBoxContainer/MainMenuButton");
-        var restartButton = GetNode<Button>("VBoxContainer/HBoxContainer/RestartButton");
+        var mainMenuButton = GetNode<Button>("Panel/VBoxContainer/HBoxContainer/MainMenuButton");
+        var restartButton = GetNode<Button>("Panel/VBoxContainer/HBoxContainer/RestartButton");
 
         mainMenuButton.Pressed += OnMainMenuButtonPressed;
         restartButton.Pressed += OnRestartButtonPressed;
