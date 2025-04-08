@@ -11,9 +11,15 @@ config_version=5
 [application]
 
 config/name="MGCSGJ2025"
+run/main_scene="uid://j4kvo1b7egck"
 config/features=PackedStringArray("4.4", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
 [dotnet]
 
 project/assembly_name="MGCSGJ2025"
+
+[physics]
+
+3d/default_gravity=0.5
+3d/default_gravity_vector=Vector3(0, 0, 0)

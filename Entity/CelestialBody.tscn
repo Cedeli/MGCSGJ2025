@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://ot7w0gu3tabp"]
+
+[ext_resource type="Script" uid="uid://cfyc5to0b2c3i" path="res://Entity/CelestialBody.cs" id="1_s3lym"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_s3lym"]
+resource_local_to_scene = true
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_s3lym"]
+resource_local_to_scene = true
+
+[node name="CelestialBody" type="RigidBody3D" node_paths=PackedStringArray("_meshInstance", "_collisionShape")]
+script = ExtResource("1_s3lym")
+_meshInstance = NodePath("MeshInstance3D")
+_collisionShape = NodePath("CollisionShape3D")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_s3lym")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_s3lym")
