@@ -3,12 +3,20 @@ using System;
 
 public partial class PlayerController : Node3D
 {
-    [Export] private Player _player;
 
+    private CharacterBody3D _player;
     private Vector3 _velocity = Vector3.Zero;
     private Vector3 _direction;
     private float _sprintSpeed;
+    private float _speed;
+    private float _mass;
 
+    public void SetPlayer(CharacterBody3D player, float speed, float mass)
+    {
+        _player = player;
+        _speed = speed;
+        _mass = mass;
+    }
     public override void _Ready()
     {
         GD.Print("Player Controller Ready");
@@ -32,8 +40,8 @@ public partial class PlayerController : Node3D
         _velocity = _direction.LimitLength();
 
         _player.Velocity = _velocity != Vector3.Zero
-            ? _player.Velocity.Lerp(_velocity * _player.Speed * 2, _sprintSpeed)
-            : _player.Velocity.Lerp(Vector3.Zero, _sprintSpeed);
+            ? _player.Velocity.Lerp(_velocity * _speed * _sprintSpeed, _mass)
+            : _player.Velocity.Lerp(Vector3.Zero, _mass);
 
         _player.MoveAndSlide();
     }
@@ -43,6 +51,6 @@ public partial class PlayerController : Node3D
         // adjust speed if player sprints
         _sprintSpeed = @event.IsActionPressed("sprint")
             ? _sprintSpeed = 35.0f
-            : _sprintSpeed = 1.0f;
+            : _sprintSpeed = 2.0f;
     }
 }
