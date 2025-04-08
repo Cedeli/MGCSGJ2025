@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://bdwrog1ualcnb"]
+
+[ext_resource type="Script" uid="uid://dfvdfmxa3bunk" path="res://Entity/Player/Player.cs" id="1_ic0o1"]
+[ext_resource type="PackedScene" uid="uid://hjvbm65xgdlr" path="res://Assets/Player/Sussy Imposter.glb" id="2_rj2x4"]
+[ext_resource type="PackedScene" uid="uid://bblgl4funwl23" path="res://Entity/Player/PlayerController.tscn" id="3_rj2x4"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_rpqav"]
+radius = 0.223407
+height = 0.710147
+
+[node name="CharacterBody3D" type="CharacterBody3D"]
+script = ExtResource("1_ic0o1")
+
+[node name="Root Scene" parent="." instance=ExtResource("2_rj2x4")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00216365, 0.268682, 0.037021)
+shape = SubResource("CapsuleShape3D_rpqav")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.255304, 0.452554, 1.63)
+fov = 74.9142
+
+[node name="PlayerController" parent="." instance=ExtResource("3_rj2x4")]
