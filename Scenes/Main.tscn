@@ -52,8 +52,8 @@ mesh = SubResource("SphereMesh_kln2b")
 [node name="CollisionShape3D" parent="SolarSystem/Moon" index="1"]
 shape = SubResource("SphereShape3D_rgh2o")
 
-[node name="CharacterBody3D" parent="." instance=ExtResource("2_idj7w")]
-transform = Transform3D(0.186022, 0.935065, 0.301744, -0.951701, 0.095131, 0.291916, 0.244255, -0.341473, 0.907599, 38.6458, 12.325, 103.806)
+[node name="Player" parent="." instance=ExtResource("2_idj7w")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 186.128)
 
 [editable path="SolarSystem/Earth"]
 [editable path="SolarSystem/Moon"]
