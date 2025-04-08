@@ -89,6 +89,7 @@ public partial class PlayerController : Node3D
 
     private void CameraMovement()
     {
+
         float deltaX = _mouseDelta.X * _mouseSens;
         float deltaY = _mouseDelta.Y * _mouseSens;
 
