@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://ot7w0gu3tabp"]
+[gd_scene load_steps=4 format=3 uid="uid://dsix13euckuf1"]
 
 [ext_resource type="Script" uid="uid://cfyc5to0b2c3i" path="res://Entity/CelestialBody.cs" id="1_s3lym"]
 

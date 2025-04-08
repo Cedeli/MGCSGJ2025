@@ -18,12 +18,12 @@ public partial class Game : Node3D
 		{
 			if (isPushing)
 			{
-				// Pause the game when pause screen is pushed
+				// pause game when pause screen is pushed
 				ProcessMode = ProcessModeEnum.Disabled;
 			}
 			else
 			{
-				// Resume the game when pause screen is popped
+				// resume game when pause screen is popped
 				ProcessMode = ProcessModeEnum.Inherit;
 			}
 		}
