@@ -4,14 +4,14 @@ using System;
 public partial class PlayerController : Node3D
 {
 
-    private CharacterBody3D _player;
+    private RigidBody3D _player;
     private Vector3 _velocity = Vector3.Zero;
     private Vector3 _direction;
     private float _sprintSpeed;
     private float _speed;
     private float _mass;
 
-    public void SetPlayer(CharacterBody3D player, float speed, float mass)
+    public void SetPlayer(RigidBody3D player, float speed, float mass)
     {
         _player = player;
         _speed = speed;
@@ -21,7 +21,7 @@ public partial class PlayerController : Node3D
     {
         GD.Print("Player Controller Ready");
     }
-
+    
     public override void _PhysicsProcess(double delta)
     {
         // Player movement
@@ -31,19 +31,9 @@ public partial class PlayerController : Node3D
             Input.GetActionStrength("back") - Input.GetActionStrength("front")
         );
 
-        // if (_direction != Vector3.Zero)
-        // {
-        //     _direction = _direction.Normalized();
-        //     GetNode<Node3D>("Pivot").Basis = Basis.LookingAt(_direction);
-        // }
- 
-        _velocity = _direction.LimitLength();
-
-        _player.Velocity = _velocity != Vector3.Zero
-            ? _player.Velocity.Lerp(_velocity * _speed * _sprintSpeed, _mass)
-            : _player.Velocity.Lerp(Vector3.Zero, _mass);
-
-        _player.MoveAndSlide();
+        _velocity = _direction * _speed * _sprintSpeed;
+    
+        _player.ApplyCentralForce(_velocity);
     }
 
     public override void _Input(InputEvent @event)

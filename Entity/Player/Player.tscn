@@ -8,18 +8,20 @@
 radius = 0.223407
 height = 0.710147
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("_controller")]
+[node name="Player" type="RigidBody3D" node_paths=PackedStringArray("_controller")]
+lock_rotation = true
 script = ExtResource("1_ic0o1")
 _controller = NodePath("PlayerController")
 
-[node name="Root Scene" parent="." instance=ExtResource("2_rj2x4")]
+[node name="CharacterModel" parent="." instance=ExtResource("2_rj2x4")]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00216365, 0.268682, 0.037021)
 shape = SubResource("CapsuleShape3D_rpqav")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.255304, 0.452554, 1.63)
+transform = Transform3D(0.998832, 0, -0.0483094, 0.0305721, 0.774282, 0.632102, 0.0374051, -0.63284, 0.773378, 0.0303712, 1.671, 1.24149)
+current = true
 fov = 74.9142
 
 [node name="PlayerController" parent="." instance=ExtResource("3_rj2x4")]

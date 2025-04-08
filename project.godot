@@ -59,5 +59,4 @@ crouch={
 
 [physics]
 
-3d/default_gravity=0.5
 3d/default_gravity_vector=Vector3(0, 0, 0)

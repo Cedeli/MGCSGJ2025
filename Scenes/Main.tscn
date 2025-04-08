@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://j4kvo1b7egck"]
+[gd_scene load_steps=10 format=3 uid="uid://j4kvo1b7egck"]
 
 [ext_resource type="PackedScene" uid="uid://ot7w0gu3tabp" path="res://Entity/CelestialBody.tscn" id="1_r150o"]
 [ext_resource type="PackedScene" uid="uid://bdwrog1ualcnb" path="res://Entity/Player/Player.tscn" id="2_idj7w"]
@@ -15,6 +15,9 @@ albedo_color = Color(0.270588, 0.521569, 1, 1)
 resource_local_to_scene = true
 radius = 5.0
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_kln2b"]
+radius = 66.8437
+
 [sub_resource type="SphereMesh" id="SphereMesh_kln2b"]
 resource_local_to_scene = true
 radius = 5.0
@@ -23,6 +26,9 @@ height = 10.0
 [sub_resource type="SphereShape3D" id="SphereShape3D_rgh2o"]
 resource_local_to_scene = true
 radius = 5.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_pbw6q"]
+radius = 49.097
 
 [node name="Main" type="Node3D"]
 
@@ -40,6 +46,15 @@ surface_material_override/0 = SubResource("StandardMaterial3D_r150o")
 [node name="CollisionShape3D" parent="SolarSystem/Earth" index="1"]
 shape = SubResource("SphereShape3D_idj7w")
 
+[node name="Area3D" type="Area3D" parent="SolarSystem/Earth"]
+gravity_space_override = 3
+gravity_point = true
+gravity_point_center = Vector3(0, 0, 0)
+gravity_direction = Vector3(0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SolarSystem/Earth/Area3D"]
+shape = SubResource("SphereShape3D_kln2b")
+
 [node name="Moon" parent="SolarSystem" instance=ExtResource("1_r150o")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 0, 0)
 Radius = 2.5
@@ -52,8 +67,20 @@ mesh = SubResource("SphereMesh_kln2b")
 [node name="CollisionShape3D" parent="SolarSystem/Moon" index="1"]
 shape = SubResource("SphereShape3D_rgh2o")
 
+[node name="Area3D" type="Area3D" parent="SolarSystem/Moon"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0118408, -0.58713, -0.0408936)
+gravity_space_override = 3
+gravity_point = true
+gravity_point_center = Vector3(0, 0, 0)
+gravity_direction = Vector3(0, 0, 0)
+gravity = 7.214
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SolarSystem/Moon/Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.459084, 0.108318, 0.0413322)
+shape = SubResource("SphereShape3D_pbw6q")
+
 [node name="Player" parent="." instance=ExtResource("2_idj7w")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 186.128)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 33.3302)
 
 [editable path="SolarSystem/Earth"]
 [editable path="SolarSystem/Moon"]
