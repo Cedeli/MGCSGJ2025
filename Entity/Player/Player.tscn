@@ -8,15 +8,14 @@ height = 1.48379
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_ic0o1"]
 
-[node name="Player" type="RigidBody3D" node_paths=PackedStringArray("_groundCast", "_cameraPivot", "_camera")]
+[node name="Player" type="RigidBody3D" node_paths=PackedStringArray("_cameraPivot", "_camera", "GroundCast")]
 axis_lock_angular_x = true
 axis_lock_angular_y = true
 axis_lock_angular_z = true
 script = ExtResource("1_ic0o1")
-_groundCast = NodePath("GroundCast")
-_groundCastLength = 1.0
 _cameraPivot = NodePath("Pivot")
 _camera = NodePath("Pivot/Camera3D")
+GroundCast = NodePath("GroundCast")
 
 [node name="CharacterModel" parent="." instance=ExtResource("2_rj2x4")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, -0.75, 0)

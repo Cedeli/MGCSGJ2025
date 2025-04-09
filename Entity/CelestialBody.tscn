@@ -12,8 +12,9 @@ resource_local_to_scene = true
 radius = 5.0
 
 [node name="CelestialBody" type="RigidBody3D" node_paths=PackedStringArray("_meshInstance", "_collisionShape")]
+gravity_scale = 0.0
 script = ExtResource("1_s3lym")
-GravitationalConstant = 1.0
+GravitationalConstant = 6e-05
 _meshInstance = NodePath("MeshInstance3D")
 _collisionShape = NodePath("CollisionShape3D")
 
