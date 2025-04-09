@@ -8,7 +8,7 @@ public partial class Credits : Control
     {
         _gameManager = GetNode<GameManager>("/root/GameManager");
         
-        var backButton = GetNode<Button>("VBoxContainer/BackButton");
+        var backButton = GetNode<Button>("Panel/VBoxContainer/BackButton");
         backButton.Pressed += OnBackButtonPressed;
     }
 

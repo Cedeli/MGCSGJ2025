@@ -10,8 +10,8 @@ public partial class Pause : Control
 	public override void _Ready()
 	{
 		_gameManager = GetNode<GameManager>("/root/GameManager");
-		_resumeButton = GetNode<Button>("VBoxContainer/ResumeButton");
-		_quitButton = GetNode<Button>("VBoxContainer/QuitButton");
+		_resumeButton = GetNode<Button>("Panel/VBoxContainer/ResumeButton");
+		_quitButton = GetNode<Button>("Panel/VBoxContainer/QuitButton");
 
 		_resumeButton.Pressed += OnResumeButtonPressed;
 		_quitButton.Pressed += OnQuitButtonPressed;
