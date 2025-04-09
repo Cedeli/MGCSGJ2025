@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3 uid="uid://cfdmshqym6x8y"]
+
+[ext_resource type="Script" uid="uid://dfvdfmxa3bunk" path="res://Entity/Player/Player.cs" id="1_ic0o1"]
+[ext_resource type="PackedScene" uid="uid://hjvbm65xgdlr" path="res://Assets/Player/Sussy Imposter.glb" id="2_rj2x4"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_rpqav"]
+height = 1.48379
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ic0o1"]
+
+[node name="Player" type="RigidBody3D" node_paths=PackedStringArray("_groundCast", "_cameraPivot", "_camera")]
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+script = ExtResource("1_ic0o1")
+_groundCast = NodePath("GroundCast")
+_groundCastLength = 1.0
+_cameraPivot = NodePath("Pivot")
+_camera = NodePath("Pivot/Camera3D")
+
+[node name="CharacterModel" parent="." instance=ExtResource("2_rj2x4")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, -0.75, 0)
+visible = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_rpqav")
+
+[node name="GroundCast" type="ShapeCast3D" parent="."]
+shape = SubResource("SphereShape3D_ic0o1")
+target_position = Vector3(0, -0.35, 0)
+
+[node name="Pivot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.153353, -0.272534)
+
+[node name="Camera3D" type="Camera3D" parent="Pivot"]

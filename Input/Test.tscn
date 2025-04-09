@@ -1,0 +1,76 @@
+[gd_scene load_steps=10 format=3 uid="uid://cy50ednib2be5"]
+
+[ext_resource type="PackedScene" uid="uid://cfdmshqym6x8y" path="res://Entity/Player/Player.tscn" id="1_n7co6"]
+[ext_resource type="PackedScene" uid="uid://dqsf2uo1bqci8" path="res://Input/InputManager.tscn" id="2_5uwd3"]
+[ext_resource type="PackedScene" uid="uid://dsix13euckuf1" path="res://Entity/CelestialBody.tscn" id="3_2fbx1"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_2fbx1"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_f5kwq"]
+sky_material = SubResource("ProceduralSkyMaterial_2fbx1")
+
+[sub_resource type="Environment" id="Environment_50bfu"]
+background_mode = 2
+sky = SubResource("Sky_f5kwq")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_f5kwq"]
+resource_local_to_scene = true
+radius = 50.0
+height = 100.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_50bfu"]
+albedo_color = Color(0.0117647, 0.533333, 1, 1)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_57om4"]
+resource_local_to_scene = true
+radius = 50.0
+
+[node name="Test" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_50bfu")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Player" parent="." instance=ExtResource("1_n7co6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.2937, 139.936, 42.2251)
+
+[node name="InputManager" parent="." instance=ExtResource("2_5uwd3")]
+
+[node name="KeyboardMouseInput" parent="InputManager" index="1"]
+MouseSensitivity = 5.0
+
+[node name="Earth" parent="." groups=["celestial_bodies"] instance=ExtResource("3_2fbx1")]
+axis_lock_linear_x = true
+axis_lock_linear_y = true
+axis_lock_linear_z = true
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+SurfaceGravity = 9.8
+AutoCalculateOrbitalVelocity = true
+Radius = 50.0
+
+[node name="MeshInstance3D" parent="Earth" index="0"]
+mesh = SubResource("SphereMesh_f5kwq")
+surface_material_override/0 = SubResource("StandardMaterial3D_50bfu")
+
+[node name="CollisionShape3D" parent="Earth" index="1"]
+shape = SubResource("SphereShape3D_57om4")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.94981, 49.8475, 0)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.7363, -10.0942, 1.70867)
+size = Vector3(3.65808, 1, 1)
+
+[editable path="Player"]
+[editable path="InputManager"]
+[editable path="Earth"]
