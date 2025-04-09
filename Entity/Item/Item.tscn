@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=3 uid="uid://c7d8e565g1h2"]
+
+[ext_resource type="Script" uid="uid://c7d8e9f0g1h2" path="res://Entity/Item/Item.cs" id="1_item_cs"] ; Placeholder UID - Needs fixing in Editor!
+
+[sub_resource type="SphereMesh" id="SphereMesh_item"]
+radius = 0.3
+height = 0.6
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_item"]
+albedo_color = Color(0.9, 0.9, 0.2, 1)
+metallic = 0.1
+roughness = 0.7
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_item"]
+radius = 0.3
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_groundcast_item"]
+radius = 0.1
+
+[node name="Item" type="RigidBody3D" node_paths=PackedStringArray("GroundCast")]
+script = ExtResource("1_item_cs")
+MoveSpeed = 0.0
+JumpImpulse = 0.0
+GroundCastLength = 0.5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_item")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_item")
+surface_material_override/0 = SubResource("StandardMaterial3D_item")
+
+[node name="GroundCast" type="ShapeCast3D" parent="."]
+shape = SubResource("SphereShape3D_groundcast_item")
+target_position = Vector3(0, -0.5, 0)
