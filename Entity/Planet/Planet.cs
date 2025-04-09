@@ -141,6 +141,8 @@ public partial class Planet : CelestialBody
 			}
 		}
 		_isReady = true;
+
+		Regenerate();
 	}
 
 	protected override void UpdateShapeAndMesh()
