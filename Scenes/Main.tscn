@@ -1,5 +1,6 @@
 [gd_scene load_steps=19 format=3 uid="uid://cwjgghgi0qcgc"]
 
+[ext_resource type="PackedScene" uid="uid://dqsf2uo1bqci8" path="res://Input/InputManager.tscn" id="1_kln2b"]
 [ext_resource type="PackedScene" uid="uid://dsix13euckuf1" path="res://Entity/CelestialBody.tscn" id="1_r150o"]
 [ext_resource type="PackedScene" uid="uid://7w733f1revd7" path="res://Entity/Planet/Planet.tscn" id="2_v4o6y"]
 [ext_resource type="Shader" uid="uid://dlewbbs8byb86" path="res://Assets/Shaders/Space/space.gdshader" id="3_xvyy0"]
@@ -37,6 +38,7 @@ emission_enabled = true
 emission = Color(0.901961, 0.439216, 0.0509804, 1)
 emission_energy_multiplier = 2.0
 rim_enabled = true
+rim = 0.07
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_kln2b"]
 resource_local_to_scene = true
@@ -189,15 +191,16 @@ shader_parameter/detail_noise_intensity = 0.107267
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_kln2b")
 
+[node name="InputManager" parent="." instance=ExtResource("1_kln2b")]
+
 [node name="SolarSystem" type="Node3D" parent="."]
 
-[node name="Camera3D" type="Camera3D" parent="SolarSystem"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 2081.84, 0)
+[node name="Player" parent="SolarSystem" groups=["input_receivers"] instance=ExtResource("2_rgh2o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2998.51, 51.2032, -9.51956)
 
 [node name="Sun" parent="SolarSystem" groups=["celestial_bodies"] instance=ExtResource("1_r150o")]
 SurfaceGravity = 100.0
 InitialMass = 4e+07
-GravitationalConstant = 0.1
 Radius = 250.0
 
 [node name="MeshInstance3D" parent="SolarSystem/Sun" index="0"]
@@ -283,7 +286,7 @@ WaterTransparency = 0.636676
 SurfaceGravity = 1.6
 OrbitParent = NodePath("../Earth")
 AutoCalculateOrbitalVelocity = true
-Radius = 16.0
+Radius = 15.0
 
 [node name="PlanetVisualMeshInstance" type="MeshInstance3D" parent="SolarSystem/Moon"]
 material_override = SubResource("ShaderMaterial_4kpch")

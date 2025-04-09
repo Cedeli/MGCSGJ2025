@@ -13,7 +13,7 @@ public partial class CelestialBody : RigidBody3D
 	public Vector3 InitialVelocity = Vector3.Zero;
 
 	[Export]
-	public float GravitationalConstant = 0.1f;
+	public float GravitationalConstant = 6.6743e-11f;
 
 	[Export]
 	public CelestialBody OrbitParent;

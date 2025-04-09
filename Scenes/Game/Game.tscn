@@ -191,13 +191,11 @@ environment = SubResource("Environment_kln2b")
 
 [node name="SolarSystem" type="Node3D" parent="."]
 
-[node name="Camera3D" type="Camera3D" parent="SolarSystem"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 2081.84, 0)
-
-[node name="Sun" parent="SolarSystem" groups=["celestial_bodies"] instance=ExtResource("1_r150o")]
+[node name="Sun" parent="SolarSystem" node_paths=PackedStringArray("OrbitParent") groups=["celestial_bodies"] instance=ExtResource("1_r150o")]
 SurfaceGravity = 100.0
 InitialMass = 4e+07
 GravitationalConstant = 0.1
+OrbitParent = NodePath(".")
 Radius = 250.0
 
 [node name="MeshInstance3D" parent="SolarSystem/Sun" index="0"]
@@ -287,6 +285,9 @@ Radius = 16.0
 
 [node name="PlanetVisualMeshInstance" type="MeshInstance3D" parent="SolarSystem/Moon"]
 material_override = SubResource("ShaderMaterial_10ki7")
+
+[node name="Player" parent="SolarSystem" instance=ExtResource("2_gwu2e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 401.74, 0, 0)
 
 [editable path="SolarSystem/Sun"]
 [editable path="SolarSystem/Earth"]
