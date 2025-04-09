@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3 uid="uid://cfv1817f34ekw"]
+
+[ext_resource type="Script" uid="uid://x1l3aeqn7ho7" path="res://Entity/Planet/Planet.cs" id="1_2k4m3"]
+
+[node name="PlanetTest" type="Node3D"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 10, 0)
+light_energy = 2.0
+shadow_enabled = true
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 0, 10)
+current = true
+
+[node name="Planet" type="Node3D" parent="."]
+script = ExtResource("1_2k4m3")
+Resolution = 256
+Radius = 20.0
+NoiseScale = 1.2
+NoiseOctaves = 7
+NoisePersistence = 0.25
+NoiseLacunarity = 3.0
+HeightScale = 2.0
+
+[node name="Timer" type="Timer" parent="Planet"]
+wait_time = 0.5
+autostart = true

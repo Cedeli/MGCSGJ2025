@@ -1,6 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://d8z0l8w6a7p4s"]
+[gd_scene load_steps=6 format=3 uid="uid://el4060wp0ud1"]
 
-[ext_resource type="Script" path="res://Scenes/Result/Result.cs" id="1_4m6o5"]
+[ext_resource type="Script" uid="uid://blcfw347jwk8a" path="res://Scenes/Result/Result.cs" id="1_4m6o5"]
 [ext_resource type="Shader" uid="uid://dnox0thh7iu8c" path="res://Assets/Shaders/Space/space_2d.gdshader" id="2_3l4m5"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1"]
@@ -85,9 +85,9 @@ theme_override_constants/separation = 30
 [node name="Label" type="Label" parent="Panel/VBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 48
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 2
+theme_override_font_sizes/font_size = 48
 text = "Game Over"
 horizontal_alignment = 1
 
@@ -101,8 +101,8 @@ vertical_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer"]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 20
+alignment = 1
 
 [node name="MainMenuButton" type="Button" parent="Panel/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -124,4 +124,4 @@ theme_override_font_sizes/font_size = 20
 theme_override_styles/hover = SubResource("StyleBoxFlat_2")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_2")
 theme_override_styles/normal = SubResource("StyleBoxFlat_2")
-text = "Restart" 
+text = "Restart"

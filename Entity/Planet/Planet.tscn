@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://7w733f1revd7"]
+
+[ext_resource type="Script" uid="uid://x1l3aeqn7ho7" path="res://Entity/Planet/Planet.cs" id="1_cwvfgr8j4xs4t"]
+
+[node name="Planet" type="RigidBody3D"]
+script = ExtResource("1_cwvfgr8j4xs4t")

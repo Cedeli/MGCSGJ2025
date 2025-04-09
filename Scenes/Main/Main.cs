@@ -7,6 +7,6 @@ public partial class Main : Node3D
 	public override void _Ready()
 	{
 		_gameManager = GetNode<GameManager>("/root/GameManager");
-		_gameManager.ChangeScene("res://Scenes/MainMenu/MainMenu.tscn");
+		_gameManager.ChangeScene("res://Scenes/Test/PlanetTest.tscn");
 	}
 }
