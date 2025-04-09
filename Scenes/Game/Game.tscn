@@ -1,61 +1,127 @@
-[gd_scene load_steps=8 format=3 uid="uid://j4kvo1b7egck"]
+[gd_scene load_steps=14 format=3 uid="uid://j4kvo1b7egck"]
 
-[ext_resource type="Script" uid="uid://cwc4n1u7db367" path="res://Scenes/Game/Game.cs" id="1_gwu2e"]
-[ext_resource type="PackedScene" uid="uid://dsix13euckuf1" path="res://Entity/CelestialBody.tscn" id="1_r150o"]
+[ext_resource type="PackedScene" uid="uid://ot7w0gu3tabp" path="res://Entity/CelestialBody.tscn" id="1_r150o"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_r150o"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_idj7w"]
+sky_material = SubResource("ProceduralSkyMaterial_r150o")
+
+[sub_resource type="Environment" id="Environment_kln2b"]
+background_energy_multiplier = 0.0
+sky = SubResource("Sky_idj7w")
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_energy = 0.03
+tonemap_mode = 2
+ssao_enabled = true
+glow_enabled = true
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.005
 
 [sub_resource type="SphereMesh" id="SphereMesh_r150o"]
 resource_local_to_scene = true
-radius = 5.0
-height = 10.0
+radius = 250.0
+height = 500.0
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r150o"]
-albedo_color = Color(0.270588, 0.521569, 1, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_idj7w"]
+albedo_color = Color(1, 0, 0, 1)
+emission_enabled = true
+emission = Color(0.901961, 0.439216, 0.0509804, 1)
+emission_energy_multiplier = 2.0
+rim_enabled = true
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_idj7w"]
+[sub_resource type="SphereShape3D" id="SphereShape3D_kln2b"]
 resource_local_to_scene = true
-radius = 5.0
+radius = 250.0
 
-[sub_resource type="SphereMesh" id="SphereMesh_kln2b"]
+[sub_resource type="SphereMesh" id="SphereMesh_idj7w"]
 resource_local_to_scene = true
-radius = 5.0
-height = 10.0
+radius = 50.0
+height = 100.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kln2b"]
+albedo_color = Color(0.0117647, 0.533333, 1, 1)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_rgh2o"]
 resource_local_to_scene = true
-radius = 5.0
+radius = 50.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_kln2b"]
+resource_local_to_scene = true
+radius = 16.0
+height = 32.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rgh2o"]
+albedo_color = Color(0.627451, 0.627451, 0.627451, 1)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_pbw6q"]
+resource_local_to_scene = true
+radius = 16.0
 
 [node name="Main" type="Node3D"]
-script = ExtResource("1_gwu2e")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_kln2b")
 
 [node name="SolarSystem" type="Node3D" parent="."]
 
-[node name="Earth" parent="SolarSystem" instance=ExtResource("1_r150o")]
-InitialMass = 5000.0
-Radius = 10.0
-GravitationalConstant = 1.0
+[node name="Camera3D" type="Camera3D" parent="SolarSystem"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 2081.84, 0)
+
+[node name="Sun" parent="SolarSystem" groups=["celestial_bodies"] instance=ExtResource("1_r150o")]
+SurfaceGravity = 100.0
+InitialMass = 4e+07
+GravitationalConstant = 0.1
+Radius = 250.0
+
+[node name="MeshInstance3D" parent="SolarSystem/Sun" index="0"]
+mesh = SubResource("SphereMesh_r150o")
+surface_material_override/0 = SubResource("StandardMaterial3D_idj7w")
+
+[node name="CollisionShape3D" parent="SolarSystem/Sun" index="1"]
+shape = SubResource("SphereShape3D_kln2b")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="SolarSystem/Sun"]
+light_color = Color(1, 0.87451, 0.67451, 1)
+light_energy = 2048.0
+light_specular = 1.0
+shadow_enabled = true
+shadow_blur = 5.0
+omni_range = 8192.0
+
+[node name="Earth" parent="SolarSystem" node_paths=PackedStringArray("OrbitParent") groups=["celestial_bodies"] instance=ExtResource("1_r150o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 0, 0)
+SurfaceGravity = 9.8
+GravitationalConstant = 0.1
+OrbitParent = NodePath("../Sun")
+AutoCalculateOrbitalVelocity = true
+Radius = 50.0
 
 [node name="MeshInstance3D" parent="SolarSystem/Earth" index="0"]
-mesh = SubResource("SphereMesh_r150o")
-surface_material_override/0 = SubResource("StandardMaterial3D_r150o")
+mesh = SubResource("SphereMesh_idj7w")
+surface_material_override/0 = SubResource("StandardMaterial3D_kln2b")
 
 [node name="CollisionShape3D" parent="SolarSystem/Earth" index="1"]
-shape = SubResource("SphereShape3D_idj7w")
+shape = SubResource("SphereShape3D_rgh2o")
 
-[node name="Moon" parent="SolarSystem" instance=ExtResource("1_r150o")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100, 0, 0)
-Radius = 2.5
-InitialVelocity = Vector3(0, 0, 20)
-GravitationalConstant = 1.0
+[node name="Moon" parent="SolarSystem" node_paths=PackedStringArray("OrbitParent") groups=["celestial_bodies"] instance=ExtResource("1_r150o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 0, 150)
+SurfaceGravity = 1.6
+GravitationalConstant = 0.1
+OrbitParent = NodePath("../Earth")
+AutoCalculateOrbitalVelocity = true
+Radius = 16.0
 
 [node name="MeshInstance3D" parent="SolarSystem/Moon" index="0"]
 mesh = SubResource("SphereMesh_kln2b")
+surface_material_override/0 = SubResource("StandardMaterial3D_rgh2o")
 
 [node name="CollisionShape3D" parent="SolarSystem/Moon" index="1"]
-shape = SubResource("SphereShape3D_rgh2o")
+shape = SubResource("SphereShape3D_pbw6q")
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 220, 0)
-fov = 90.0
-
+[editable path="SolarSystem/Sun"]
 [editable path="SolarSystem/Earth"]
 [editable path="SolarSystem/Moon"]
