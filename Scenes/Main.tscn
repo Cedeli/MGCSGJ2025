@@ -73,10 +73,12 @@ environment = SubResource("Environment_kln2b")
 
 [node name="SolarSystem" type="Node3D" parent="."]
 
+[node name="Player" parent="SolarSystem" groups=["input_receivers"] instance=ExtResource("2_rgh2o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2998.51, 51.2032, -9.51956)
+
 [node name="Sun" parent="SolarSystem" groups=["celestial_bodies"] instance=ExtResource("1_r150o")]
 SurfaceGravity = 100.0
 InitialMass = 4e+07
-GravitationalConstant = 6e-05
 Radius = 250.0
 
 [node name="MeshInstance3D" parent="SolarSystem/Sun" index="0"]
@@ -94,13 +96,9 @@ shadow_enabled = true
 shadow_blur = 5.0
 omni_range = 8192.0
 
-[node name="Player" parent="SolarSystem/Sun" groups=["input_receivers"] instance=ExtResource("2_rgh2o")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000.18, 15.7742, 299.87)
-
 [node name="Earth" parent="SolarSystem" node_paths=PackedStringArray("OrbitParent") groups=["celestial_bodies"] instance=ExtResource("1_r150o")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 0, 0)
 SurfaceGravity = 9.8
-GravitationalConstant = 6e-05
 OrbitParent = NodePath("../Sun")
 AutoCalculateOrbitalVelocity = true
 Radius = 50.0
@@ -115,7 +113,6 @@ shape = SubResource("SphereShape3D_rgh2o")
 [node name="Moon" parent="SolarSystem" node_paths=PackedStringArray("OrbitParent") groups=["celestial_bodies"] instance=ExtResource("1_r150o")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 0, 300)
 SurfaceGravity = 9.8
-GravitationalConstant = 6e-05
 OrbitParent = NodePath("../Earth")
 AutoCalculateOrbitalVelocity = true
 Radius = 15.0

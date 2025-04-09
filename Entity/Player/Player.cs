@@ -1,18 +1,10 @@
 using Godot;
 using System;
 
-public partial class Player : RigidBody3D, IInputReceiver
+public partial class Player : GravityEntity, IInputReceiver
 {
     private const float MinPitchAngle = -Mathf.Pi / 2.0f + 0.01f;
     private const float MaxPitchAngle = Mathf.Pi / 2.0f - 0.01f;
-
-    [ExportGroup("Movement")] [Export] public float MoveSpeed = 5.0f;
-    [Export] public float JumpImpulse = 10.0f;
-
-    [ExportGroup("Components")] [Export] private ShapeCast3D _groundCast;
-
-    [Export(PropertyHint.Range, "0.1, 5.0, 0.1")]
-    private float _groundCastLength = 0.5f;
 
     [Export] private Node3D _cameraPivot;
     [Export] private Camera3D _camera;
@@ -33,21 +25,18 @@ public partial class Player : RigidBody3D, IInputReceiver
 
     public override void _Ready()
     {
+        base._Ready();
         AddToGroup("input_receivers");
-
         Input.SetMouseMode(Input.MouseModeEnum.Captured);
 
-        _planetaryMovement = new PlanetaryMovementController(this, _groundCast, _cameraPivot, MoveSpeed, JumpImpulse);
+        _planetaryMovement = new PlanetaryMovementController(this);
         _currentMovementController = _planetaryMovement;
-
-        ConfigureRigidBody();
-        UpdateGroundCastTarget();
     }
 
     public override void _PhysicsProcess(double delta)
     {
+        base._PhysicsProcess(delta);
         var fDelta = (float)delta;
-        UpdateGroundCastTarget();
         UpdateCameraOrientation();
 
         _currentMovementController?.PhysicsProcess(fDelta, _movementInput);
@@ -87,42 +76,13 @@ public partial class Player : RigidBody3D, IInputReceiver
         GD.Print("Player: InputManager assigned.");
     }
 
-    private void ConfigureRigidBody()
-    {
-        ContinuousCd = true;
-        ContactMonitor = true;
-        MaxContactsReported = 4;
-
-        LinearDamp = 0.1f;
-        AngularDamp = 0.8f;
-
-        AxisLockLinearX = false;
-        AxisLockLinearY = false;
-        AxisLockLinearZ = false;
-        AxisLockAngularX = false;
-        AxisLockAngularY = false;
-        AxisLockAngularZ = false;
-    }
-
-    private void UpdateGroundCastTarget()
-    {
-        var globalDownDirection = _currentMovementController?.GetGravityDirection() ?? Vector3.Down;
-        globalDownDirection = globalDownDirection.Normalized();
-        
-        var globalTargetPoint = _groundCast.GlobalPosition + globalDownDirection * _groundCastLength;
-        _groundCast.TargetPosition = _groundCast.ToLocal(globalTargetPoint);
-    }
-
     private void UpdateCameraOrientation()
     {
         if (_cameraPivot == null || _planetaryMovement == null) return;
-
-        var gravityDir = _planetaryMovement.GetGravityDirection();
-        var targetUp = -gravityDir;
-
+        
+        var targetUp = -GetGravityDirection();
         var currentBodyBasis = GlobalTransform.Basis;
-        var planetAlignedBasis =
-            PlanetaryMovementController.CreateBasisFromUp(targetUp, -currentBodyBasis.Z);
+        var planetAlignedBasis = CreateBasisFromUp(targetUp, -currentBodyBasis.Z);
 
         var yawRotation = Basis.Identity.Rotated(targetUp, _yawAngle);
 
@@ -149,6 +109,11 @@ public partial class Player : RigidBody3D, IInputReceiver
         {
             _inputBuffer.ConsumeBufferedAction("jump");
         }
+    }
+
+    public Node3D GetCameraPivot()
+    {
+        return _cameraPivot;
     }
 
     private void OnMovementModeChanged(InputManager.MovementMode newMode)
