@@ -1,6 +1,6 @@
-[gd_scene load_steps=14 format=3 uid="uid://j4kvo1b7egck"]
+[gd_scene load_steps=27 format=3 uid="uid://j4kvo1b7egck"]
 
-[ext_resource type="PackedScene" uid="uid://ot7w0gu3tabp" path="res://Entity/CelestialBody.tscn" id="1_r150o"]
+[ext_resource type="PackedScene" uid="uid://dsix13euckuf1" path="res://Entity/CelestialBody.tscn" id="1_r150o"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_r150o"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -23,8 +23,8 @@ volumetric_fog_density = 0.005
 
 [sub_resource type="SphereMesh" id="SphereMesh_r150o"]
 resource_local_to_scene = true
-radius = 250.0
-height = 500.0
+radius = 150.0
+height = 300.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_idj7w"]
 albedo_color = Color(1, 0, 0, 1)
@@ -35,7 +35,27 @@ rim_enabled = true
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_kln2b"]
 resource_local_to_scene = true
-radius = 250.0
+radius = 150.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_xbxml"]
+radius = 16.0
+height = 32.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ln2h6"]
+albedo_color = Color(0.662745, 0.662745, 0.662745, 1)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_rdw05"]
+radius = 16.4208
+
+[sub_resource type="SphereMesh" id="SphereMesh_y3kpf"]
+radius = 39.0
+height = 78.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3k6gv"]
+albedo_color = Color(0.917647, 0.733333, 0.219608, 1)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_gwu2e"]
+radius = 39.0
 
 [sub_resource type="SphereMesh" id="SphereMesh_idj7w"]
 resource_local_to_scene = true
@@ -49,8 +69,12 @@ albedo_color = Color(0.0117647, 0.533333, 1, 1)
 resource_local_to_scene = true
 radius = 50.0
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gwu2e"]
+albedo_color = Color(0.662745, 0.662745, 0.662745, 1)
+
 [sub_resource type="SphereMesh" id="SphereMesh_kln2b"]
 resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_gwu2e")
 radius = 16.0
 height = 32.0
 
@@ -60,6 +84,26 @@ albedo_color = Color(0.627451, 0.627451, 0.627451, 1)
 [sub_resource type="SphereShape3D" id="SphereShape3D_pbw6q"]
 resource_local_to_scene = true
 radius = 16.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_rdw05"]
+radius = 25.0
+height = 50.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xbxml"]
+albedo_color = Color(0.756863, 0.266667, 0.054902, 1)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ln2h6"]
+radius = 25.1568
+
+[sub_resource type="SphereMesh" id="SphereMesh_3k6gv"]
+radius = 150.0
+height = 300.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1q8bt"]
+albedo_color = Color(0.890196, 0.619608, 0.109804, 1)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_gvja8"]
+radius = 150.0
 
 [node name="Main" type="Node3D"]
 
@@ -75,7 +119,7 @@ transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 208
 SurfaceGravity = 100.0
 InitialMass = 4e+07
 GravitationalConstant = 0.1
-Radius = 250.0
+Radius = 150.0
 
 [node name="MeshInstance3D" parent="SolarSystem/Sun" index="0"]
 mesh = SubResource("SphereMesh_r150o")
@@ -92,8 +136,39 @@ shadow_enabled = true
 shadow_blur = 5.0
 omni_range = 8192.0
 
+[node name="Mercury" parent="SolarSystem" node_paths=PackedStringArray("OrbitParent") groups=["celestial_bodies"] instance=ExtResource("1_r150o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 397.572, 0, 2.62881)
+SurfaceGravity = 3.7
+GravitationalConstant = 0.1
+OrbitParent = NodePath("../Sun")
+AutoCalculateOrbitalVelocity = true
+Radius = 16.0
+
+[node name="MeshInstance3D" parent="SolarSystem/Mercury" index="0"]
+mesh = SubResource("SphereMesh_xbxml")
+surface_material_override/0 = SubResource("StandardMaterial3D_ln2h6")
+
+[node name="CollisionShape3D" parent="SolarSystem/Mercury" index="1"]
+shape = SubResource("SphereShape3D_rdw05")
+
+[node name="Venus" parent="SolarSystem" node_paths=PackedStringArray("OrbitParent") groups=["celestial_bodies"] instance=ExtResource("1_r150o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 550.503, 0, 2.62881)
+SurfaceGravity = 8.87
+GravitationalConstant = 0.1
+OrbitParent = NodePath("../Sun")
+AutoCalculateOrbitalVelocity = true
+Radius = 39.0
+
+[node name="MeshInstance3D" parent="SolarSystem/Venus" index="0"]
+mesh = SubResource("SphereMesh_y3kpf")
+surface_material_override/0 = SubResource("StandardMaterial3D_3k6gv")
+
+[node name="CollisionShape3D" parent="SolarSystem/Venus" index="1"]
+transform = Transform3D(39, 0, 0, 0, 38.9941, -0.677241, 0, 0.677241, 38.9941, 0, 0, 0)
+shape = SubResource("SphereShape3D_gwu2e")
+
 [node name="Earth" parent="SolarSystem" node_paths=PackedStringArray("OrbitParent") groups=["celestial_bodies"] instance=ExtResource("1_r150o")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 744.567, 0, -16.5612)
 SurfaceGravity = 9.8
 GravitationalConstant = 0.1
 OrbitParent = NodePath("../Sun")
@@ -108,7 +183,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_kln2b")
 shape = SubResource("SphereShape3D_rgh2o")
 
 [node name="Moon" parent="SolarSystem" node_paths=PackedStringArray("OrbitParent") groups=["celestial_bodies"] instance=ExtResource("1_r150o")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 0, 150)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 744.567, 0, 86.3492)
 SurfaceGravity = 1.6
 GravitationalConstant = 0.1
 OrbitParent = NodePath("../Earth")
@@ -122,6 +197,40 @@ surface_material_override/0 = SubResource("StandardMaterial3D_rgh2o")
 [node name="CollisionShape3D" parent="SolarSystem/Moon" index="1"]
 shape = SubResource("SphereShape3D_pbw6q")
 
+[node name="Mars" parent="SolarSystem" node_paths=PackedStringArray("OrbitParent") groups=["celestial_bodies"] instance=ExtResource("1_r150o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 908.94, 0, -16.5612)
+SurfaceGravity = 3.73
+GravitationalConstant = 0.1
+OrbitParent = NodePath("../Sun")
+AutoCalculateOrbitalVelocity = true
+Radius = 25.0
+
+[node name="MeshInstance3D" parent="SolarSystem/Mars" index="0"]
+mesh = SubResource("SphereMesh_rdw05")
+surface_material_override/0 = SubResource("StandardMaterial3D_xbxml")
+
+[node name="CollisionShape3D" parent="SolarSystem/Mars" index="1"]
+shape = SubResource("SphereShape3D_ln2h6")
+
+[node name="Saturn" parent="SolarSystem" node_paths=PackedStringArray("OrbitParent") groups=["celestial_bodies"] instance=ExtResource("1_r150o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1183.93, 0, -16.5612)
+SurfaceGravity = 10.44
+GravitationalConstant = 0.1
+OrbitParent = NodePath("../Sun")
+AutoCalculateOrbitalVelocity = true
+Radius = 150.0
+
+[node name="MeshInstance3D" parent="SolarSystem/Saturn" index="0"]
+mesh = SubResource("SphereMesh_3k6gv")
+surface_material_override/0 = SubResource("StandardMaterial3D_1q8bt")
+
+[node name="CollisionShape3D" parent="SolarSystem/Saturn" index="1"]
+shape = SubResource("SphereShape3D_gvja8")
+
 [editable path="SolarSystem/Sun"]
+[editable path="SolarSystem/Mercury"]
+[editable path="SolarSystem/Venus"]
 [editable path="SolarSystem/Earth"]
 [editable path="SolarSystem/Moon"]
+[editable path="SolarSystem/Mars"]
+[editable path="SolarSystem/Saturn"]
