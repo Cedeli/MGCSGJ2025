@@ -2,28 +2,35 @@ using Godot;
 
 public partial class Pause : Control
 {
-	private GameManager _gameManager;
-	private Button _resumeButton;
-	private Button _quitButton;
-	private Panel _overlay;
+    private GameManager _gameManager;
+    private AudioManager _audioManager;
+    private Button _resumeButton;
+    private Button _quitButton;
+    private Panel _overlay;
 
-	public override void _Ready()
-	{
-		_gameManager = GetNode<GameManager>("/root/GameManager");
-		_resumeButton = GetNode<Button>("Panel/VBoxContainer/ResumeButton");
-		_quitButton = GetNode<Button>("Panel/VBoxContainer/QuitButton");
+    private const string SfxButtonPath = "res://Assets/Audio/button_1.wav";
 
-		_resumeButton.Pressed += OnResumeButtonPressed;
-		_quitButton.Pressed += OnQuitButtonPressed;
-	}
+    public override void _Ready()
+    {
+        _gameManager = GetNode<GameManager>("/root/GameManager");
+        _audioManager = GetNode<AudioManager>("/root/AudioManager");
 
-	private void OnResumeButtonPressed()
-	{
-		_gameManager.PopScene();
-	}
+        _resumeButton = GetNode<Button>("Panel/VBoxContainer/ResumeButton");
+        _quitButton = GetNode<Button>("Panel/VBoxContainer/QuitButton");
 
-	private void OnQuitButtonPressed()
-	{
-		_gameManager.ChangeScene("res://Scenes/Result/Result.tscn");
-	}
-} 
+        _resumeButton.Pressed += OnResumeButtonPressed;
+        _quitButton.Pressed += OnQuitButtonPressed;
+    }
+
+    private void OnResumeButtonPressed()
+    {
+        _audioManager.PlaySFX(SfxButtonPath);
+        _gameManager.PopScene();
+    }
+
+    private void OnQuitButtonPressed()
+    {
+        _audioManager.PlaySFX(SfxButtonPath);
+        _gameManager.ChangeScene("res://Scenes/MainMenu/MainMenu.tscn");
+    }
+}

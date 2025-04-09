@@ -1,8 +1,8 @@
-[gd_scene load_steps=16 format=3 uid="uid://dqm8qd4p0qwha"]
+[gd_scene load_steps=16 format=3 uid="uid://cwjgghgi0qcgc"]
 
 [ext_resource type="PackedScene" uid="uid://dqsf2uo1bqci8" path="res://Input/InputManager.tscn" id="1_kln2b"]
 [ext_resource type="PackedScene" uid="uid://dsix13euckuf1" path="res://Entity/CelestialBody.tscn" id="1_r150o"]
-[ext_resource type="PackedScene" uid="uid://cfdmshqym6x8y" path="res://Entity/Player/Player.tscn" id="2_rgh2o"]
+[ext_resource type="PackedScene" path="res://Entity/Player/Player.tscn" id="2_rgh2o"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_r150o"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -12,6 +12,7 @@ ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
 sky_material = SubResource("ProceduralSkyMaterial_r150o")
 
 [sub_resource type="Environment" id="Environment_kln2b"]
+background_mode = 1
 background_energy_multiplier = 0.0
 sky = SubResource("Sky_idj7w")
 ambient_light_source = 2
@@ -87,6 +88,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_idj7w")
 
 [node name="CollisionShape3D" parent="SolarSystem/Sun" index="1"]
 shape = SubResource("SphereShape3D_kln2b")
+debug_fill = false
 
 [node name="OmniLight3D" type="OmniLight3D" parent="SolarSystem/Sun"]
 light_color = Color(1, 0.87451, 0.67451, 1)
