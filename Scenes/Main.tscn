@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://j4kvo1b7egck"]
+[gd_scene load_steps=19 format=3 uid="uid://cwjgghgi0qcgc"]
 
 [ext_resource type="PackedScene" uid="uid://dsix13euckuf1" path="res://Entity/CelestialBody.tscn" id="1_r150o"]
 [ext_resource type="PackedScene" uid="uid://7w733f1revd7" path="res://Entity/Planet/Planet.tscn" id="2_v4o6y"]
@@ -42,7 +42,7 @@ rim_enabled = true
 resource_local_to_scene = true
 radius = 250.0
 
-[sub_resource type="Shader" id="Shader_xbxml"]
+[sub_resource type="Shader" id="Shader_kln2b"]
 code = "
 				shader_type spatial;
 				render_mode blend_mix, depth_draw_opaque, cull_back;
@@ -83,18 +83,18 @@ code = "
 				}
 			"
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ln2h6"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rgh2o"]
 render_priority = 0
-shader = SubResource("Shader_xbxml")
-shader_parameter/base_color = Color(0.145376, 0.226671, 0.411137, 1)
-shader_parameter/secondary_color = Color(0.62352, 0.588982, 0.6594, 1)
-shader_parameter/color_blend = 0.585272
+shader = SubResource("Shader_kln2b")
+shader_parameter/base_color = Color(0.228487, 0.331817, 0.360425, 1)
+shader_parameter/secondary_color = Color(0.561642, 0.491047, 0.528688, 1)
+shader_parameter/color_blend = 0.428251
 shader_parameter/roughness = 0.8
 shader_parameter/metallic = 0.0
-shader_parameter/detail_noise_scale = 27.7405
-shader_parameter/detail_noise_intensity = 0.152707
+shader_parameter/detail_noise_scale = 42.6499
+shader_parameter/detail_noise_intensity = 0.214295
 
-[sub_resource type="Shader" id="Shader_y3kpf"]
+[sub_resource type="Shader" id="Shader_pbw6q"]
 code = "
 				shader_type spatial;
 				render_mode blend_add, depth_draw_never, cull_front, unshaded;
@@ -112,27 +112,27 @@ code = "
 				}
 			"
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_3k6gv"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_v1gob"]
 render_priority = 0
-shader = SubResource("Shader_y3kpf")
-shader_parameter/atmosphere_color = Color(0.69598, 0.737752, 0.827989, 1)
-shader_parameter/density = 0.82391
-shader_parameter/falloff = 4.29339
+shader = SubResource("Shader_pbw6q")
+shader_parameter/atmosphere_color = Color(0.558176, 0.702008, 0.869612, 1)
+shader_parameter/density = 0.655307
+shader_parameter/falloff = 6.19572
 
-[sub_resource type="SphereMesh" id="SphereMesh_1q8bt"]
-radius = 57.1948
-height = 114.39
+[sub_resource type="SphereMesh" id="SphereMesh_jw32o"]
+radius = 57.2926
+height = 114.585
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gvja8"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_50glp"]
 transparency = 1
-albedo_color = Color(0.118378, 0.254503, 0.474579, 0.696831)
-roughness = 0.247214
+albedo_color = Color(0.173231, 0.272261, 0.446717, 0.751633)
+roughness = 0.227599
 
-[sub_resource type="SphereMesh" id="SphereMesh_m1o7v"]
-radius = 48.1359
-height = 96.2717
+[sub_resource type="SphereMesh" id="SphereMesh_vy5pj"]
+radius = 48.4725
+height = 96.945
 
-[sub_resource type="Shader" id="Shader_3586x"]
+[sub_resource type="Shader" id="Shader_bmxlf"]
 code = "
 				shader_type spatial;
 				render_mode blend_mix, depth_draw_opaque, cull_back;
@@ -173,16 +173,16 @@ code = "
 				}
 			"
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_10ki7"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4kpch"]
 render_priority = 0
-shader = SubResource("Shader_3586x")
-shader_parameter/base_color = Color(0.283607, 0.47863, 0.445227, 1)
-shader_parameter/secondary_color = Color(0.491154, 0.47739, 0.498435, 1)
-shader_parameter/color_blend = 0.301501
+shader = SubResource("Shader_bmxlf")
+shader_parameter/base_color = Color(0.336553, 0.595384, 0.518558, 1)
+shader_parameter/secondary_color = Color(0.333228, 0.25473, 0.146337, 1)
+shader_parameter/color_blend = 0.222405
 shader_parameter/roughness = 0.9
 shader_parameter/metallic = 0.0
-shader_parameter/detail_noise_scale = 32.7603
-shader_parameter/detail_noise_intensity = 0.152574
+shader_parameter/detail_noise_scale = 48.969
+shader_parameter/detail_noise_intensity = 0.107267
 
 [node name="Main" type="Node3D"]
 
@@ -217,76 +217,76 @@ omni_range = 8192.0
 
 [node name="Earth" parent="SolarSystem" node_paths=PackedStringArray("OrbitParent") groups=["celestial_bodies"] instance=ExtResource("2_v4o6y")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 0, 0)
-NoiseScale = 1.58677
-NoisePersistence = 0.476305
-NoiseLacunarity = 2.13561
-NoiseOffset = Vector3(-850.547, -645.369, 469.711)
-HeightScale = 5.50193
-BaseColor = Color(0.145376, 0.226671, 0.411137, 1)
-SecondaryColor = Color(0.62352, 0.588982, 0.6594, 1)
-ColorBlend = 0.585272
-DetailNoiseScale = 27.7405
-DetailNoiseIntensity = 0.152707
-AtmosphereColor = Color(0.69598, 0.737752, 0.827989, 1)
-AtmosphereThickness = 0.143896
-AtmosphereDensity = 0.82391
-AtmosphereFalloff = 4.29339
-WaterLevelOffsetFactor = -0.338814
-WaterColor = Color(0.118378, 0.254503, 0.474579, 1)
-WaterSpecular = 0.705227
-WaterRoughness = 0.247214
-WaterTransparency = 0.696831
+NoiseScale = 0.818951
+NoisePersistence = 0.367012
+NoiseLacunarity = 2.49404
+NoiseOffset = Vector3(-656.76, 877.789, -86.4305)
+HeightScale = 4.91581
+BaseColor = Color(0.228487, 0.331817, 0.360425, 1)
+SecondaryColor = Color(0.561642, 0.491047, 0.528688, 1)
+ColorBlend = 0.428251
+DetailNoiseScale = 42.6499
+DetailNoiseIntensity = 0.214295
+AtmosphereColor = Color(0.558176, 0.702008, 0.869612, 1)
+AtmosphereThickness = 0.145853
+AtmosphereDensity = 0.655307
+AtmosphereFalloff = 6.19572
+WaterLevelOffsetFactor = -0.31073
+WaterColor = Color(0.173231, 0.272261, 0.446717, 1)
+WaterSpecular = 0.627264
+WaterRoughness = 0.227599
+WaterTransparency = 0.751633
 OrbitParent = NodePath("../Sun")
 AutoCalculateOrbitalVelocity = true
 Radius = 50.0
 
 [node name="PlanetVisualMeshInstance" type="MeshInstance3D" parent="SolarSystem/Earth"]
-material_override = SubResource("ShaderMaterial_ln2h6")
+material_override = SubResource("ShaderMaterial_rgh2o")
 
 [node name="AtmosphereInstance" type="MeshInstance3D" parent="SolarSystem/Earth"]
 sorting_offset = 1.0
-material_override = SubResource("ShaderMaterial_3k6gv")
+material_override = SubResource("ShaderMaterial_v1gob")
 cast_shadow = 0
-mesh = SubResource("SphereMesh_1q8bt")
+mesh = SubResource("SphereMesh_jw32o")
 
 [node name="WaterInstance" type="MeshInstance3D" parent="SolarSystem/Earth"]
 sorting_offset = 0.5
-material_override = SubResource("StandardMaterial3D_gvja8")
+material_override = SubResource("StandardMaterial3D_50glp")
 cast_shadow = 0
-mesh = SubResource("SphereMesh_m1o7v")
+mesh = SubResource("SphereMesh_vy5pj")
 
 [node name="Moon" parent="SolarSystem" node_paths=PackedStringArray("OrbitParent") groups=["celestial_bodies"] instance=ExtResource("2_v4o6y")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 0, 150)
-NoiseScale = 1.74542
-NoiseOctaves = 8
-NoisePersistence = 0.404192
-NoiseLacunarity = 2.64632
-NoiseOffset = Vector3(-523.74, 209.347, 803.261)
-HeightScale = 1.31243
-BaseColor = Color(0.283607, 0.47863, 0.445227, 1)
-SecondaryColor = Color(0.491154, 0.47739, 0.498435, 1)
-ColorBlend = 0.301501
+NoiseScale = 1.43631
+NoiseOctaves = 6
+NoisePersistence = 0.429878
+NoiseLacunarity = 2.95981
+NoiseOffset = Vector3(-3.56091, -304.554, -489.419)
+HeightScale = 1.64799
+BaseColor = Color(0.336553, 0.595384, 0.518558, 1)
+SecondaryColor = Color(0.333228, 0.25473, 0.146337, 1)
+ColorBlend = 0.222405
 Roughness = 0.9
-DetailNoiseScale = 32.7603
-DetailNoiseIntensity = 0.152574
+DetailNoiseScale = 48.969
+DetailNoiseIntensity = 0.107267
 HasAtmosphere = false
-AtmosphereColor = Color(0.497306, 0.523286, 0.67934, 1)
-AtmosphereThickness = 0.0753165
-AtmosphereDensity = 0.935124
-AtmosphereFalloff = 4.94374
+AtmosphereColor = Color(0.584116, 0.651035, 0.746661, 1)
+AtmosphereThickness = 0.0873543
+AtmosphereDensity = 2.27101
+AtmosphereFalloff = 3.73355
 HasWater = false
-WaterLevelOffsetFactor = -0.400673
-WaterColor = Color(0.166762, 0.507013, 0.654534, 1)
-WaterSpecular = 0.734598
-WaterRoughness = 0.153272
-WaterTransparency = 0.663602
+WaterLevelOffsetFactor = -0.446921
+WaterColor = Color(0.157302, 0.450198, 0.567238, 1)
+WaterSpecular = 0.480837
+WaterRoughness = 0.180435
+WaterTransparency = 0.636676
 SurfaceGravity = 1.6
 OrbitParent = NodePath("../Earth")
 AutoCalculateOrbitalVelocity = true
 Radius = 16.0
 
 [node name="PlanetVisualMeshInstance" type="MeshInstance3D" parent="SolarSystem/Moon"]
-material_override = SubResource("ShaderMaterial_10ki7")
+material_override = SubResource("ShaderMaterial_4kpch")
 
 [editable path="SolarSystem/Sun"]
 [editable path="SolarSystem/Earth"]
