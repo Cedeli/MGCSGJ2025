@@ -1,27 +1,28 @@
-[gd_scene load_steps=2 format=3 uid="uid://7w733f1revd7"]
+[gd_scene load_steps=4 format=3 uid="uid://7w733f1revd7"]
 
 [ext_resource type="Script" uid="uid://x1l3aeqn7ho7" path="res://Entity/Planet/Planet.cs" id="1_cwvfgr8j4xs4t"]
 
-[node name="Planet" type="RigidBody3D"]
+[sub_resource type="SphereShape3D" id="SphereShape3D_abcde"]
+radius = 20.0
+
+[node name="Planet" type="RigidBody3D" node_paths=PackedStringArray("_collisionShape")]
 script = ExtResource("1_cwvfgr8j4xs4t")
-Resolution = 256
+SurfaceGravity = 9.8
+InitialMass = 1000.0
+GravitationalConstant = 0.1
 Radius = 20.0
+AutoCalculateOrbitalVelocity = false
+_collisionShape = NodePath("CollisionShape3D")
+Resolution = 256
 NoiseScale = 1.2
 NoiseOctaves = 7
 NoisePersistence = 0.25
 NoiseLacunarity = 3.0
-BaseColor = Color(0.187929, 0.287024, 0.595632, 1)
-SecondaryColor = Color(0.689826, 0.772109, 0.686267, 1)
-ColorBlend = 0.511798
+HeightScale = 0.1
 Roughness = 0.8
 Metallic = 0.0
-DetailNoiseScale = 18.3764
-DetailNoiseIntensity = 0.19029
-AtmosphereColor = Color(0.566512, 0.600467, 0.739493, 1)
-AtmosphereThickness = 0.0374737
-AtmosphereDensity = 2.29796
-AtmosphereFalloff = 3.82636
-WaterLevelOffsetFactor = -0.1
-WaterSpecular = 0.693516
-WaterRoughness = 0.0535791
-WaterTransparency = 0.663576
+HasAtmosphere = true
+HasWater = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_abcde")
