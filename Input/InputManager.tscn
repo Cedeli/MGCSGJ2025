@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://dqsf2uo1bqci8"]
+
+[ext_resource type="Script" uid="uid://dog554ca2kxiw" path="res://Input/InputManager.cs" id="1_30qu7"]
+[ext_resource type="Script" uid="uid://bou2o0kaxiihc" path="res://Input/InputBuffer.cs" id="2_k8yfw"]
+[ext_resource type="Script" uid="uid://dxkvl8ac23qt" path="res://Input/KeyboardMouseInput.cs" id="3_tb2kv"]
+
+[node name="InputManager" type="Node" node_paths=PackedStringArray("_inputBuffer", "_keyboardMouseInput")]
+script = ExtResource("1_30qu7")
+_inputBuffer = NodePath("InputBuffer")
+_keyboardMouseInput = NodePath("KeyboardMouseInput")
+
+[node name="InputBuffer" type="Node" parent="."]
+script = ExtResource("2_k8yfw")
+
+[node name="KeyboardMouseInput" type="Node" parent="."]
+script = ExtResource("3_tb2kv")

@@ -9,8 +9,9 @@ public partial class CelestialBody : RigidBody3D
     [Export] public float GravitationalConstant = 0.1f;
     [Export] public CelestialBody OrbitParent;
     [Export] public bool AutoCalculateOrbitalVelocity;
-    
+
     private float _radius = 5.0f;
+
     [Export]
     public float Radius
     {
@@ -33,9 +34,9 @@ public partial class CelestialBody : RigidBody3D
     public override void _Ready()
     {
         UpdateShapeAndMesh();
-        
+
         if (Engine.IsEditorHint()) return;
-        
+
         if (AutoCalculateOrbitalVelocity && OrbitParent != null)
         {
             OrbitalVelocity();
@@ -46,49 +47,59 @@ public partial class CelestialBody : RigidBody3D
             LinearVelocity = InitialVelocity;
             Mass = InitialMass;
         }
-        
-        var positionOffset = GlobalPosition - OrbitParent.GlobalPosition;
-        var distance = positionOffset.Length();
-        
-        GD.Print($"Global position for {Name} is: {GlobalPosition}");
-        GD.Print($"Mass for { Name }: { Mass }");
-        GD.Print($"Distance from {Name} to {OrbitParent.Name}: {distance} units");
-        
+
+        if (OrbitParent != null)
+        {
+            var positionOffset = GlobalPosition - OrbitParent.GlobalPosition;
+            var distance = positionOffset.Length();
+
+            GD.Print($"Global position for {Name} is: {GlobalPosition}");
+            GD.Print($"Mass for {Name}: {Mass}");
+            GD.Print($"Distance from {Name} to {OrbitParent.Name}: {distance} units");
+        }
+
         ContactMonitor = true;
         MaxContactsReported = 8;
         AddToGroup(CelestialGroup);
     }
-    
+
     private void OrbitalVelocity()
     {
         if (OrbitParent == null) return;
-    
+
         var positionOffset = GlobalPosition - OrbitParent.GlobalPosition;
         var distance = positionOffset.Length();
-    
+
         if (distance < 0.001f)
         {
             GD.PrintErr("Cannot calculate orbital velocity: Too close to parent body!");
             return;
         }
-        
+
         var velocityMagnitude = Mathf.Sqrt(GravitationalConstant * OrbitParent.Mass / distance);
 
-        var orbitDirection = Mathf.Abs(positionOffset.Normalized().Dot(Vector3.Up)) > 0.99f ? 
-            positionOffset.Cross(Vector3.Forward).Normalized() : 
-            positionOffset.Cross(Vector3.Up).Normalized();
-        
+        var orbitDirection = Mathf.Abs(positionOffset.Normalized().Dot(Vector3.Up)) > 0.99f
+            ? positionOffset.Cross(Vector3.Forward).Normalized()
+            : positionOffset.Cross(Vector3.Up).Normalized();
+
         LinearVelocity = orbitDirection * velocityMagnitude;
         LinearVelocity += OrbitParent.LinearVelocity;
-    
+
         GD.Print($"Orbital velocity for {Name} around {OrbitParent.Name}: {LinearVelocity.Length()} m/s");
-        GD.Print($"Mass ratio {Name}/{OrbitParent.Name}: {Mass/OrbitParent.Mass}");
+        GD.Print($"Mass ratio {Name}/{OrbitParent.Name}: {Mass / OrbitParent.Mass}");
     }
-    
+
+    public float GetGravityMagnitudeAtPosition(Vector3 position)
+    {
+        var distance = GlobalPosition.DistanceTo(position);
+        if (distance < 0.01f) return SurfaceGravity;
+        return distance <= Radius ? SurfaceGravity : SurfaceGravity * Mathf.Pow(Radius / distance, 2);
+    }
+
     public override void _IntegrateForces(PhysicsDirectBodyState3D state)
     {
         if (Engine.IsEditorHint()) return;
-        
+
         var bodies = GetTree().GetNodesInGroup(CelestialGroup);
         var totalGravitationalForce = Vector3.Zero;
         var thisPosition = state.Transform.Origin;
@@ -103,19 +114,19 @@ public partial class CelestialBody : RigidBody3D
 
             var offset = otherPosition - thisPosition;
             var sqrDist = offset.LengthSquared();
-            
+
             if (sqrDist < 0.0001f) continue;
-            
+
             var forceDir = offset.Normalized();
             var forceMagnitude = GravitationalConstant * Mass * otherBody.Mass / sqrDist;
             var forceVector = forceDir * forceMagnitude;
-            
+
             totalGravitationalForce += forceVector;
         }
-        
+
         state.ApplyCentralForce(totalGravitationalForce);
     }
-    
+
     private void UpdateShapeAndMesh()
     {
         if (_meshInstance == null || _collisionShape == null)
