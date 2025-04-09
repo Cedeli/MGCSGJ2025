@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://cnw52d2qjst0a"
+path="res://.godot/imported/Moon.glsl-0c481be4795a1f3178765ed9a0193720.res"
+
+[deps]
+
+source_file="res://Assets/Shaders/Compute/Moon.glsl"
+dest_files=["res://.godot/imported/Moon.glsl-0c481be4795a1f3178765ed9a0193720.res"]
+
+[params]
+

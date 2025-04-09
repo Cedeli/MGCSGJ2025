@@ -80,68 +80,6 @@ public partial class SphereGenerator : Node3D
             }
         }
     }
-
-    private bool _showPreviewPoints;
-    [Export]
-    public bool ShowPreviewPoints
-    {
-        get => _showPreviewPoints;
-        set
-        {
-            if (_showPreviewPoints == value) return;
-            _showPreviewPoints = value;
-            if (Engine.IsEditorHint() || IsInsideTree())
-            {
-                CallDeferred(nameof(UpdatePreviewPointsVisibility));
-            }
-        }
-    }
-
-    private Mesh _previewPointMesh;
-    [Export]
-    public Mesh PreviewPointMesh
-    {
-        get => _previewPointMesh;
-        set
-        {
-            _previewPointMesh = value;
-            if (Engine.IsEditorHint() || IsInsideTree())
-            {
-                CallDeferred(nameof(UpdatePreviewPointsVisibility));
-            }
-        }
-    }
-
-    private Material _previewPointMaterial;
-    [Export]
-    public Material PreviewPointMaterial
-    {
-        get => _previewPointMaterial;
-        set
-        {
-            _previewPointMaterial = value;
-            if (Engine.IsEditorHint() || IsInsideTree())
-            {
-                CallDeferred(nameof(UpdatePreviewPointsVisibility));
-            }
-        }
-    }
-
-    private float _previewPointSize = 0.05f;
-    [Export(PropertyHint.Range, "0.01, 1.0, 0.001")]
-    public float PreviewPointSize
-    {
-        get => _previewPointSize;
-        set
-        {
-            if (Mathf.IsEqualApprox(_previewPointSize, value)) return;
-            _previewPointSize = Mathf.Max(0.01f, value);
-            if (Engine.IsEditorHint() || IsInsideTree())
-            {
-                CallDeferred(nameof(UpdatePreviewPointsVisibility));
-            }
-        }
-    }
     
     private static readonly Vector3[] BaseVertices = {
         Vector3.Up,
@@ -174,7 +112,7 @@ public partial class SphereGenerator : Node3D
             _meshInstance = new MeshInstance3D();
             _meshInstance.Name = MeshInstanceName;
             AddChild(_meshInstance);
-            if (Engine.IsEditorHint() && GetTree() != null && GetTree().EditedSceneRoot == this.GetOwner())
+            if (Engine.IsEditorHint() && GetTree() != null && GetTree().EditedSceneRoot == GetOwner())
             {
                 _meshInstance.Owner = GetTree().EditedSceneRoot;
             }
@@ -189,13 +127,13 @@ public partial class SphereGenerator : Node3D
         _previewPointsContainer = new Node3D();
         _previewPointsContainer.Name = PreviewContainerName;
         AddChild(_previewPointsContainer);
-        if (Engine.IsEditorHint() && GetTree() != null && GetTree().EditedSceneRoot == this.GetOwner())
+        if (Engine.IsEditorHint() && GetTree() != null && GetTree().EditedSceneRoot == GetOwner())
         {
             _previewPointsContainer.Owner = GetTree().EditedSceneRoot;
         }
-        else if (Engine.IsEditorHint() && this.Owner != null)
+        else if (Engine.IsEditorHint() && Owner != null)
         {
-            _previewPointsContainer.Owner = this.Owner;
+            _previewPointsContainer.Owner = Owner;
         }
     }
 
@@ -245,8 +183,6 @@ public partial class SphereGenerator : Node3D
         }
         
         CreateMesh(vertices.Items, triangles.Items, vertices.Count, triangles.Count);
-        
-        UpdatePreviewPointsVisibility();
     }
 
     private Vector3 Slerp(Vector3 from, Vector3 to, float t)
@@ -373,89 +309,5 @@ public partial class SphereGenerator : Node3D
 
         _mesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arrays);
         _meshInstance.Mesh = _mesh;
-    }
-
-    private void ClearPreviewPoints()
-    {
-        if (_previewPointsContainer == null) EnsureRequiredNodes();
-        if (_previewPointsContainer == null) return;
-
-        foreach (var child in _previewPointsContainer.GetChildren())
-        {
-            _previewPointsContainer.RemoveChild(child);
-            child.QueueFree();
-        }
-    }
-
-    private void CreatePreviewPoints()
-    {
-        if (!_showPreviewPoints || _mesh == null)
-        {
-            ClearPreviewPoints();
-            return;
-        }
-
-        if (_previewPointsContainer == null) EnsureRequiredNodes();
-        if (_previewPointsContainer == null) return;
-
-        ClearPreviewPoints();
-        
-        var arrays = _mesh.SurfaceGetArrays(0);
-        var vertices = (Vector3[])arrays[(int)Mesh.ArrayType.Vertex];
-        
-        var pointMesh = _previewPointMesh;
-        if (pointMesh == null)
-        {
-            var sphereMesh = new SphereMesh();
-            sphereMesh.Radius = 0.5f;
-            sphereMesh.Height = 1.0f;
-            sphereMesh.RadialSegments = 8;
-            sphereMesh.Rings = 4;
-            pointMesh = sphereMesh;
-        }
-
-        var pointScale = Vector3.One * _previewPointSize;
-
-        for (var i = 0; i < vertices.Length; i++)
-        {
-            var pointInstance = new MeshInstance3D();
-            pointInstance.Name = $"PreviewPoint_{i}";
-            pointInstance.Mesh = pointMesh;
-            pointInstance.Position = vertices[i];
-            pointInstance.Scale = pointScale;
-
-            if (_previewPointMaterial != null)
-            {
-                pointInstance.MaterialOverride = _previewPointMaterial;
-            }
-
-            _previewPointsContainer.AddChild(pointInstance);
-            
-            if (Engine.IsEditorHint() && GetTree() != null && GetTree().EditedSceneRoot == this.GetOwner())
-            {
-                pointInstance.Owner = GetTree().EditedSceneRoot;
-            }
-            else if (Engine.IsEditorHint() && this.Owner != null)
-            {
-                pointInstance.Owner = this.Owner;
-            }
-        }
-        _previewPointsContainer.Visible = true;
-    }
-
-    private void UpdatePreviewPointsVisibility()
-    {
-        if (_previewPointsContainer == null) EnsureRequiredNodes();
-        if (_previewPointsContainer == null) return;
-
-        if (_showPreviewPoints)
-        {
-            CreatePreviewPoints();
-        }
-        else
-        {
-            ClearPreviewPoints();
-            _previewPointsContainer.Visible = false;
-        }
     }
 }
