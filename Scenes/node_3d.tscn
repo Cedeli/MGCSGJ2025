@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://ba82fvoeum18u"]
+
+[ext_resource type="Shader" uid="uid://u88t2k6scvm6" path="res://Assets/Shaders/CelestialBody/3DPerlineNoise.gdshader" id="1_7q7q3"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7q7q3"]
+render_priority = 0
+shader = ExtResource("1_7q7q3")
+shader_parameter/grid_scale = 1.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_bi5fs"]
+material = SubResource("ShaderMaterial_7q7q3")
+
+[node name="Node3D" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_bi5fs")

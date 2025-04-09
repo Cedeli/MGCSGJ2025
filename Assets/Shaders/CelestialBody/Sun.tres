@@ -1,9 +1,179 @@
-[gd_resource type="VisualShader" format=3 uid="uid://djxb54kvh5av4"]
+[gd_resource type="VisualShader" load_steps=16 format=3 uid="uid://djxb54kvh5av4"]
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_56pxr"]
+parameter_name = "Metallic"
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_gtlx6"]
+parameter_name = "Rougness"
+
+[sub_resource type="VisualShaderNodeFloatFunc" id="VisualShaderNodeFloatFunc_8t2bm"]
+function = 19
+
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_56pxr"]
+parameter_name = "Color"
+default_value = Color(1, 0, 0, 1)
+
+[sub_resource type="VisualShaderNodeFloatConstant" id="VisualShaderNodeFloatConstant_gtlx6"]
+
+[sub_resource type="VisualShaderNodeVaryingGetter" id="VisualShaderNodeVaryingGetter_8t2bm"]
+expanded_output_ports = [0]
+varying_name = "WorldPos"
+varying_type = 4
+
+[sub_resource type="VisualShaderNodeVectorDecompose" id="VisualShaderNodeVectorDecompose_8jmhi"]
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_e55e8"]
+parameter_name = "DissolveHeight"
+
+[sub_resource type="VisualShaderNodeStep" id="VisualShaderNodeStep_inkkg"]
+
+[sub_resource type="VisualShaderNodeColorParameter" id="VisualShaderNodeColorParameter_gtlx6"]
+output_port_for_preview = 0
+expanded_output_ports = [0]
+parameter_name = "EmissionParameter"
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_8jmhi"]
+parameter_name = "Depth"
+
+[sub_resource type="VisualShaderNodeVaryingSetter" id="VisualShaderNodeVaryingSetter_gkhsl"]
+varying_name = "WorldPos"
+varying_type = 4
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_iqmqe"]
+input_name = "vertex"
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_p0xe4"]
+input_name = "model_matrix"
+
+[sub_resource type="VisualShaderNodeTransformVecMult" id="VisualShaderNodeTransformVecMult_tdsqy"]
 
 [resource]
 code = "shader_type spatial;
-render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
+render_mode blend_mix, depth_draw_opaque, cull_disabled, diffuse_lambert, specular_schlick_ggx;
+
+
+// Varyings
+varying vec3 var_WorldPos;
+
+uniform vec4 Color : source_color;
+uniform float DissolveHeight;
+uniform float Metallic;
+uniform float Rougness;
+uniform vec4 EmissionParameter : source_color;
+uniform float Depth;
 
 
 
+void vertex() {
+// Input:4
+	mat4 n_out4p0 = MODEL_MATRIX;
+
+
+// Input:3
+	vec3 n_out3p0 = VERTEX;
+
+
+// TransformVectorMult:5
+	vec3 n_out5p0 = (n_out4p0 * vec4(n_out3p0, 1.0)).xyz;
+
+
+// VaryingSetter:2
+	var_WorldPos = n_out5p0;
+
+
+}
+
+void fragment() {
+// ColorParameter:2
+	vec4 n_out2p0 = Color;
+
+
+// FloatParameter:6
+	float n_out6p0 = DissolveHeight;
+
+
+// VaryingGetter:4
+	vec3 n_out4p0 = var_WorldPos;
+
+
+// VectorDecompose:5
+	float n_out5p0 = n_out4p0.x;
+	float n_out5p1 = n_out4p0.y;
+	float n_out5p2 = n_out4p0.z;
+
+
+// Step:7
+	float n_out7p0 = step(n_out6p0, n_out5p1);
+
+
+// FloatFunc:12
+	float n_out12p0 = -(n_out7p0);
+
+
+// FloatParameter:10
+	float n_out10p0 = Metallic;
+
+
+// FloatParameter:11
+	float n_out11p0 = Rougness;
+
+
+// ColorParameter:8
+	vec4 n_out8p0 = EmissionParameter;
+
+
+// FloatParameter:9
+	float n_out9p0 = Depth;
+
+
+// FloatConstant:3
+	float n_out3p0 = 0.000000;
+
+
+// Output:0
+	ALBEDO = vec3(n_out2p0.xyz);
+	ALPHA = n_out12p0;
+	METALLIC = n_out10p0;
+	ROUGHNESS = n_out11p0;
+	EMISSION = vec3(n_out8p0.xyz);
+	NORMAL_MAP = vec3(n_out9p0);
+	ALPHA_SCISSOR_THRESHOLD = n_out3p0;
+
+
+}
 "
+modes/cull = 2
+varyings/WorldPos = "0,4"
+preview_params/Color = "Color(1, 0, 0, 1)"
+nodes/vertex/2/node = SubResource("VisualShaderNodeVaryingSetter_gkhsl")
+nodes/vertex/2/position = Vector2(400, 640)
+nodes/vertex/3/node = SubResource("VisualShaderNodeInput_iqmqe")
+nodes/vertex/3/position = Vector2(-300, 700)
+nodes/vertex/4/node = SubResource("VisualShaderNodeInput_p0xe4")
+nodes/vertex/4/position = Vector2(-260, 580)
+nodes/vertex/5/node = SubResource("VisualShaderNodeTransformVecMult_tdsqy")
+nodes/vertex/5/position = Vector2(120, 600)
+nodes/vertex/connections = PackedInt32Array(4, 0, 5, 0, 3, 0, 5, 1, 5, 0, 2, 0)
+nodes/fragment/2/node = SubResource("VisualShaderNodeColorParameter_56pxr")
+nodes/fragment/2/position = Vector2(80, -40)
+nodes/fragment/3/node = SubResource("VisualShaderNodeFloatConstant_gtlx6")
+nodes/fragment/3/position = Vector2(60, 1220)
+nodes/fragment/4/node = SubResource("VisualShaderNodeVaryingGetter_8t2bm")
+nodes/fragment/4/position = Vector2(-940, 360)
+nodes/fragment/5/node = SubResource("VisualShaderNodeVectorDecompose_8jmhi")
+nodes/fragment/5/position = Vector2(-660, 320)
+nodes/fragment/6/node = SubResource("VisualShaderNodeFloatParameter_e55e8")
+nodes/fragment/6/position = Vector2(-720, 80)
+nodes/fragment/7/node = SubResource("VisualShaderNodeStep_inkkg")
+nodes/fragment/7/position = Vector2(-320, 160)
+nodes/fragment/8/node = SubResource("VisualShaderNodeColorParameter_gtlx6")
+nodes/fragment/8/position = Vector2(-280, 760)
+nodes/fragment/9/node = SubResource("VisualShaderNodeFloatParameter_8jmhi")
+nodes/fragment/9/position = Vector2(-20, 940)
+nodes/fragment/10/node = SubResource("VisualShaderNodeFloatParameter_56pxr")
+nodes/fragment/10/position = Vector2(-280, 340)
+nodes/fragment/11/node = SubResource("VisualShaderNodeFloatParameter_gtlx6")
+nodes/fragment/11/position = Vector2(-280, 540)
+nodes/fragment/12/node = SubResource("VisualShaderNodeFloatFunc_8t2bm")
+nodes/fragment/12/position = Vector2(-40, 180)
+nodes/fragment/connections = PackedInt32Array(3, 0, 0, 19, 4, 0, 5, 0, 6, 0, 7, 0, 5, 1, 7, 1, 2, 0, 0, 0, 10, 0, 0, 2, 11, 0, 0, 3, 7, 0, 12, 0, 12, 0, 0, 1, 9, 0, 0, 9, 8, 0, 0, 5)
