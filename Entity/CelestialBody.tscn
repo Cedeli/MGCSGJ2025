@@ -18,7 +18,9 @@ _meshInstance = NodePath("MeshInstance3D")
 _collisionShape = NodePath("CollisionShape3D")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+visible = false
 mesh = SubResource("SphereMesh_s3lym")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_s3lym")
+debug_fill = false

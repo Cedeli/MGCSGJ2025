@@ -1,8 +1,93 @@
-[gd_scene load_steps=2 format=3 uid="uid://cfv1817f34ekw"]
+[gd_scene load_steps=8 format=3 uid="uid://cfv1817f34ekw"]
 
 [ext_resource type="Script" uid="uid://x1l3aeqn7ho7" path="res://Entity/Planet/Planet.cs" id="1_2k4m3"]
+[ext_resource type="Script" uid="uid://d4eqa33f81yrj" path="res://Scenes/Test/PlanetTest.cs" id="1_awbyp"]
+
+[sub_resource type="Shader" id="Shader_awbyp"]
+code = "
+				shader_type spatial;
+				render_mode blend_mix, depth_draw_opaque, cull_back;
+
+				uniform vec4 base_color : source_color = vec4(0.0, 0.0, 1.0, 1.0);
+				uniform vec4 secondary_color : source_color = vec4(0.0, 1.0, 0.0, 1.0);
+				uniform float color_blend : hint_range(0.0, 1.0) = 0.5;
+				uniform float roughness : hint_range(0.0, 1.0) = 0.8;
+				uniform float metallic : hint_range(0.0, 1.0) = 0.0;
+				uniform float detail_noise_scale : hint_range(1.0, 100.0) = 20.0;
+				uniform float detail_noise_intensity : hint_range(0.0, 1.0) = 0.15;
+
+				varying float v_height_normalized;
+
+				float hash31(vec3 p3) {
+					p3 = fract(p3 * vec3(.1031, .1030, .0973));
+					p3 += dot(p3, p3.yzx + 33.33);
+					return fract((p3.x + p3.y) * p3.z);
+				}
+
+				void vertex() {
+					v_height_normalized = COLOR.r;
+				}
+
+				void fragment() {
+					float blend_factor = pow(v_height_normalized, 1.5);
+					blend_factor *= color_blend;
+					blend_factor = clamp(blend_factor, 0.0, 1.0);
+					vec4 color = mix(base_color, secondary_color, blend_factor);
+
+					vec3 world_pos_scaled = VERTEX * detail_noise_scale;
+					float noise_value = hash31(world_pos_scaled);
+					float noise_darken_factor = mix(1.0 - detail_noise_intensity, 1.0, noise_value);
+
+					ALBEDO = color.rgb * noise_darken_factor;
+					ROUGHNESS = roughness;
+					METALLIC = metallic;
+				}
+			"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_72usg"]
+render_priority = 0
+shader = SubResource("Shader_awbyp")
+shader_parameter/base_color = Color(0.194577, 0.366073, 0.40035, 1)
+shader_parameter/secondary_color = Color(0.680513, 0.681852, 0.596419, 1)
+shader_parameter/color_blend = 0.591161
+shader_parameter/roughness = 0.8
+shader_parameter/metallic = 0.0
+shader_parameter/detail_noise_scale = 32.8144
+shader_parameter/detail_noise_intensity = 0.093335
+
+[sub_resource type="Shader" id="Shader_np2jd"]
+code = "
+				shader_type spatial;
+				render_mode blend_add, depth_draw_never, cull_front, unshaded;
+
+				uniform vec4 atmosphere_color : source_color = vec4(0.3, 0.5, 1.0, 1.0);
+				uniform float density : hint_range(0.1, 10.0) = 1.0;
+				uniform float falloff : hint_range(0.1, 10.0) = 4.0;
+
+				void vertex() { }
+
+				void fragment() {
+					float fresnel = pow(1.0 - abs(dot(normalize(VERTEX - CAMERA_POSITION_WORLD), normalize(NORMAL))), falloff);
+					ALBEDO = atmosphere_color.rgb;
+					ALPHA = fresnel * density * atmosphere_color.a;
+				}
+			"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_swsu3"]
+render_priority = 0
+shader = SubResource("Shader_np2jd")
+shader_parameter/atmosphere_color = Color(0.65269, 0.739534, 0.844216, 1)
+shader_parameter/density = 0.585758
+shader_parameter/falloff = 6.99298
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b818f"]
+transparency = 1
+albedo_color = Color(0.193643, 0.463538, 0.537126, 0.726252)
+roughness = 0.0781975
 
 [node name="PlanetTest" type="Node3D"]
+script = ExtResource("1_awbyp")
+planetNodePath = NodePath("Planet")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 10, 0)
@@ -21,8 +106,36 @@ NoiseScale = 1.2
 NoiseOctaves = 7
 NoisePersistence = 0.25
 NoiseLacunarity = 3.0
-HeightScale = 2.0
+BaseColor = Color(0.194577, 0.366073, 0.40035, 1)
+SecondaryColor = Color(0.680513, 0.681852, 0.596419, 1)
+ColorBlend = 0.591161
+Roughness = 0.8
+Metallic = 0.0
+DetailNoiseScale = 32.8144
+DetailNoiseIntensity = 0.093335
+AtmosphereColor = Color(0.65269, 0.739534, 0.844216, 1)
+AtmosphereThickness = 0.103674
+AtmosphereDensity = 0.585758
+AtmosphereFalloff = 6.99298
+WaterLevelOffsetFactor = -0.1
+WaterColor = Color(0.193643, 0.463538, 0.537126, 1)
+WaterSpecular = 0.676421
+WaterRoughness = 0.0781975
+WaterTransparency = 0.726252
 
 [node name="Timer" type="Timer" parent="Planet"]
 wait_time = 0.5
 autostart = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Planet"]
+material_override = SubResource("ShaderMaterial_72usg")
+
+[node name="AtmosphereInstance" type="MeshInstance3D" parent="Planet"]
+sorting_offset = 1.0
+material_override = SubResource("ShaderMaterial_swsu3")
+cast_shadow = 0
+
+[node name="WaterInstance" type="MeshInstance3D" parent="Planet"]
+sorting_offset = 0.5
+material_override = SubResource("StandardMaterial3D_b818f")
+cast_shadow = 0

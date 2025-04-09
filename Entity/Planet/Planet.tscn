@@ -1,6 +1,66 @@
-[gd_scene load_steps=2 format=3 uid="uid://7w733f1revd7"]
+[gd_scene load_steps=5 format=3 uid="uid://7w733f1revd7"]
 
 [ext_resource type="Script" uid="uid://x1l3aeqn7ho7" path="res://Entity/Planet/Planet.cs" id="1_cwvfgr8j4xs4t"]
 
+[sub_resource type="Shader" id="Shader_jrmoh"]
+code = "
+				shader_type spatial;
+				render_mode blend_add, depth_draw_never, cull_front, unshaded;
+
+				uniform vec4 atmosphere_color : source_color = vec4(0.3, 0.5, 1.0, 1.0);
+				uniform float density : hint_range(0.1, 10.0) = 1.0;
+				uniform float falloff : hint_range(0.1, 10.0) = 4.0;
+
+				void vertex() { }
+
+				void fragment() {
+					float fresnel = pow(1.0 - abs(dot(normalize(VERTEX - CAMERA_POSITION_WORLD), normalize(NORMAL))), falloff);
+					ALBEDO = atmosphere_color.rgb;
+					ALPHA = fresnel * density * atmosphere_color.a;
+				}
+			"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_moplm"]
+render_priority = 0
+shader = SubResource("Shader_jrmoh")
+shader_parameter/atmosphere_color = Color(0.478397, 0.603015, 0.787737, 1)
+shader_parameter/density = 0.742393
+shader_parameter/falloff = 6.95211
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eadmh"]
+transparency = 1
+albedo_color = Color(0.17215, 0.234029, 0.319634, 0.758466)
+roughness = 0.222761
+
 [node name="Planet" type="RigidBody3D"]
 script = ExtResource("1_cwvfgr8j4xs4t")
+NoiseOctaves = 6
+HeightScale = 0.1
+BaseColor = Color(0.158389, 0.246854, 0.3041, 1)
+SecondaryColor = Color(0.409229, 0.327954, 0.283655, 1)
+ColorBlend = 0.355169
+Roughness = 0.8
+Metallic = 0.0
+DetailNoiseScale = 18.1991
+DetailNoiseIntensity = 0.188534
+AtmosphereColor = Color(0.478397, 0.603015, 0.787737, 1)
+AtmosphereThickness = 0.0785383
+AtmosphereDensity = 0.742393
+AtmosphereFalloff = 6.95211
+WaterLevelOffsetFactor = -0.1
+WaterColor = Color(0.17215, 0.234029, 0.319634, 1)
+WaterSpecular = 0.565463
+WaterRoughness = 0.222761
+WaterTransparency = 0.758466
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+
+[node name="AtmosphereInstance" type="MeshInstance3D" parent="."]
+sorting_offset = 1.0
+material_override = SubResource("ShaderMaterial_moplm")
+cast_shadow = 0
+
+[node name="WaterInstance" type="MeshInstance3D" parent="."]
+sorting_offset = 0.5
+material_override = SubResource("StandardMaterial3D_eadmh")
+cast_shadow = 0
