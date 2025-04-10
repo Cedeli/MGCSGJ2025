@@ -1,161 +1,183 @@
-using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 
 public partial class GameManager : Node
 {
-	[Signal]
-	public delegate void SceneChangedEventHandler(string scenePath, bool isPushing);
+    [Signal]
+    public delegate void SceneChangedEventHandler(string scenePath, bool isPushing);
 
-	[Export] private Node sceneContainer;
+    [Export]
+    private Node sceneContainer;
 
-	private Dictionary<string, PackedScene> _sceneCache = new Dictionary<string, PackedScene>();
-	private Stack<Node> _sceneStack = new Stack<Node>();
+    private Dictionary<string, PackedScene> _sceneCache = new Dictionary<string, PackedScene>();
+    private Stack<Node> _sceneStack = new Stack<Node>();
 
-	public override void _Ready()
-	{
-		if (sceneContainer == null)
-		{
-			var container = new Control();
-			container.Name = "SceneContainer";
-			container.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-			AddChild(container);
-			sceneContainer = container;
-			GD.Print($"{Name}: Created new scene container.");
-		}
-	}
+    public override void _Ready()
+    {
+        if (sceneContainer == null)
+        {
+            var container = GetNodeOrNull("SceneContainer");
+            if (container != null)
+            {
+                sceneContainer = container;
+                GD.Print($"{Name}: Found existing scene container.");
+            }
+            else
+            {
+                container = new Control();
+                container.Name = "SceneContainer";
+                if (container is Control controlContainer)
+                {
+                    controlContainer.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+                }
+                AddChild(container);
+                sceneContainer = container;
+                GD.Print($"{Name}: Created new scene container.");
+            }
+        }
+        else
+        {
+            GD.Print($"{Name}: Using pre-assigned scene container.");
+        }
+    }
 
-	public void PushScene(string scenePath, bool hideAndPausePrevious = true)
-	{
-		Node currentScene = null;
-		if (hideAndPausePrevious && _sceneStack.TryPeek(out currentScene))
-		{
-			GD.Print($"Pausing scene: {currentScene.Name} ({currentScene.SceneFilePath})");
-			SetSceneVisibility(currentScene, false);
-			currentScene.ProcessMode = ProcessModeEnum.Disabled;
-		}
+    public void PushScene(string scenePath, bool hideAndPausePrevious = true)
+    {
+        Node currentScene = null;
+        if (hideAndPausePrevious && _sceneStack.TryPeek(out currentScene))
+        {
+            SetSceneVisibility(currentScene, false);
+            currentScene.ProcessMode = ProcessModeEnum.Disabled;
+        }
 
-		Node newSceneInstance = LoadAndInstantiateScene(scenePath);
-		if (newSceneInstance == null)
-		{
-			GD.PrintErr($"Failed to push scene: Could not load or instantiate {scenePath}");
-			if (hideAndPausePrevious && currentScene != null)
-			{
-				SetSceneVisibility(currentScene, true);
-				currentScene.ProcessMode = ProcessModeEnum.Inherit;
-			}
-			return;
-		}
+        Node newSceneInstance = LoadAndInstantiateScene(scenePath);
+        if (newSceneInstance == null)
+        {
+            GD.PrintErr($"Failed to push scene: Could not load or instantiate {scenePath}");
+            if (hideAndPausePrevious && currentScene != null)
+            {
+                SetSceneVisibility(currentScene, true);
+                currentScene.ProcessMode = ProcessModeEnum.Inherit;
+            }
+            return;
+        }
 
-		GD.Print($"Pushing scene: {newSceneInstance.Name} ({scenePath})");
-		_sceneStack.Push(newSceneInstance);
-		sceneContainer.AddChild(newSceneInstance);
-		
-		newSceneInstance.ProcessMode = ProcessModeEnum.Inherit;
-		SetSceneVisibility(newSceneInstance, true);
+        _sceneStack.Push(newSceneInstance);
+        sceneContainer.AddChild(newSceneInstance);
 
-		EmitSignal(SignalName.SceneChanged, scenePath, true);
-	}
+        newSceneInstance.ProcessMode = ProcessModeEnum.Inherit;
+        SetSceneVisibility(newSceneInstance, true);
 
-	public void PopScene()
-	{
-		if (_sceneStack.Count == 0)
-		{
-			GD.Print("Scene stack is empty, cannot pop.");
-			return;
-		}
+        EmitSignal(SignalName.SceneChanged, scenePath, true);
+    }
 
-		Node currentScene = _sceneStack.Pop();
-		GD.Print($"Popping scene: {currentScene.Name} ({currentScene.SceneFilePath})");
-		SetSceneVisibility(currentScene, false);
-		sceneContainer.RemoveChild(currentScene);
-		currentScene.QueueFree();
+    public void PopScene()
+    {
+        if (_sceneStack.Count == 0)
+        {
+            GD.Print("Scene stack is empty, cannot pop.");
+            return;
+        }
 
-		if (_sceneStack.TryPeek(out Node previousScene))
-		{
-			GD.Print($"Resuming scene: {previousScene.Name} ({previousScene.SceneFilePath})");
-			SetSceneVisibility(previousScene, true);
-			previousScene.ProcessMode = ProcessModeEnum.Inherit;
-		}
+        Node currentScene = _sceneStack.Pop();
+        string scenePath = currentScene.SceneFilePath ?? "Unknown";
 
-		EmitSignal(SignalName.SceneChanged, currentScene.SceneFilePath, false);
-	}
+        SetSceneVisibility(currentScene, false);
+        sceneContainer.RemoveChild(currentScene);
+        currentScene.QueueFree();
 
-	public void ChangeScene(string scenePath)
-	{
-		GD.Print($"Changing scene to: {scenePath} (clearing stack)");
+        if (_sceneStack.TryPeek(out Node previousScene))
+        {
+            SetSceneVisibility(previousScene, true);
+            previousScene.ProcessMode = ProcessModeEnum.Inherit;
+        }
 
-		while (_sceneStack.Count > 0)
-		{
-			Node sceneToUnload = _sceneStack.Pop();
-			GD.Print($"-- Unloading {sceneToUnload.Name} ({sceneToUnload.SceneFilePath})");
-			SetSceneVisibility(sceneToUnload, false);
-			sceneContainer.RemoveChild(sceneToUnload);
-			sceneToUnload.QueueFree();
-		}
+        EmitSignal(SignalName.SceneChanged, scenePath, false);
+    }
 
-		PushScene(scenePath, false);
-	}
+    public void ChangeScene(string scenePath)
+    {
+        GD.Print($"Changing scene to: {scenePath} (clearing stack)");
 
-	public Node GetCurrentScene()
-	{
-		_sceneStack.TryPeek(out Node currentScene);
-		return currentScene;
-	}
+        while (_sceneStack.Count > 0)
+        {
+            Node sceneToUnload = _sceneStack.Pop();
+            SetSceneVisibility(sceneToUnload, false);
+            sceneContainer.RemoveChild(sceneToUnload);
+            sceneToUnload.QueueFree();
+        }
 
-	private void SetSceneVisibility(Node scene, bool visible)
-	{
-		if (scene is CanvasItem canvasItem)
-		{
-			canvasItem.Visible = visible;
-		}
-		else if (scene is Node3D node3D)
-		{
-			node3D.Visible = visible;
-		}
-	}
+        PushScene(scenePath, false);
+    }
 
-	private PackedScene LoadScene(string scenePath)
-	{
-		if (_sceneCache.TryGetValue(scenePath, out PackedScene cachedScene))
-		{
-			GD.Print($"Using cached scene: {scenePath}");
-			return cachedScene;
-		}
-		else
-		{
-			GD.Print($"Loading scene: {scenePath}");
-			var resource = ResourceLoader.Load<PackedScene>(scenePath);
-			if (resource == null)
-			{
-				GD.PrintErr($"Failed to load scene resource at path: {scenePath}");
-				return null;
-			}
+    public Node GetCurrentScene()
+    {
+        _sceneStack.TryPeek(out Node currentScene);
+        return currentScene;
+    }
 
-			GD.Print($"Caching scene: {scenePath}");
-			_sceneCache.Add(scenePath, resource);
-			return resource;
-		}
-	}
+    public Game GetGameScene()
+    {
+        foreach (Node scene in _sceneStack)
+        {
+            if (scene is Game gameSceneInstance)
+            {
+                return gameSceneInstance;
+            }
+        }
+        return null;
+    }
 
-	private Node LoadAndInstantiateScene(string scenePath)
-	{
-		PackedScene packedScene = LoadScene(scenePath);
-		if (packedScene == null)
-		{
-			return null;
-		}
+    private void SetSceneVisibility(Node scene, bool visible)
+    {
+        if (scene is CanvasItem canvasItem)
+        {
+            canvasItem.Visible = visible;
+        }
+        else if (scene is Node3D node3D)
+        {
+            node3D.Visible = visible;
+        }
+    }
 
-		Node sceneInstance = packedScene.Instantiate();
-		if (sceneInstance == null)
-		{
-			GD.PrintErr($"Failed to instantiate scene: {scenePath}");
-			return null;
-		}
+    private PackedScene LoadScene(string scenePath)
+    {
+        if (_sceneCache.TryGetValue(scenePath, out PackedScene cachedScene))
+        {
+            return cachedScene;
+        }
+        else
+        {
+            var resource = ResourceLoader.Load<PackedScene>(scenePath);
+            if (resource == null)
+            {
+                GD.PrintErr($"Failed to load scene resource at path: {scenePath}");
+                return null;
+            }
+            _sceneCache.Add(scenePath, resource);
+            return resource;
+        }
+    }
 
-		sceneInstance.SceneFilePath = scenePath;
+    private Node LoadAndInstantiateScene(string scenePath)
+    {
+        PackedScene packedScene = LoadScene(scenePath);
+        if (packedScene == null)
+        {
+            return null;
+        }
 
-		return sceneInstance;
-	}
+        Node sceneInstance = packedScene.Instantiate();
+        if (sceneInstance == null)
+        {
+            GD.PrintErr($"Failed to instantiate scene: {scenePath}");
+            return null;
+        }
+
+        sceneInstance.SceneFilePath = scenePath;
+
+        return sceneInstance;
+    }
 }
