@@ -4,3 +4,4 @@
 
 [node name="WaterSphere" type="Node3D"]
 script = ExtResource("1_s3qcx")
+WaterGlossiness = 0.9
