@@ -2,19 +2,19 @@
 
 [ext_resource type="PackedScene" uid="uid://dqsf2uo1bqci8" path="res://Input/InputManager.tscn" id="1_kln2b"]
 [ext_resource type="PackedScene" uid="uid://dsix13euckuf1" path="res://Entity/CelestialBody.tscn" id="1_r150o"]
-[ext_resource type="PackedScene" path="res://Entity/Player/Player.tscn" id="2_rgh2o"]
+[ext_resource type="PackedScene" uid="uid://cfdmshqym6x8y" path="res://Entity/Player/Player.tscn" id="2_rgh2o"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_r150o"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
 ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
 
-[sub_resource type="Sky" id="Sky_idj7w"]
+[sub_resource type="Sky" id="Sky_kln2b"]
 sky_material = SubResource("ProceduralSkyMaterial_r150o")
 
 [sub_resource type="Environment" id="Environment_kln2b"]
 background_mode = 1
 background_energy_multiplier = 0.0
-sky = SubResource("Sky_idj7w")
+sky = SubResource("Sky_kln2b")
 ambient_light_source = 2
 ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_energy = 0.03
@@ -74,9 +74,6 @@ environment = SubResource("Environment_kln2b")
 
 [node name="SolarSystem" type="Node3D" parent="."]
 
-[node name="Player" parent="SolarSystem" groups=["input_receivers"] instance=ExtResource("2_rgh2o")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2998.51, 51.2032, -9.51956)
-
 [node name="Sun" parent="SolarSystem" groups=["celestial_bodies"] instance=ExtResource("1_r150o")]
 SurfaceGravity = 100.0
 InitialMass = 4e+07
@@ -125,6 +122,9 @@ surface_material_override/0 = SubResource("StandardMaterial3D_rgh2o")
 
 [node name="CollisionShape3D" parent="SolarSystem/Moon" index="1"]
 shape = SubResource("SphereShape3D_pbw6q")
+
+[node name="Player" parent="SolarSystem" groups=["input_receivers"] instance=ExtResource("2_rgh2o")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2907.78, 51.2032, 153.491)
 
 [editable path="SolarSystem/Sun"]
 [editable path="SolarSystem/Earth"]

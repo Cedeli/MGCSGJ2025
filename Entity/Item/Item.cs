@@ -11,18 +11,16 @@ public enum ItemType
 
 public partial class Item : GravityEntity
 {
-    // Placeholder
     [Export]
     public ItemType Type = ItemType.Scrap;
+
+    [Export]
+    public int Value = 1;
 
     public override void _Ready()
     {
         base._Ready();
-        GD.Print($"{Name} (Item: {Type}, Value: {Value}) is ready.");
-
-        Sleeping = true;
-        LinearDamp = 0.9f;
-        AngularDamp = 0.9f;
+        GD.Print($"{Name} (Item: {Type}, Value: {Value}) is ready");
     }
 
     public override void _PhysicsProcess(double delta)
@@ -32,7 +30,7 @@ public partial class Item : GravityEntity
 
     public void Pickup()
     {
-        GD.Print($"Item {Name} picked up");
+        GD.Print($"Item {Name} picked up"); // future implementation
         QueueFree();
     }
 }

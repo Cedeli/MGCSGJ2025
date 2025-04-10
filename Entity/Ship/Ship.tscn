@@ -1,6 +1,10 @@
 [gd_scene load_steps=6 format=3 uid="uid://c7d8eglsg1h2"]
 
-[ext_resource type="Script" uid="uid://b1h2g3f4e5d6" path="res://Entity/Ship/Ship.cs" id="1_ship_cs"] ; Placeholder UID - Needs fixing in Editor!
+[ext_resource type="Script" uid="uid://ddmdy7wwnbbte" path="res://Entity/Ship/Ship.cs" id="1_ship_cs"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ship"]
+radius = 1.0
+height = 3.0
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_ship"]
 radius = 1.0
@@ -11,10 +15,6 @@ albedo_color = Color(0.7, 0.7, 0.8, 1)
 metallic = 0.5
 roughness = 0.4
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ship"]
-radius = 1.0
-height = 3.0
-
 [sub_resource type="SphereShape3D" id="SphereShape3D_groundcast_ship"]
 radius = 0.2
 
@@ -22,6 +22,7 @@ radius = 0.2
 script = ExtResource("1_ship_cs")
 MoveSpeed = 20.0
 JumpImpulse = 0.0
+GroundCast = NodePath("GroundCast")
 GroundCastLength = 1.5
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

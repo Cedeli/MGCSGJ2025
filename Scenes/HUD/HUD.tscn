@@ -1,20 +1,84 @@
-[gd_scene load_steps=2 format=3 uid="uid://b6x8j6y4v4q2d"]
+[gd_scene load_steps=8 format=3 uid="uid://b6x8j6y4v4q2d"]
 
-[ext_resource type="Script" uid="uid://0huiod1t7wn6" path="res://Scenes/HUD/HUD.cs" id="1_2k4m3"]
+[ext_resource type="Script" uid="uid://0huiod1t7wn6" path="res://Scenes/HUD/HUD.cs" id="1_hud_cs"]
+[ext_resource type="FontFile" uid="uid://citmarc50s2xp" path="res://Assets/Fonts/GameFont.ttf" id="2_game_font"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1"]
-bg_color = Color(0.2, 0.2, 0.2, 0.8)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_HealthBg"]
+bg_color = Color(0.12, 0.12, 0.14, 0.8)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.4, 0.4, 0.4, 1)
+border_color = Color(0.35, 0.35, 0.4, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
-shadow_size = 4
+shadow_color = Color(0, 0, 0, 0.25)
+shadow_size = 3
+shadow_offset = Vector2(1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_PlayerFill"]
+bg_color = Color(0.1, 0.85, 0.2, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 1, 0.4, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ShipFill"]
+bg_color = Color(0.15, 0.45, 0.95, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 0.6, 1, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_PauseButtonHover"]
+content_margin_left = 10.0
+content_margin_top = 6.0
+content_margin_right = 10.0
+content_margin_bottom = 6.0
+bg_color = Color(0.18, 0.18, 0.22, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.8, 0.8, 0.9, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_color = Color(0, 0, 0, 0.4)
+shadow_size = 5
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_PauseButton"]
+content_margin_left = 10.0
+content_margin_top = 6.0
+content_margin_right = 10.0
+content_margin_bottom = 6.0
+bg_color = Color(0.12, 0.12, 0.14, 0.85)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.7, 0.7, 0.8, 0.9)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 shadow_color = Color(0, 0, 0, 0.3)
+shadow_size = 4
+shadow_offset = Vector2(2, 2)
 
 [node name="HUD" type="Control"]
 layout_mode = 3
@@ -23,26 +87,180 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_2k4m3")
+script = ExtResource("1_hud_cs")
 
-[node name="PauseButton" type="Button" parent="."]
+[node name="TopLeftPanel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 15.0
+offset_right = 225.0
+offset_bottom = 92.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_HealthBg")
+
+[node name="TopLeftInfo" type="VBoxContainer" parent="TopLeftPanel"]
 layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = 10.0
+offset_right = -15.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="TimerLabel" type="Label" parent="TopLeftPanel/TopLeftInfo"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_game_font")
+theme_override_font_sizes/font_size = 18
+text = "Time: 0.0s"
+vertical_alignment = 1
+
+[node name="RoundLabel" type="Label" parent="TopLeftPanel/TopLeftInfo"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_game_font")
+theme_override_font_sizes/font_size = 18
+text = "Round: 0"
+vertical_alignment = 1
+
+[node name="LeftHealthBars" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 15.0
+offset_top = -180.0
+offset_right = 115.0
+offset_bottom = 180.0
+grow_vertical = 2
+theme_override_constants/separation = 15
+
+[node name="StatusPanel" type="Panel" parent="LeftHealthBars"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_HealthBg")
+
+[node name="BarsContainer" type="HBoxContainer" parent="LeftHealthBars/StatusPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = 15.0
+offset_right = -15.0
+offset_bottom = -40.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="PlayerHealthBar" type="ProgressBar" parent="LeftHealthBars/StatusPanel/BarsContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/background = SubResource("StyleBoxFlat_HealthBg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_PlayerFill")
+step = 1.0
+value = 75.0
+fill_mode = 3
+show_percentage = false
+
+[node name="ShipHealthBar" type="ProgressBar" parent="LeftHealthBars/StatusPanel/BarsContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/background = SubResource("StyleBoxFlat_HealthBg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_ShipFill")
+max_value = 200.0
+step = 1.0
+value = 150.0
+fill_mode = 3
+show_percentage = false
+
+[node name="LabelsContainer" type="HBoxContainer" parent="LeftHealthBars/StatusPanel"]
+layout_mode = 1
+anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -60.0
-offset_top = -60.0
-offset_right = -10.0
+offset_left = 15.0
+offset_top = -35.0
+offset_right = -15.0
 offset_bottom = -10.0
-grow_horizontal = 0
+grow_horizontal = 2
 grow_vertical = 0
-text = "Pause"
-theme_override_styles/normal = SubResource("StyleBoxFlat_1")
-theme_override_styles/hover = SubResource("StyleBoxFlat_1")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_1")
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="PlayerLabel" type="Label" parent="LeftHealthBars/StatusPanel/LabelsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("2_game_font")
+theme_override_font_sizes/font_size = 14
+text = "P"
+horizontal_alignment = 1
+
+[node name="ShipLabel" type="Label" parent="LeftHealthBars/StatusPanel/LabelsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("2_game_font")
+theme_override_font_sizes/font_size = 14
+text = "S"
+horizontal_alignment = 1
+
+[node name="ScorePanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -357.0
+offset_top = 15.0
+offset_right = -85.0
+offset_bottom = 50.0
+grow_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_HealthBg")
+
+[node name="ScoreContainer" type="HBoxContainer" parent="ScorePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_right = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="HighScoreLabel" type="Label" parent="ScorePanel/ScoreContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_fonts/font = ExtResource("2_game_font")
 theme_override_font_sizes/font_size = 16
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_color = Color(0.8, 0.8, 0.8, 1)
-theme_override_colors/font_pressed_color = Color(0.6, 0.6, 0.6, 1)
+text = "1000"
+vertical_alignment = 1
+
+[node name="PauseButton" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -70.0
+offset_top = 15.0
+offset_right = -15.0
+offset_bottom = 50.0
+grow_horizontal = 0
+tooltip_text = "Pause Game"
+focus_mode = 0
+theme_override_fonts/font = ExtResource("2_game_font")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/hover = SubResource("StyleBoxFlat_PauseButtonHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_PauseButton")
+theme_override_styles/normal = SubResource("StyleBoxFlat_PauseButton")
+text = "II"

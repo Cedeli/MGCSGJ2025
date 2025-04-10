@@ -3,7 +3,7 @@ using Godot;
 
 public partial class Alien : GravityEntity
 {
-    // Placeholder
+    [ExportGroup("Stats")]
     [Export]
     public float Health = 100.0f;
 
@@ -11,37 +11,138 @@ public partial class Alien : GravityEntity
     public float AttackDamage = 10.0f;
 
     [Export]
-    public float AttackRange = 5.0f;
+    public float AttackCooldown = 1.0f;
+
+    [ExportGroup("AI Behavior")]
+    [Export]
+    public float MoveForce = 50.0f;
 
     [Export]
-    public float DetectionRadius = 50.0f;
+    public float TargetUpdateInterval = 0.5f;
 
-    private Node3D _target;
+    [Export]
+    public float AttackRange = 3.0f;
 
-    public override void _Ready()
-    {
-        base._Ready();
-        GD.Print($"{Name} (Alien) is ready");
-    }
+    private Node3D _currentTarget = null;
+    private float _targetUpdateTimer = 0.0f;
+    private float _attackTimer = 0.0f;
+
+    private Player _playerCache = null;
+    private Ship _shipCache = null;
 
     public override void _PhysicsProcess(double delta)
     {
         base._PhysicsProcess(delta);
+
+        float fDelta = (float)delta;
+        _targetUpdateTimer -= fDelta;
+        _attackTimer -= fDelta;
+
+        if (_targetUpdateTimer <= 0f)
+        {
+            FindClosestTarget();
+            _targetUpdateTimer = TargetUpdateInterval;
+        }
+
+        // Move and Attack
+        if (_currentTarget != null && IsInstanceValid(_currentTarget))
+        {
+            MoveTowardsTarget(fDelta);
+            CheckAttackRange();
+        }
+    }
+
+    private void FindClosestTarget()
+    {
+        if (_playerCache == null || !IsInstanceValid(_playerCache))
+            _playerCache = GetNodeFromGroupHelper<Player>(Player.PlayerGroup);
+
+        if (_shipCache == null || !IsInstanceValid(_shipCache))
+            _shipCache = GetNodeFromGroupHelper<Ship>(Ship.ShipGroup);
+
+        Node3D closestTarget = null;
+        float closestDistSq = float.MaxValue;
+        Vector3 currentPos = GlobalPosition;
+
+        if (_playerCache != null && IsInstanceValid(_playerCache) && !_playerCache.IsDead())
+        {
+            float distSq = currentPos.DistanceSquaredTo(_playerCache.GlobalPosition);
+            if (distSq < closestDistSq)
+            {
+                closestDistSq = distSq;
+                closestTarget = _playerCache;
+            }
+        }
+
+        if (_shipCache != null && IsInstanceValid(_shipCache) && !_shipCache.IsDead())
+        {
+            float distSq = currentPos.DistanceSquaredTo(_shipCache.GlobalPosition);
+            if (distSq < closestDistSq)
+            {
+                closestTarget = _shipCache;
+            }
+        }
+        _currentTarget = closestTarget;
+    }
+
+    private void MoveTowardsTarget(float delta)
+    {
+        Vector3 directionToTarget = (_currentTarget.GlobalPosition - GlobalPosition).Normalized();
+        ApplyCentralForce(directionToTarget * MoveForce);
+    }
+
+    private void CheckAttackRange()
+    {
+        if (_attackTimer > 0f)
+            return;
+
+        float distSq = GlobalPosition.DistanceSquaredTo(_currentTarget.GlobalPosition);
+        if (distSq < AttackRange * AttackRange)
+        {
+            Attack(_currentTarget);
+            _attackTimer = AttackCooldown;
+        }
+    }
+
+    private void Attack(Node3D target)
+    {
+        GD.Print($"{Name} attacking {target.Name}");
+
+        if (target is Player player)
+        {
+            player.TakeDamage(AttackDamage);
+        }
+        else if (target is Ship ship)
+        {
+            ship.TakeDamage(AttackDamage);
+        }
+    }
+
+    private T GetNodeFromGroupHelper<T>(string group)
+        where T : Node
+    {
+        var nodes = GetTree().GetNodesInGroup(group);
+        if (nodes.Count > 0 && nodes[0] is T typedNode)
+            return typedNode;
+        return null;
     }
 
     public void TakeDamage(float amount)
     {
-        Health -= amount;
-        GD.Print($"{Name} took {amount} damage Health: {Health}");
         if (Health <= 0)
-        {
+            return;
+        Health -= amount;
+        if (Health <= 0)
             Die();
-        }
     }
 
     private void Die()
     {
-        GD.Print($"{Name} died");
-        QueueFree();
+        if (Health <= 0 && !IsQueuedForDeletion())
+        {
+            QueueFree();
+        }
     }
+
+    public bool IsDead() => Health <= 0;
 }
