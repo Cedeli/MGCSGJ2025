@@ -24,9 +24,19 @@ public partial class SphereGenerator : Node
         {
             if (_terrainModifier == value) return;
 
-            DisconnectFromModifierSignal();
+            if (_terrainModifier != null && _terrainModifier.IsConnected(PlanetHeight.SignalName.ParametersChanged,
+                    Callable.From(OnModifierParametersChanged)))
+            {
+                _terrainModifier.Disconnect(PlanetHeight.SignalName.ParametersChanged,
+                    Callable.From(OnModifierParametersChanged));
+            }
+
             _terrainModifier = value;
-            ConnectToModifierSignal();
+
+            if (_terrainModifier != null)
+            {
+                ConnectToModifierSignal();
+            }
 
             EmitSignal(SignalName.ParametersChanged);
         }
@@ -121,10 +131,16 @@ public partial class SphereGenerator : Node
 
     public override void _ExitTree()
     {
-        DisconnectFromModifierSignal();
+        if (_terrainModifier != null && _terrainModifier.IsConnected(PlanetHeight.SignalName.ParametersChanged,
+                Callable.From(OnModifierParametersChanged)))
+        {
+            _terrainModifier.Disconnect(PlanetHeight.SignalName.ParametersChanged,
+                Callable.From(OnModifierParametersChanged));
+        }
     }
 
     #endregion
+
 
     #region Mesh Generation
 
@@ -176,6 +192,7 @@ public partial class SphereGenerator : Node
             CreateFace(edges[EdgeTriplets[i]], edges[EdgeTriplets[i + 1]], edges[EdgeTriplets[i + 2]], reverse,
                 unitVertices, triangles, numVertsPerFace);
         }
+
 
         float[] heights = null;
         if (_terrainModifier != null)
@@ -279,15 +296,14 @@ public partial class SphereGenerator : Node
         int indexCount,
         IReadOnlyList<float> heights, Vector3[] finalVerticesOutput)
     {
-        var normals = new Vector3[vertexCount];
         for (var i = 0; i < vertexCount; i++)
         {
-            var normal = unitVertices[i].Normalized();
-            normals[i] = normal;
-
+            var unitNormal = unitVertices[i].Normalized();
             var heightFactor = (heights != null && i < heights.Count) ? heights[i] : 1.0f;
-            finalVerticesOutput[i] = normal * heightFactor * _radius;
+            finalVerticesOutput[i] = unitNormal * heightFactor * _radius;
         }
+        
+        var calculatedNormals = RecalculateNormals(finalVerticesOutput, triangles, vertexCount, indexCount);
 
         var arrays = new Godot.Collections.Array();
         arrays.Resize((int)Mesh.ArrayType.Max);
@@ -297,12 +313,44 @@ public partial class SphereGenerator : Node
 
         arrays[(int)Mesh.ArrayType.Vertex] = finalVerticesOutput;
         arrays[(int)Mesh.ArrayType.Index] = finalIndices;
-        arrays[(int)Mesh.ArrayType.Normal] = normals;
+        arrays[(int)Mesh.ArrayType.Normal] = calculatedNormals;
 
         var mesh = new ArrayMesh();
         mesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arrays);
 
         return mesh;
+    }
+    
+    private static Vector3[] RecalculateNormals(IReadOnlyList<Vector3> vertices, IReadOnlyList<int> triangles, int vertexCount, int indexCount)
+    {
+        var calculatedNormals = new Vector3[vertexCount];
+        
+        for (var i = 0; i < indexCount; i += 3)
+        {
+            var i0 = triangles[i];
+            var i1 = triangles[i + 1];
+            var i2 = triangles[i + 2];
+            
+            var v0 = vertices[i0];
+            var v1 = vertices[i1];
+            var v2 = vertices[i2];
+            
+            var edge1 = v1 - v0;
+            var edge2 = v2 - v0;
+
+            var faceNormal = edge1.Cross(edge2) * -1.0f;
+
+            calculatedNormals[i0] += faceNormal;
+            calculatedNormals[i1] += faceNormal;
+            calculatedNormals[i2] += faceNormal;
+        }
+        
+        for (var i = 0; i < vertexCount; i++)
+        {
+            calculatedNormals[i] = calculatedNormals[i].Normalized();
+        }
+
+        return calculatedNormals;
     }
 
     #endregion
@@ -311,7 +359,7 @@ public partial class SphereGenerator : Node
 
     private void ConnectToModifierSignal()
     {
-        if (_terrainModifier == null || _terrainModifier.IsConnected(PlanetHeight.SignalName.ParametersChanged,
+        if (_terrainModifier == null || IsConnected(PlanetHeight.SignalName.ParametersChanged,
                 Callable.From(OnModifierParametersChanged)))
         {
             return;
@@ -322,16 +370,6 @@ public partial class SphereGenerator : Node
         if (err != Error.Ok)
         {
             GD.PushError($"SphereGenerator: Failed to connect to TerrainModifier signal: {err}");
-        }
-    }
-
-    private void DisconnectFromModifierSignal()
-    {
-        if (_terrainModifier != null && _terrainModifier.IsConnected(PlanetHeight.SignalName.ParametersChanged,
-                Callable.From(OnModifierParametersChanged)))
-        {
-            _terrainModifier.Disconnect(PlanetHeight.SignalName.ParametersChanged,
-                Callable.From(OnModifierParametersChanged));
         }
     }
 
