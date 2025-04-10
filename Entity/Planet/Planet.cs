@@ -136,12 +136,12 @@ public partial class Planet : CelestialBody
                 $"Assign a PlanetHeight resource to the '{GeneratorNodeName}' node's Terrain Modifier property.");
         }
 
-        if (_collisionShape == null)
+        if (CollisionShape == null)
         {
             warnings.Add($"Required node '{CollisionShapeNodeName}' (CollisionShape3D) is missing.");
         }
 
-        if (_meshInstance == null)
+        if (MeshInstance == null)
         {
             warnings.Add($"Required node '{MeshInstanceNodeName}' (MeshInstance3D) is missing.");
         }
@@ -156,8 +156,8 @@ public partial class Planet : CelestialBody
     private void FindRequiredNodes()
     {
         _generator = GetNodeOrNull<SphereGenerator>(GeneratorNodeName);
-        _meshInstance = GetNodeOrNull<MeshInstance3D>(MeshInstanceNodeName);
-        _collisionShape = GetNodeOrNull<CollisionShape3D>(CollisionShapeNodeName);
+        MeshInstance = GetNodeOrNull<MeshInstance3D>(MeshInstanceNodeName);
+        CollisionShape = GetNodeOrNull<CollisionShape3D>(CollisionShapeNodeName);
 
         if (Engine.IsEditorHint())
         {
@@ -197,7 +197,7 @@ public partial class Planet : CelestialBody
     {
         FindRequiredNodes();
 
-        if (_generator == null || _meshInstance == null || _collisionShape == null)
+        if (_generator == null || MeshInstance == null || CollisionShape == null)
         {
             GD.PrintErr("Planet: Cannot update geometry, required nodes missing.");
             base.UpdateShapeAndMesh();
@@ -211,13 +211,13 @@ public partial class Planet : CelestialBody
         if (generatedMesh == null || generatedMesh.GetSurfaceCount() == 0)
         {
             GD.PushWarning($"Planet '{Name}': Mesh generation failed or resulted in an empty mesh.");
-            _meshInstance.Mesh = null;
-            _collisionShape.Shape = null;
-            _meshInstance.SetSurfaceOverrideMaterial(0, null);
+            MeshInstance.Mesh = null;
+            CollisionShape.Shape = null;
+            MeshInstance.SetSurfaceOverrideMaterial(0, null);
             return;
         }
 
-        _meshInstance.Mesh = generatedMesh;
+        MeshInstance.Mesh = generatedMesh;
         ApplyMaterialAndParameters();
 
         if (GenerateCollision)
@@ -226,18 +226,18 @@ public partial class Planet : CelestialBody
 
             if (collisionShapeData != null)
             {
-                _collisionShape.Shape = collisionShapeData;
+                CollisionShape.Shape = collisionShapeData;
                 GD.Print($"Planet '{Name}': Applied Trimesh collision shape.");
             }
             else
             {
                 GD.PushWarning($"Planet '{Name}': Failed to create trimesh collision shape.");
-                _collisionShape.Shape = null;
+                CollisionShape.Shape = null;
             }
         }
         else
         {
-            _collisionShape.Shape = null;
+            CollisionShape.Shape = null;
             GD.Print($"Planet '{Name}': Collision shape removed (GenerateCollision is false).");
         }
 
@@ -249,7 +249,7 @@ public partial class Planet : CelestialBody
 
     private void ApplyMaterialAndParameters()
     {
-        if (_meshInstance == null)
+        if (MeshInstance == null)
         {
             GD.PushWarning($"Planet '{Name}': Cannot apply material, MeshInstance3D is null.");
             return;
@@ -258,7 +258,7 @@ public partial class Planet : CelestialBody
         if (string.IsNullOrEmpty(PlanetShaderPath))
         {
             GD.PushWarning($"Planet '{Name}': Cannot apply material, PlanetShaderPath is not set.");
-            _meshInstance.SetSurfaceOverrideMaterial(0, null);
+            MeshInstance.SetSurfaceOverrideMaterial(0, null);
             return;
         }
 
@@ -266,11 +266,11 @@ public partial class Planet : CelestialBody
         if (shader == null)
         {
             GD.PushError($"Planet '{Name}': Failed to load shader from path: {PlanetShaderPath}");
-            _meshInstance.SetSurfaceOverrideMaterial(0, null);
+            MeshInstance.SetSurfaceOverrideMaterial(0, null);
             return;
         }
 
-        if (_meshInstance.GetSurfaceOverrideMaterial(0) is not ShaderMaterial currentMaterial) return;
+        if (MeshInstance.GetSurfaceOverrideMaterial(0) is not ShaderMaterial currentMaterial) return;
         currentMaterial.SetShaderParameter("base_radius", Radius);
         currentMaterial.SetShaderParameter("roughness", PlanetRoughness);
     }
@@ -284,7 +284,7 @@ public partial class Planet : CelestialBody
             GD.PushWarning(
                 $"Planet '{Name}': No Generator found. Falling back to basic CelestialBody sphere generation.");
             base.UpdateShapeAndMesh();
-            _meshInstance?.SetSurfaceOverrideMaterial(0, null);
+            MeshInstance?.SetSurfaceOverrideMaterial(0, null);
         }
         else
         {
