@@ -1,11 +1,13 @@
-[gd_scene load_steps=20 format=3 uid="uid://j4kvo1b7egck"]
+[gd_scene load_steps=22 format=3 uid="uid://j4kvo1b7egck"]
 
 [ext_resource type="Script" uid="uid://cwc4n1u7db367" path="res://Scenes/Game/Game.cs" id="1_3k6gv"]
 [ext_resource type="PackedScene" uid="uid://dsix13euckuf1" path="res://Entity/CelestialBody.tscn" id="1_r150o"]
 [ext_resource type="PackedScene" uid="uid://cfdmshqym6x8y" path="res://Entity/Player/Player.tscn" id="2_gwu2e"]
+[ext_resource type="PackedScene" uid="uid://47knx42tism6" path="res://Entity/HealthItem/HealthItem.tscn" id="3_m1o7v"]
 [ext_resource type="PackedScene" uid="uid://dqsf2uo1bqci8" path="res://Input/InputManager.tscn" id="3_xbxml"]
-[ext_resource type="PackedScene" uid="uid://c7d8e565g1h2" path="res://Entity/Item/Item.tscn" id="4_y3kpf"]
+[ext_resource type="PackedScene" uid="uid://dxl4tn3o3jt3e" path="res://Entity/AmmoItem/AmmoItem.tscn" id="4_3586x"]
 [ext_resource type="PackedScene" uid="uid://c7d8eglsg1h2" path="res://Entity/Ship/Ship.tscn" id="5_3k6gv"]
+[ext_resource type="PackedScene" uid="uid://7ptb240u6mbf" path="res://Entity/WeaponItem/WeaponItem.tscn" id="5_10ki7"]
 [ext_resource type="PackedScene" uid="uid://c7kgmaf0g1h2" path="res://Entity/Alien/Alien.tscn" id="7_1q8bt"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1q8bt"]
@@ -72,6 +74,13 @@ radius = 15.0
 [node name="Game" type="Node3D"]
 script = ExtResource("1_3k6gv")
 _alienScene = ExtResource("7_1q8bt")
+_healthItemScene = ExtResource("3_m1o7v")
+_ammoItemScene = ExtResource("4_3586x")
+_weaponItemScene = ExtResource("5_10ki7")
+MaxItemsPerRound = 10
+ItemSpawnChance = 1.0
+HealthItemProbability = 1.0
+AmmoItemProbability = 0.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_gvja8")
@@ -132,13 +141,8 @@ shape = SubResource("SphereShape3D_6581v")
 [node name="Player" parent="SolarSystem" groups=["input_receivers", "player"] instance=ExtResource("2_gwu2e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3016.94, 2.58659, 299.507)
 
-[node name="Item" parent="SolarSystem" groups=["item"] instance=ExtResource("4_y3kpf")]
-transform = Transform3D(0.710738, 0, 0.703457, 0, 1, 0, -0.703457, 0, 0.710738, 3011.4, 14.8761, 292.992)
-
 [node name="Ship" parent="SolarSystem" groups=["ship"] instance=ExtResource("5_3k6gv")]
 transform = Transform3D(1, 0, 0, 0, 0.999502, 0.0315678, 0, -0.0315678, 0.999502, 3009.46, 15.1933, 294.96)
-
-[node name="Alien" parent="SolarSystem" groups=["alien"] instance=ExtResource("7_1q8bt")]
 
 [editable path="SolarSystem/Sun"]
 [editable path="SolarSystem/Earth"]
