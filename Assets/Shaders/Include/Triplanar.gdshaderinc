@@ -37,11 +37,11 @@ vec4 triplanarOffset(vec3 vertPos, vec3 normal, float scale, vec2 offset, sample
 	vec2 uvX = vertPos.zy * scale + offset;
 	vec2 uvY = vertPos.xz * scale + offset;
 	vec2 uvZ = vertPos.xy * scale + offset;
-	
+
 	vec4 colX = texture(tex, uvX);
 	vec4 colY = texture(tex, uvY);
 	vec4 colZ = texture(tex, uvZ);
-	
+
 	// Square normal to make all values positive + increase blend sharpness
 	vec3 blendWeight = normal * normal;
 	// Divide blend weight by the sum of its components. This will make x + y + z = 1
@@ -126,7 +126,7 @@ vec3 triplanarNormalUDN(vec3 vertPos, vec3 normal, float scale, vec2 offset, sam
 	vec3 blendWeight = saturate3(normal*normal*normal*normal);
 	// Divide blend weight by the sum of its components. This will make x + y + z = 1
 	blendWeight /= dot(blendWeight, vec3(1));
-	
+
 	// Triplanar uvs
 	vec2 uvX = vertPos.zy * scale + offset; // x facing plane
 	vec2 uvY = vertPos.xz * scale + offset; // y facing plane
@@ -146,6 +146,6 @@ vec3 triplanarNormalUDN(vec3 vertPos, vec3 normal, float scale, vec2 offset, sam
 	    tnormalZ.xyz * blendWeight.z +
 		normal
 	    );
-		
+
 	return worldNormal;
 }

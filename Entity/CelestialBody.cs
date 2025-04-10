@@ -3,243 +3,240 @@ using Godot;
 [Tool]
 public partial class CelestialBody : RigidBody3D
 {
-	[Export]
-	public float SurfaceGravity = 10.0f;
+    [Export] public float SurfaceGravity = 10.0f;
 
-	[Export]
-	public float InitialMass = 1000.0f;
+    [Export] public float InitialMass = 1000.0f;
 
-	[Export]
-	public Vector3 InitialVelocity = Vector3.Zero;
+    [Export] public Vector3 InitialVelocity = Vector3.Zero;
 
-	[Export]
-	public float GravitationalConstant = 6.6743e-11f;
+    [Export] public float GravitationalConstant = 6.6743e-11f;
 
-	[Export]
-	public CelestialBody OrbitParent;
+    [Export] public CelestialBody OrbitParent;
 
-	[Export]
-	public bool AutoCalculateOrbitalVelocity;
+    [Export] public bool AutoCalculateOrbitalVelocity;
 
-	private float _radius = 5.0f;
+    private float _radius = 5.0f;
 
-	[Export]
-	public float Radius
-	{
-		get => _radius;
-		set
-		{
-			if (Mathf.IsEqualApprox(_radius, value))
-				return;
-			_radius = Mathf.Max(0.01f, value);
+    [Export]
+    public float Radius
+    {
+        get => _radius;
+        set
+        {
+            if (Mathf.IsEqualApprox(_radius, value))
+                return;
+            _radius = Mathf.Max(0.01f, value);
 
-			if (IsInsideTree())
-			{
-				UpdateShapeAndMesh();
-			}
-		}
-	}
+            if (IsInsideTree())
+            {
+                UpdateShapeAndMesh();
+            }
+        }
+    }
 
-	[Export]
-	protected CollisionShape3D _collisionShape;
+    [Export] protected CollisionShape3D _collisionShape;
 
-	[Export]
-	protected MeshInstance3D _meshInstance;
+    [Export] protected MeshInstance3D _meshInstance;
 
-	private const string CelestialGroup = "celestial_bodies";
+    private const string CelestialGroup = "celestial_bodies";
 
-	public override void _Ready()
-	{
-		if (_collisionShape == null)
-		{
-			_collisionShape = GetNodeOrNull<CollisionShape3D>("CollisionShape3D");
-			if (_collisionShape == null)
-				GD.PrintErr(
-					$"{Name}: CollisionShape3D node not found or assigned. Physics might not work correctly."
-				);
-		}
-		if (_meshInstance == null)
-		{
-			_meshInstance = GetNodeOrNull<MeshInstance3D>("MeshInstance3D");
-		}
+    public override void _Ready()
+    {
+        if (_collisionShape == null)
+        {
+            _collisionShape = GetNodeOrNull<CollisionShape3D>("CollisionShape3D");
+            if (_collisionShape == null)
+                GD.PrintErr(
+                    $"{Name}: CollisionShape3D node not found or assigned. Physics might not work correctly."
+                );
+        }
 
-		UpdateShapeAndMesh();
+        if (_meshInstance == null)
+        {
+            _meshInstance = GetNodeOrNull<MeshInstance3D>("MeshInstance3D");
+        }
 
-		if (Engine.IsEditorHint())
-			return;
+        UpdateShapeAndMesh();
 
-		if (SurfaceGravity > 0.001f && GravitationalConstant > 0.001f && Radius > 0.01f)
-		{
-			Mass = SurfaceGravity * (Radius * Radius) / GravitationalConstant;
-		}
-		else
-		{
-			Mass = InitialMass;
-		}
+        if (Engine.IsEditorHint())
+            return;
 
-		if (AutoCalculateOrbitalVelocity && OrbitParent != null)
-		{
-			OrbitalVelocity();
-		}
-		else
-		{
-			LinearVelocity = InitialVelocity;
-		}
+        if (SurfaceGravity > 0.001f && GravitationalConstant > 0.001f && Radius > 0.01f)
+        {
+            Mass = SurfaceGravity * (Radius * Radius) / GravitationalConstant;
+        }
+        else
+        {
+            Mass = InitialMass;
+        }
 
-		PrintInitialState();
+        if (AutoCalculateOrbitalVelocity && OrbitParent != null)
+        {
+            OrbitalVelocity();
+        }
+        else
+        {
+            LinearVelocity = InitialVelocity;
+        }
 
-		ContactMonitor = true;
-		MaxContactsReported = 8;
-		AddToGroup(CelestialGroup);
-	}
+        PrintInitialState();
 
-	public override void _IntegrateForces(PhysicsDirectBodyState3D state)
-	{
-		if (Engine.IsEditorHint())
-			return;
+        ContactMonitor = true;
+        MaxContactsReported = 8;
+        AddToGroup(CelestialGroup);
+    }
 
-		var bodies = GetTree().GetNodesInGroup(CelestialGroup);
-		var totalGravitationalForce = Vector3.Zero;
-		var thisPosition = state.Transform.Origin;
+    public override void _IntegrateForces(PhysicsDirectBodyState3D state)
+    {
+        if (Engine.IsEditorHint())
+            return;
 
-		foreach (var node in bodies)
-		{
-			if (node == this)
-				continue;
+        var bodies = GetTree().GetNodesInGroup(CelestialGroup);
+        var totalGravitationalForce = Vector3.Zero;
+        var thisPosition = state.Transform.Origin;
 
-			if (node is not CelestialBody otherBody || !IsInstanceValid(otherBody))
-				continue;
+        foreach (var node in bodies)
+        {
+            if (node == this)
+                continue;
 
-			var otherPosition = otherBody.GlobalPosition;
+            if (node is not CelestialBody otherBody || !IsInstanceValid(otherBody))
+                continue;
 
-			var offset = otherPosition - thisPosition;
-			var sqrDist = offset.LengthSquared();
+            var otherPosition = otherBody.GlobalPosition;
 
-			const float epsilonSq = 0.001f * 0.001f;
-			if (sqrDist < epsilonSq)
-				continue;
+            var offset = otherPosition - thisPosition;
+            var sqrDist = offset.LengthSquared();
 
-			var forceDir = offset.Normalized();
+            const float epsilonSq = 0.001f * 0.001f;
+            if (sqrDist < epsilonSq)
+                continue;
 
-			if (this.Mass <= 0 || otherBody.Mass <= 0)
-				continue;
+            var forceDir = offset.Normalized();
 
-			var forceMagnitude = GravitationalConstant * this.Mass * otherBody.Mass / sqrDist;
-			var forceVector = forceDir * forceMagnitude;
+            if (this.Mass <= 0 || otherBody.Mass <= 0)
+                continue;
 
-			totalGravitationalForce += forceVector;
-		}
+            var forceMagnitude = GravitationalConstant * this.Mass * otherBody.Mass / sqrDist;
+            var forceVector = forceDir * forceMagnitude;
 
-		state.ApplyCentralForce(totalGravitationalForce);
-	}
+            totalGravitationalForce += forceVector;
+        }
 
-	protected void OrbitalVelocity()
-	{
-		if (OrbitParent == null || !IsInstanceValid(OrbitParent))
-		{
-			GD.PrintErr(
-				$"{Name}: Cannot calculate orbital velocity - OrbitParent is null or invalid."
-			);
+        state.ApplyCentralForce(totalGravitationalForce);
+    }
 
-			return;
-		}
+    protected void OrbitalVelocity()
+    {
+        if (OrbitParent == null || !IsInstanceValid(OrbitParent))
+        {
+            GD.PrintErr(
+                $"{Name}: Cannot calculate orbital velocity - OrbitParent is null or invalid."
+            );
 
-		var positionOffset = GlobalPosition - OrbitParent.GlobalPosition;
-		var distance = positionOffset.Length();
+            return;
+        }
 
-		if (distance < 0.001f)
-		{
-			GD.PrintErr(
-				$"{Name}: Cannot calculate orbital velocity - Too close to parent body {OrbitParent.Name}!"
-			);
+        var positionOffset = GlobalPosition - OrbitParent.GlobalPosition;
+        var distance = positionOffset.Length();
 
-			LinearVelocity = OrbitParent.LinearVelocity;
-			return;
-		}
-		if (OrbitParent.Mass < 0.001f)
-		{
-			GD.PrintErr(
-				$"{Name}: Cannot calculate orbital velocity - Parent body {OrbitParent.Name} has negligible mass!"
-			);
-			LinearVelocity = OrbitParent.LinearVelocity;
-			return;
-		}
-		if (GravitationalConstant < 0.00001f)
-		{
-			GD.PrintErr(
-				$"{Name}: Cannot calculate orbital velocity - GravitationalConstant is too small!"
-			);
-			LinearVelocity = OrbitParent.LinearVelocity;
-			return;
-		}
+        if (distance < 0.001f)
+        {
+            GD.PrintErr(
+                $"{Name}: Cannot calculate orbital velocity - Too close to parent body {OrbitParent.Name}!"
+            );
 
-		var velocityMagnitude = Mathf.Sqrt(GravitationalConstant * OrbitParent.Mass / distance);
+            LinearVelocity = OrbitParent.LinearVelocity;
+            return;
+        }
 
-		var orbitDirection = Vector3.Up;
-		if (Mathf.Abs(positionOffset.Normalized().Dot(Vector3.Up)) > 0.99f)
-		{
-			orbitDirection = Vector3.Forward;
-		}
-		var velocityDirection = positionOffset.Cross(orbitDirection).Normalized();
+        if (OrbitParent.Mass < 0.001f)
+        {
+            GD.PrintErr(
+                $"{Name}: Cannot calculate orbital velocity - Parent body {OrbitParent.Name} has negligible mass!"
+            );
+            LinearVelocity = OrbitParent.LinearVelocity;
+            return;
+        }
 
-		var orbitalVelocityRelative = velocityDirection * velocityMagnitude;
+        if (GravitationalConstant < 0.00001f)
+        {
+            GD.PrintErr(
+                $"{Name}: Cannot calculate orbital velocity - GravitationalConstant is too small!"
+            );
+            LinearVelocity = OrbitParent.LinearVelocity;
+            return;
+        }
 
-		LinearVelocity = orbitalVelocityRelative + OrbitParent.LinearVelocity;
+        var velocityMagnitude = Mathf.Sqrt(GravitationalConstant * OrbitParent.Mass / distance);
 
-		GD.Print(
-			$"{Name}: Calculated orbital velocity around {OrbitParent.Name}: {LinearVelocity.Length()} m/s (Relative component: {orbitalVelocityRelative.Length()} m/s)"
-		);
-	}
+        var orbitDirection = Vector3.Up;
+        if (Mathf.Abs(positionOffset.Normalized().Dot(Vector3.Up)) > 0.99f)
+        {
+            orbitDirection = Vector3.Forward;
+        }
 
-	protected virtual void UpdateShapeAndMesh()
-	{
-		if (_collisionShape?.Shape is SphereShape3D sphereShape)
-		{
-			sphereShape.Radius = _radius;
-		}
-		else if (_collisionShape != null)
-		{
-			if (_collisionShape.Shape != null)
-			{
-				GD.PrintErr(
-					$"{Name}: CollisionShape node exists but its Shape is not a SphereShape3D. Cannot auto-update radius based on CelestialBody.Radius."
-				);
-			}
-			else
-			{
-				GD.PrintErr(
-					$"{Name}: CollisionShape node exists but has no Shape resource assigned."
-				);
-			}
-		}
+        var velocityDirection = positionOffset.Cross(orbitDirection).Normalized();
 
-		if (_meshInstance?.Mesh is SphereMesh sphereMesh)
-		{
-			sphereMesh.Radius = _radius;
-			sphereMesh.Height = _radius * 2.0f;
-		}
-	}
+        var orbitalVelocityRelative = velocityDirection * velocityMagnitude;
 
-	private void PrintInitialState()
-	{
-		GD.Print($"--- Initial State for {Name} ---");
-		GD.Print($"  Position: {GlobalPosition}");
-		GD.Print($"  Radius: {Radius}");
-		GD.Print($"  SurfaceGravity: {SurfaceGravity}");
-		GD.Print($"  Calculated/Set Mass: {Mass}");
-		GD.Print($"  Initial/Calculated Velocity: {LinearVelocity}");
-		if (OrbitParent != null)
-		{
-			GD.Print($"  Orbiting: {OrbitParent.Name}");
-			var dist = (GlobalPosition - OrbitParent.GlobalPosition).Length();
-			GD.Print($"  Distance to Parent: {dist}");
-			if (OrbitParent.Mass > 0)
-				GD.Print($"  Mass Ratio (Self/Parent): {Mass / OrbitParent.Mass}");
-		}
-		else
-		{
-			GD.Print("  Not Orbiting (No Parent Assigned)");
-		}
-		GD.Print($"---------------------------------");
-	}
+        LinearVelocity = orbitalVelocityRelative + OrbitParent.LinearVelocity;
+
+        GD.Print(
+            $"{Name}: Calculated orbital velocity around {OrbitParent.Name}: {LinearVelocity.Length()} m/s (Relative component: {orbitalVelocityRelative.Length()} m/s)"
+        );
+    }
+
+    protected virtual void UpdateShapeAndMesh()
+    {
+        if (_collisionShape?.Shape is SphereShape3D sphereShape)
+        {
+            sphereShape.Radius = _radius;
+        }
+        else if (_collisionShape != null)
+        {
+            if (_collisionShape.Shape != null)
+            {
+                GD.PrintErr(
+                    $"{Name}: CollisionShape node exists but its Shape is not a SphereShape3D. Cannot auto-update radius based on CelestialBody.Radius."
+                );
+            }
+            else
+            {
+                GD.PrintErr(
+                    $"{Name}: CollisionShape node exists but has no Shape resource assigned."
+                );
+            }
+        }
+
+        if (_meshInstance?.Mesh is SphereMesh sphereMesh)
+        {
+            sphereMesh.Radius = _radius;
+            sphereMesh.Height = _radius * 2.0f;
+        }
+    }
+
+    private void PrintInitialState()
+    {
+        GD.Print($"--- Initial State for {Name} ---");
+        GD.Print($"  Position: {GlobalPosition}");
+        GD.Print($"  Radius: {Radius}");
+        GD.Print($"  SurfaceGravity: {SurfaceGravity}");
+        GD.Print($"  Calculated/Set Mass: {Mass}");
+        GD.Print($"  Initial/Calculated Velocity: {LinearVelocity}");
+        if (OrbitParent != null)
+        {
+            GD.Print($"  Orbiting: {OrbitParent.Name}");
+            var dist = (GlobalPosition - OrbitParent.GlobalPosition).Length();
+            GD.Print($"  Distance to Parent: {dist}");
+            if (OrbitParent.Mass > 0)
+                GD.Print($"  Mass Ratio (Self/Parent): {Mass / OrbitParent.Mass}");
+        }
+        else
+        {
+            GD.Print("  Not Orbiting (No Parent Assigned)");
+        }
+
+        GD.Print($"---------------------------------");
+    }
 }
