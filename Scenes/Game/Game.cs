@@ -4,396 +4,350 @@ using Godot;
 
 public partial class Game : Node3D
 {
-    // --- Signals ---
-    [Signal]
-    public delegate void RoundChangedEventHandler(int newRound);
+	[Signal]
+	public delegate void RoundChangedEventHandler(int newRound);
 
-    [Signal]
-    public delegate void GameOverEventHandler(string reason, int finalRound, int finalScore);
+	[Signal]
+	public delegate void GameOverEventHandler(string reason, int finalRound, int finalScore);
 
-    [Signal]
-    public delegate void RoundTimerUpdateEventHandler(float timeRemaining);
+	[Signal]
+	public delegate void RoundTimerUpdateEventHandler(float timeRemaining);
 
-    [Signal]
-    public delegate void ScoreUpdatedEventHandler(int newScore);
+	[Signal]
+	public delegate void ScoreUpdatedEventHandler(int newScore);
 
-    // --- Enums ---
-    private enum GameState
-    {
-        Playing,
-        GameOver,
-    }
+	private enum GameState
+	{
+		Playing,
+		GameOver,
+	}
 
-    // --- Exports ---
-    [ExportGroup("Game Rules")]
-    [Export]
-    private float RoundDurationSeconds = 30.0f;
+	[ExportGroup("Game Rules")]
+	[Export]
+	private float RoundDurationSeconds = 30.0f;
 
-    [Export]
-    private int InitialAlienCount = 5;
+	[Export]
+	private int InitialAlienCount = 5;
 
-    [Export]
-    private int AlienIncreasePerRound = 3;
+	[Export]
+	private int AlienIncreasePerRound = 3;
 
-    [Export]
-    private int AlienScoreValue = 10;
+	[Export]
+	private int AlienScoreValue = 10;
 
-    [ExportGroup("Scene References")]
-    [Export]
-    private PackedScene _alienScene;
+	[ExportGroup("Scene References")]
+	[Export]
+	private PackedScene _alienScene;
 
-    [ExportGroup("Item Spawning")]
-    [Export]
-    private PackedScene _healthItemScene;
+	[ExportGroup("Item Spawning")]
+	[Export]
+	private PackedScene _healthItemScene;
 
-    [Export]
-    private PackedScene _ammoItemScene;
+	[Export]
+	private PackedScene _ammoItemScene;
 
-    [Export]
-    private PackedScene _weaponItemScene;
+	[Export]
+	private PackedScene _powerupItemScene;
 
-    [Export(PropertyHint.Range, "0, 10, 1")]
-    private int MaxItemsPerRound = 3;
+	[Export(PropertyHint.Range, "0, 10, 1")]
+	private int MaxItemsPerRound = 5;
 
-    [Export(PropertyHint.Range, "0.0, 1.0, 0.05")]
-    private float ItemSpawnChance = 0.75f;
+	[Export(PropertyHint.Range, "0.0, 1.0, 0.05")]
+	private float ItemSpawnChance = 0.85f;
 
-    [Export(PropertyHint.Range, "0.0, 1.0, 0.05")]
-    private float HealthItemProbability = 0.5f;
+	[Export(PropertyHint.Range, "0.0, 1.0, 0.05")]
+	private float HealthItemProbability = 0.4f;
 
-    [Export(PropertyHint.Range, "0.0, 1.0, 0.05")]
-    private float AmmoItemProbability = 0.4f;
+	[Export(PropertyHint.Range, "0.0, 1.0, 0.05")]
+	private float AmmoItemProbability = 0.3f;
 
-    // --- Services ---
-    private GameManager _gameManager;
-    private AudioManager _audioManager;
+	[Export(PropertyHint.Range, "0.0, 1.0, 0.05")]
+	private float PowerupItemProbability = 0.3f;
 
-    // --- Internal State ---
-    private Timer _roundTimer;
-    private Player _player;
-    private Ship _ship;
-    private GameState _currentState = GameState.Playing;
-    private int _currentRound = 0;
-    private int _currentScore = 0;
-    private Random _random = new Random();
+	private GameManager _gameManager;
+	private AudioManager _audioManager;
 
-    // --- Constants ---
-    private const string PAUSE_SCENE_PATH = "res://Scenes/Pause/Pause.tscn";
-    private const string RESULT_SCENE_PATH = "res://Scenes/Result/Result.tscn";
+	private Timer _roundTimer;
+	private Player _player;
+	private Ship _ship;
+	private GameState _currentState = GameState.Playing;
+	private int _currentRound = 0;
+	private int _currentScore = 0;
+	private Random _random = new Random();
 
-    public int GetCurrentRound() => _currentRound;
+	private const string PAUSE_SCENE_PATH = "res://Scenes/Pause/Pause.tscn";
+	private const string RESULT_SCENE_PATH = "res://Scenes/Result/Result.tscn";
 
-    public int GetCurrentScore() => _currentScore;
+	public int GetCurrentRound() => _currentRound;
 
-    public override void _Ready()
-    {
-        _gameManager = GetNode<GameManager>("/root/GameManager");
-        _audioManager = GetNode<AudioManager>("/root/AudioManager");
+	public int GetCurrentScore() => _currentScore;
 
-        _roundTimer = new Timer
-        {
-            Name = "RoundTimer",
-            WaitTime = RoundDurationSeconds,
-            OneShot = false,
-        };
-        AddChild(_roundTimer);
-        _roundTimer.Timeout += OnRoundTimerTimeout;
+	public override void _Ready()
+	{
+		_gameManager = GetNode<GameManager>("/root/GameManager");
+		_audioManager = GetNode<AudioManager>("/root/AudioManager");
 
-        _player = GetNodeFromGroupHelper<Player>(Player.PlayerGroup);
-        _ship = GetNodeFromGroupHelper<Ship>(Ship.ShipGroup);
+		_roundTimer = new Timer
+		{
+			Name = "RoundTimer",
+			WaitTime = RoundDurationSeconds,
+			OneShot = false,
+		};
+		AddChild(_roundTimer);
+		_roundTimer.Timeout += OnRoundTimerTimeout;
 
-        // Null checks
-        if (_player == null)
-            GD.PrintErr("Player not found");
-        if (_ship == null)
-            GD.PrintErr("Ship not found");
-        if (_alienScene == null)
-            GD.PrintErr("Alien scene not assigned");
-        if (_healthItemScene == null)
-            GD.PrintErr("HealthItem scene not assigned.");
-        if (_ammoItemScene == null)
-            GD.PrintErr("AmmoItem scene not assigned");
+		_player = GetNodeFromGroupHelper<Player>(Player.PlayerGroup);
+		_ship = GetNodeFromGroupHelper<Ship>(Ship.ShipGroup);
 
-        float totalItemProb = HealthItemProbability + AmmoItemProbability;
-        if (_weaponItemScene == null && totalItemProb < 0.99f)
-        {
-            GD.PrintErr("WeaponItem scene not assigned");
-        }
-        else if (totalItemProb > 1.01f)
-        {
-            GD.PrintErr("item spawn probabilities exceed 1.0");
-        }
+		if (_player == null)
+			GD.PrintErr("Player not found");
+		if (_ship == null)
+			GD.PrintErr("Ship not found");
+		if (_alienScene == null)
+			GD.PrintErr("Alien scene not assigned");
+		if (_healthItemScene == null)
+			GD.PrintErr("HealthItem scene not assigned");
+		if (_ammoItemScene == null)
+			GD.PrintErr("AmmoItem scene not assigned");
+		if (_powerupItemScene == null)
+			GD.PrintErr("PowerupItem scene not assigned");
 
-        if (
-            _player == null
-            || _ship == null
-            || _alienScene == null
-            || _healthItemScene == null
-            || _ammoItemScene == null
-        )
-        {
-            GD.PrintErr("Game setup incomplete, abort");
-            SetProcess(false);
-            return;
-        }
+		float totalProb = HealthItemProbability + AmmoItemProbability + PowerupItemProbability;
+		if (Math.Abs(totalProb - 1.0f) > 0.01f)
+		{
+			GD.Print($"Item spawn probabilities sum to {totalProb} should be close to 1.0");
+		}
 
-        _player.Died += OnPlayerDied;
-        _ship.Died += OnShipDied;
-        _gameManager.SceneChanged += OnSceneChanged;
-        _gameManager.PushScene("res://Scenes/HUD/HUD.tscn");
-        StartGame();
-    }
+		if (_player != null)
+			_player.Died += OnPlayerDied;
+		if (_ship != null)
+			_ship.Died += OnShipDied;
+		_gameManager.SceneChanged += OnSceneChanged;
+		_gameManager.PushScene("res://Scenes/HUD/HUD.tscn");
 
-    public override void _Process(double delta)
-    {
-        if (_currentState != GameState.Playing)
-            return;
-        EmitSignal(SignalName.RoundTimerUpdate, (float)(_roundTimer?.TimeLeft ?? 0));
-    }
+		StartGame();
+	}
 
-    public override void _ExitTree()
-    {
-        if (_gameManager != null)
-            _gameManager.SceneChanged -= OnSceneChanged;
-        if (IsInstanceValid(_roundTimer))
-            _roundTimer.Timeout -= OnRoundTimerTimeout;
-        DisconnectEntitySignals();
-        Input.SetMouseMode(Input.MouseModeEnum.Visible);
-    }
+	public override void _Process(double delta)
+	{
+		if (_currentState != GameState.Playing)
+			return;
+		EmitSignal(SignalName.RoundTimerUpdate, (float)(_roundTimer?.TimeLeft ?? 0));
+	}
 
-    private void StartGame()
-    {
-        GD.Print("Starting Game");
-        _currentState = GameState.Playing;
-        _currentRound = 0;
-        _currentScore = 0;
-        EmitSignal(SignalName.ScoreUpdated, _currentScore);
-        Input.SetMouseMode(Input.MouseModeEnum.Captured);
-        OnRoundTimerTimeout();
-        _roundTimer.Start();
-    }
+	public override void _ExitTree()
+	{
+		if (_gameManager != null)
+			_gameManager.SceneChanged -= OnSceneChanged;
+		if (IsInstanceValid(_roundTimer))
+			_roundTimer.Timeout -= OnRoundTimerTimeout;
+		DisconnectEntitySignals();
+		Input.SetMouseMode(Input.MouseModeEnum.Visible);
+	}
 
-    private void EndGame(string reason)
-    {
-        if (_currentState != GameState.Playing)
-            return;
-        _currentState = GameState.GameOver;
-        _roundTimer?.Stop();
-        GD.Print(
-            $"Game Over, reason: {reason}. Reached Round: {_currentRound}. Final Score: {_currentScore}"
-        );
-        Input.SetMouseMode(Input.MouseModeEnum.Visible);
-        EmitSignal(SignalName.GameOver, reason, _currentRound, _currentScore);
-        DisconnectEntitySignals();
-        ClearSpawnedEntities("alien");
-        ClearSpawnedEntities("item");
-        _gameManager.ChangeScene(RESULT_SCENE_PATH);
-    }
+	private void StartGame()
+	{
+		_currentState = GameState.Playing;
+		_currentRound = 0;
+		_currentScore = 0;
+		EmitSignal(SignalName.ScoreUpdated, _currentScore);
+		Input.SetMouseMode(Input.MouseModeEnum.Captured);
+		OnRoundTimerTimeout();
+		_roundTimer.Start();
+	}
 
-    private void AddScore(int amount)
-    {
-        if (_currentState != GameState.Playing)
-            return;
-        _currentScore += amount;
-        EmitSignal(SignalName.ScoreUpdated, _currentScore);
-    }
+	private void EndGame(string reason)
+	{
+		if (_currentState != GameState.Playing)
+			return;
 
-    private void OnAlienDied()
-    {
-        AddScore(AlienScoreValue);
-    }
+		_currentState = GameState.GameOver;
+		_roundTimer?.Stop();
+		Input.SetMouseMode(Input.MouseModeEnum.Visible);
+		EmitSignal(SignalName.GameOver, reason, _currentRound, _currentScore);
+		DisconnectEntitySignals();
+		ClearSpawnedEntities("alien");
+		ClearSpawnedEntities("item");
 
-    private void DisconnectEntitySignals()
-    {
-        if (_player != null && IsInstanceValid(_player))
-        {
-            if (_player.IsConnected(Player.SignalName.Died, Callable.From(OnPlayerDied)))
-                _player.Died -= OnPlayerDied;
-        }
-        if (_ship != null && IsInstanceValid(_ship))
-        {
-            if (_ship.IsConnected(Ship.SignalName.Died, Callable.From(OnShipDied)))
-                _ship.Died -= OnShipDied;
-        }
-        ClearSignalsFromGroup("alien", Alien.SignalName.Died, Callable.From(OnAlienDied));
-    }
+		_gameManager.SetLastGameScore(_currentScore);
+		_gameManager.ChangeScene(RESULT_SCENE_PATH);
+	}
 
-    private void OnRoundTimerTimeout()
-    {
-        if (_currentState != GameState.Playing)
-            return;
-        _currentRound++;
-        GD.Print($"--- Starting Round {_currentRound} ---");
-        EmitSignal(SignalName.RoundChanged, _currentRound);
+	private void AddScore(int amount)
+	{
+		if (_currentState != GameState.Playing)
+			return;
+		_currentScore += amount;
+		EmitSignal(SignalName.ScoreUpdated, _currentScore);
+	}
 
-        // Spawn Aliens
-        int aliensToSpawn = InitialAlienCount + (_currentRound - 1) * AlienIncreasePerRound;
-        SpawnAlienHorde(aliensToSpawn);
+	private void OnAlienDied()
+	{
+		AddScore(AlienScoreValue);
+	}
 
-        // Spawn Items
-        SpawnItems();
-    }
+	private void DisconnectEntitySignals()
+	{
+		if (_player != null && IsInstanceValid(_player))
+		{
+			if (_player.IsConnected(Player.SignalName.Died, Callable.From(OnPlayerDied)))
+				_player.Died -= OnPlayerDied;
+		}
+		if (_ship != null && IsInstanceValid(_ship))
+		{
+			if (_ship.IsConnected(Ship.SignalName.Died, Callable.From(OnShipDied)))
+				_ship.Died -= OnShipDied;
+		}
+		ClearSignalsFromGroup("alien", Alien.SignalName.Died, Callable.From(OnAlienDied));
+	}
 
-    private void OnPlayerDied() => EndGame("Player Died");
+	private void OnRoundTimerTimeout()
+	{
+		if (_currentState != GameState.Playing)
+			return;
+		_currentRound++;
+		EmitSignal(SignalName.RoundChanged, _currentRound);
 
-    private void OnShipDied() => EndGame("Ship Destroyed");
+		int aliensToSpawn = InitialAlienCount + (_currentRound - 1) * AlienIncreasePerRound;
+		SpawnAlienHorde(aliensToSpawn);
+		SpawnItems();
+	}
 
-    private void OnSceneChanged(string scenePath, bool isPushing)
-    {
-        if (scenePath == PAUSE_SCENE_PATH)
-        {
-            bool pausing = isPushing;
-            _roundTimer?.SetPaused(pausing);
-            ProcessMode = pausing ? ProcessModeEnum.Disabled : ProcessModeEnum.Inherit;
-            Input.SetMouseMode(
-                pausing ? Input.MouseModeEnum.Visible : Input.MouseModeEnum.Captured
-            );
-            _audioManager?.SetBGMPaused(pausing);
-        }
-    }
+	private void OnPlayerDied() => EndGame("Player Died");
 
-    private void SpawnAlienHorde(int count)
-    {
-        GD.Print($"Spawning horde of {count} aliens for round {_currentRound}.");
-        for (int i = 0; i < count; i++)
-            SpawnSingleAlien();
-    }
+	private void OnShipDied() => EndGame("Ship Destroyed");
 
-    private void SpawnSingleAlien()
-    {
-        if (_player == null)
-            return;
+	private void OnSceneChanged(string scenePath, bool isPushing)
+	{
+		if (scenePath == PAUSE_SCENE_PATH)
+		{
+			bool pausing = isPushing;
+			_roundTimer?.SetPaused(pausing);
+			ProcessMode = pausing ? ProcessModeEnum.Disabled : ProcessModeEnum.Inherit;
+			Input.SetMouseMode(
+				pausing ? Input.MouseModeEnum.Visible : Input.MouseModeEnum.Captured
+			);
+			_audioManager?.SetBGMPaused(pausing);
+		}
+	}
 
-        Alien newAlien = _alienScene.Instantiate<Alien>();
-        if (newAlien != null)
-        {
-            newAlien.Died += OnAlienDied;
-            newAlien.AddToGroup("alien"); // just to make sure
+	private void SpawnAlienHorde(int count)
+	{
+		for (int i = 0; i < count; i++)
+			SpawnSingleAlien();
+	}
 
-            float angle = (float)(_random.NextDouble() * Math.PI * 2);
-            float distance = 30.0f + (float)(_random.NextDouble() * 20.0);
-            Vector3 offset = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * distance;
-            Vector3 playerUp = _player.Transform.Basis.Y;
-            Vector3 spawnPos = _player.GlobalPosition + offset + playerUp * 3.0f; // Spawn higher up
+	private void SpawnSingleAlien()
+	{
+		if (_player == null)
+			return;
 
-            newAlien.GlobalPosition = spawnPos;
-            AddChild(newAlien);
-        }
-        else
-            GD.PrintErr("Failed to instantiate Alien scene");
-    }
+		Alien newAlien = _alienScene.Instantiate<Alien>();
+		if (newAlien != null)
+		{
+			newAlien.Died += OnAlienDied;
+			newAlien.AddToGroup("alien");
 
-    private void SpawnItems()
-    {
-        int itemsToAttempt = _random.Next(1, MaxItemsPerRound + 1);
-        int itemsSpawned = 0;
-        GD.Print($"Attempting to spawn up to {itemsToAttempt} items for round {_currentRound}.");
+			float angle = (float)(_random.NextDouble() * Math.PI * 2);
+			float distance = 30.0f + (float)(_random.NextDouble() * 20.0);
+			Vector3 offset = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * distance;
+			Vector3 playerUp = _player.Transform.Basis.Y;
+			Vector3 spawnPos = _player.GlobalPosition + offset + playerUp * 3.0f;
 
-        for (int i = 0; i < itemsToAttempt; i++)
-        {
-            if (_random.NextDouble() < ItemSpawnChance)
-            {
-                SpawnSingleItem();
-                itemsSpawned++;
-            }
-        }
-        GD.Print($"Successfully spawned {itemsSpawned} items");
-    }
+			newAlien.GlobalPosition = spawnPos;
+			AddChild(newAlien);
+		}
+	}
 
-    private void SpawnSingleItem()
-    {
-        if (_player == null)
-            return;
+	private void SpawnItems()
+	{
+		int itemsToAttempt = _random.Next(1, MaxItemsPerRound + 1);
+		for (int i = 0; i < itemsToAttempt; i++)
+		{
+			if (_random.NextDouble() < ItemSpawnChance)
+			{
+				SpawnSingleItem();
+			}
+		}
+	}
 
-        PackedScene itemSceneToSpawn = ChooseItemScene();
-        if (itemSceneToSpawn == null)
-        {
-            GD.Print("no item scene chosen");
-            return;
-        }
+	private void SpawnSingleItem()
+	{
+		if (_player == null)
+			return;
 
-        Item newItem = itemSceneToSpawn.Instantiate<Item>();
-        if (newItem != null)
-        {
-            newItem.AddToGroup("item");
+		PackedScene itemSceneToSpawn = ChooseItemScene();
+		if (itemSceneToSpawn == null)
+			return;
 
-            float angle = (float)(_random.NextDouble() * Math.PI * 2);
-            float distance = 8.0f + (float)(_random.NextDouble() * 7.0);
-            Vector3 offset = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * distance;
-            Vector3 playerUp = _player.Transform.Basis.Y;
-            Vector3 spawnPos = _player.GlobalPosition + offset + playerUp * 1.0f;
+		Item newItem = itemSceneToSpawn.Instantiate<Item>();
+		if (newItem != null)
+		{
+			newItem.AddToGroup("item");
 
-            newItem.GlobalPosition = spawnPos;
-            AddChild(newItem);
-            GD.Print(
-                $"Spawned item {newItem.Name} ({itemSceneToSpawn.ResourcePath}) at {spawnPos}"
-            );
-        }
-        else
-        {
-            GD.PrintErr($"Failed to instantiate item scene {itemSceneToSpawn.ResourcePath}");
-        }
-    }
+			float angle = (float)(_random.NextDouble() * Math.PI * 2);
+			float distance = 8.0f + (float)(_random.NextDouble() * 7.0);
+			Vector3 offset = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * distance;
+			Vector3 playerUp = _player.Transform.Basis.Y;
+			Vector3 spawnPos = _player.GlobalPosition + offset + playerUp * 1.0f;
 
-    private PackedScene ChooseItemScene()
-    {
-        double roll = _random.NextDouble();
-        float cumulativeProbability = 0f;
+			newItem.GlobalPosition = spawnPos;
+			AddChild(newItem);
+		}
+	}
 
-        cumulativeProbability += HealthItemProbability;
-        if (roll < cumulativeProbability && _healthItemScene != null)
-        {
-            return _healthItemScene;
-        }
+	private PackedScene ChooseItemScene()
+	{
+		double roll = _random.NextDouble();
+		float cumulativeProbability = 0f;
 
-        cumulativeProbability += AmmoItemProbability;
-        if (roll < cumulativeProbability && _ammoItemScene != null)
-        {
-            return _ammoItemScene;
-        }
+		cumulativeProbability += HealthItemProbability;
+		if (roll < cumulativeProbability && _healthItemScene != null)
+			return _healthItemScene;
 
-        if (_weaponItemScene != null)
-        {
-            return _weaponItemScene;
-        }
+		cumulativeProbability += AmmoItemProbability;
+		if (roll < cumulativeProbability && _ammoItemScene != null)
+			return _ammoItemScene;
 
-        GD.Print("Item roll fell");
-        return _healthItemScene ?? _ammoItemScene;
-    }
+		cumulativeProbability += PowerupItemProbability; // Add powerup probability
+		if (roll < cumulativeProbability && _powerupItemScene != null)
+			return _powerupItemScene;
 
-    private T GetNodeFromGroupHelper<T>(string group)
-        where T : Node
-    {
-        var nodes = GetTree().GetNodesInGroup(group);
-        if (nodes.Count > 0 && nodes[0] is T typedNode)
-            return typedNode;
-        return null;
-    }
+		return _healthItemScene ?? _ammoItemScene ?? _powerupItemScene;
+	}
 
-    private void ClearSpawnedEntities(string groupName)
-    {
-        foreach (Node node in GetTree().GetNodesInGroup(groupName))
-        {
-            if (node is Alien alien)
-            {
-                if (alien.IsConnected(Alien.SignalName.Died, Callable.From(OnAlienDied)))
-                {
-                    alien.Died -= OnAlienDied;
-                }
-            }
-            node.QueueFree();
-        }
-        GD.Print($"Cleared remaining in group '{groupName}'.");
-    }
+	private T GetNodeFromGroupHelper<T>(string group)
+		where T : Node
+	{
+		var nodes = GetTree().GetNodesInGroup(group);
+		if (nodes.Count > 0 && nodes[0] is T typedNode)
+			return typedNode;
+		return null;
+	}
 
-    private void ClearSignalsFromGroup(string groupName, StringName signalName, Callable callable)
-    {
-        foreach (Node node in GetTree().GetNodesInGroup(groupName))
-        {
-            if (node.IsConnected(signalName, callable))
-            {
-                node.Disconnect(signalName, callable);
-            }
-        }
-    }
+	private void ClearSpawnedEntities(string groupName)
+	{
+		foreach (Node node in GetTree().GetNodesInGroup(groupName))
+		{
+			if (node is Alien alien)
+			{
+				if (alien.IsConnected(Alien.SignalName.Died, Callable.From(OnAlienDied)))
+				{
+					alien.Died -= OnAlienDied;
+				}
+			}
+			node.QueueFree();
+		}
+	}
+
+	private void ClearSignalsFromGroup(string groupName, StringName signalName, Callable callable)
+	{
+		foreach (Node node in GetTree().GetNodesInGroup(groupName))
+		{
+			if (node.IsConnected(signalName, callable))
+			{
+				node.Disconnect(signalName, callable);
+			}
+		}
+	}
 }

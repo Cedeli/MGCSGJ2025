@@ -1,6 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://du6fekeeg1n4k"]
-
-[ext_resource type="Script" uid="uid://cky31yrr6hqc5" path="res://Entity/Item/Item.cs" id="1_item_cs"]
+[gd_scene load_steps=5 format=3 uid="uid://du6fekeeg1n4k"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_item"]
 radius = 0.3
@@ -17,11 +15,7 @@ roughness = 0.7
 [sub_resource type="SphereShape3D" id="SphereShape3D_groundcast_item"]
 radius = 0.1
 
-[node name="Item" type="RigidBody3D" node_paths=PackedStringArray("GroundCast")]
-script = ExtResource("1_item_cs")
-MoveSpeed = 0.0
-JumpImpulse = 0.0
-GroundCast = NodePath("GroundCast")
+[node name="Item" type="RigidBody3D"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_item")

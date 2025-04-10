@@ -24,7 +24,7 @@ public partial class GameManager : Node
             if (container != null)
             {
                 sceneContainer = container;
-                GD.Print($"{Name}: Found existing scene container.");
+                GD.Print($"{Name}: Found existing scene container");
             }
             else
             {

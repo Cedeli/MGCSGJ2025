@@ -1,5 +1,5 @@
-using Godot;
 using System;
+using Godot;
 
 public abstract class MovementController(Player player)
 {
@@ -23,11 +23,11 @@ internal class PlanetaryMovementController(Player player) : MovementController(p
     private void HandleMovement(float delta, Vector2 rawMovementInput)
     {
         var targetVelocity = CalculateTargetVelocity(rawMovementInput);
-    
+
         var currentVelocity = PlayerBody.LinearVelocity;
         var verticalVelocity = currentVelocity.Project(PlayerBody.GetGravityDirection());
         var horizontalVelocity = currentVelocity - verticalVelocity;
-    
+
         if (PlayerBody.IsGrounded())
         {
             ApplyGroundedMovement(delta, targetVelocity, horizontalVelocity, verticalVelocity);
@@ -45,21 +45,27 @@ internal class PlanetaryMovementController(Player player) : MovementController(p
         {
             return Vector3.Zero;
         }
-    
+
         var pivotBasis = pivot.GlobalTransform.Basis;
         var camForward = -pivotBasis.Z;
         var camRight = pivotBasis.X;
-    
-        var desiredMoveDir = (camRight * rawMovementInput.X + camForward * -rawMovementInput.Y).Normalized();
-    
+
+        var desiredMoveDir = (
+            camRight * rawMovementInput.X + camForward * -rawMovementInput.Y
+        ).Normalized();
+
         var playerUp = -PlayerBody.GetGravityDirection();
         var moveOnPlane = (desiredMoveDir - playerUp * desiredMoveDir.Dot(playerUp)).Normalized();
-    
+
         return moveOnPlane * PlayerBody.MoveSpeed;
     }
 
-    private void ApplyGroundedMovement(float delta, Vector3 targetVelocity, Vector3 currentHorizontalVelocity,
-        Vector3 currentVerticalVelocity)
+    private void ApplyGroundedMovement(
+        float delta,
+        Vector3 targetVelocity,
+        Vector3 currentHorizontalVelocity,
+        Vector3 currentVerticalVelocity
+    )
     {
         if (targetVelocity.LengthSquared() > InputThresholdSq)
         {
@@ -67,19 +73,27 @@ internal class PlanetaryMovementController(Player player) : MovementController(p
         }
         else
         {
-            var dampenedHorizontal = currentHorizontalVelocity.Lerp(Vector3.Zero, GroundFrictionFactor * delta);
+            var dampenedHorizontal = currentHorizontalVelocity.Lerp(
+                Vector3.Zero,
+                GroundFrictionFactor * delta
+            );
             PlayerBody.LinearVelocity = dampenedHorizontal + currentVerticalVelocity;
         }
     }
 
-    private void ApplyAerialMovement(float delta, Vector3 targetVelocity, Vector3 currentHorizontalVelocity)
+    private void ApplyAerialMovement(
+        float delta,
+        Vector3 targetVelocity,
+        Vector3 currentHorizontalVelocity
+    )
     {
-        if (delta <= 0) return;
-    
+        if (delta <= 0)
+            return;
+
         var velocityChange = targetVelocity - currentHorizontalVelocity;
         var requiredAcceleration = velocityChange / delta;
         var airForce = requiredAcceleration * PlayerBody.Mass * AirControlFactor;
-    
+
         PlayerBody.ApplyCentralForce(airForce);
     }
 

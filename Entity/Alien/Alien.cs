@@ -33,6 +33,15 @@ public partial class Alien : GravityEntity
 	private Player _playerCache = null;
 	private Ship _shipCache = null;
 
+	private AudioManager _audioManager;
+	private const string HIT_SFX_PATH = "res://Assets/Audio/hit_2.wav";
+
+	public override void _Ready()
+	{
+		base._Ready();
+		_audioManager = GetNode<AudioManager>("/root/AudioManager");
+	}
+
 	public override void _PhysicsProcess(double delta)
 	{
 		base._PhysicsProcess(delta);
@@ -47,7 +56,6 @@ public partial class Alien : GravityEntity
 			_targetUpdateTimer = TargetUpdateInterval;
 		}
 
-		// Move and Attack
 		if (_currentTarget != null && IsInstanceValid(_currentTarget))
 		{
 			MoveTowardsTarget(fDelta);
@@ -82,7 +90,11 @@ public partial class Alien : GravityEntity
 			float distSq = currentPos.DistanceSquaredTo(_shipCache.GlobalPosition);
 			if (distSq < closestDistSq)
 			{
-				closestTarget = _shipCache;
+				if (closestTarget == null || distSq < closestDistSq)
+				{
+					closestTarget = _shipCache;
+					closestDistSq = distSq;
+				}
 			}
 		}
 		_currentTarget = closestTarget;
@@ -109,8 +121,6 @@ public partial class Alien : GravityEntity
 
 	private void Attack(Node3D target)
 	{
-		GD.Print($"{Name} attacking {target.Name}");
-
 		if (target is Player player)
 		{
 			player.TakeDamage(AttackDamage);
@@ -134,16 +144,20 @@ public partial class Alien : GravityEntity
 	{
 		if (Health <= 0)
 			return;
+
 		Health -= amount;
+		_audioManager.PlaySFX(HIT_SFX_PATH);
+
 		if (Health <= 0)
+		{
 			Die();
+		}
 	}
 
 	private void Die()
 	{
 		if (Health <= 0 && !IsQueuedForDeletion())
 		{
-			// Emit the signal before queueing free
 			EmitSignal(SignalName.Died);
 			QueueFree();
 		}

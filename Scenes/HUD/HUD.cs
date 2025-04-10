@@ -42,7 +42,7 @@ public partial class HUD : Control
         if (_pauseButton != null)
             _pauseButton.Pressed += OnPauseButtonPressed;
         else
-            GD.PrintErr("HUD Error: PauseButton node not found!");
+            GD.PrintErr("HUD Error: PauseButton node not found");
 
         if (_timerLabel == null)
             GD.PrintErr("HUD Error: TimerLabel node not found");

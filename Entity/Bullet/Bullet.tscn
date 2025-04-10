@@ -1,0 +1,66 @@
+[gd_scene load_steps=8 format=3 uid="uid://dujsk8ogq4386"]
+
+[ext_resource type="Script" uid="uid://btuxqeqpxywk8" path="res://Entity/Bullet/Bullet.cs" id="1_xkwyg"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_qas23"]
+radius = 0.2
+height = 0.8
+
+[sub_resource type="Gradient" id="Gradient_t4sxe"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0.0309278, 0.453608, 0.757732, 0.907216, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.0673077, 0.0673077, 0.0673077, 1, 0.336538, 0.336538, 0.336538, 1, 0.625, 0.625, 0.625, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_0gd3u"]
+gradient = SubResource("Gradient_t4sxe")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6x8n8"]
+albedo_color = Color(1, 0, 0, 1)
+metallic = 0.19
+metallic_specular = 1.0
+emission_enabled = true
+emission = Color(0.74902, 0.0980392, 0, 1)
+emission_energy_multiplier = 3.95
+emission_on_uv2 = true
+rim_enabled = true
+refraction_scale = -0.22
+detail_enabled = true
+detail_albedo = SubResource("GradientTexture1D_0gd3u")
+grow = true
+grow_amount = -1.024
+use_point_size = true
+point_size = 4.0
+use_particle_trails = true
+distance_fade_mode = 1
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_xkwyg"]
+radius = 0.2
+height = 0.8
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_jheo8"]
+radius = 0.3
+
+[node name="Bullet" type="RigidBody3D" node_paths=PackedStringArray("GroundCast")]
+collision_layer = 2
+gravity_scale = 0.0
+contact_monitor = true
+max_contacts_reported = 1
+linear_damp_mode = 1
+angular_damp_mode = 1
+script = ExtResource("1_xkwyg")
+Speed = 0.0
+GroundCast = NodePath("GroundCast")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.441544, 0, 0, 0, -4.37114e-08, -0.467837, 0, 1, -2.04498e-08, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_qas23")
+surface_material_override/0 = SubResource("StandardMaterial3D_6x8n8")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_xkwyg")
+
+[node name="GroundCast" type="ShapeCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.736016, 0)
+shape = SubResource("SphereShape3D_jheo8")
+target_position = Vector3(0, -1.1, 0)

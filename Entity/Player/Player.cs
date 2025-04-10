@@ -3,9 +3,7 @@ using Godot;
 
 public partial class Player : GravityEntity, IInputReceiver
 {
-	// Services
 	private AudioManager _audioManager;
-
 	public const string PlayerGroup = "player";
 
 	[Signal]
@@ -22,6 +20,9 @@ public partial class Player : GravityEntity, IInputReceiver
 
 	[Export]
 	private Camera3D _camera;
+
+	[Export]
+	private Gun _gun;
 
 	[ExportGroup("Input")]
 	[Export(PropertyHint.Range, "0.01,1.0")]
@@ -48,14 +49,18 @@ public partial class Player : GravityEntity, IInputReceiver
 	{
 		base._Ready();
 
+		if (_gun == null)
+		{
+			_gun = GetNodeOrNull<Gun>("Pivot/Camera3D/Gun");
+			if (_gun == null)
+				GD.PrintErr($"{Name}: Gun node not found or assigned");
+		}
+
 		Input.SetMouseMode(Input.MouseModeEnum.Captured);
 		_currentHealth = MaxHealth;
 		_planetaryMovement = new PlanetaryMovementController(this);
 		_currentMovementController = _planetaryMovement;
-		if (_cameraPivot == null)
-			GD.PrintErr($"{Name}: _cameraPivot not assigned!");
-		if (_camera == null)
-			GD.PrintErr($"{Name}: _camera not assigned!");
+
 		EmitSignal(SignalName.HealthChanged, _currentHealth, MaxHealth);
 	}
 
@@ -76,6 +81,11 @@ public partial class Player : GravityEntity, IInputReceiver
 		_yawAngle = Mathf.Wrap(_yawAngle, -Mathf.Pi, Mathf.Pi);
 		if (_camera != null)
 			UpdateCameraPitch(lookDelta.Y);
+	}
+
+	public void OnShootInput()
+	{
+		_gun?.Shoot();
 	}
 
 	public void SetInputBuffer(InputBuffer buffer) => _inputBuffer = buffer;
@@ -119,7 +129,6 @@ public partial class Player : GravityEntity, IInputReceiver
 
 	public Node3D GetCameraPivot() => _cameraPivot;
 
-	// Game related methods
 	public void TakeDamage(float amount)
 	{
 		if (_currentHealth <= 0)
@@ -149,38 +158,20 @@ public partial class Player : GravityEntity, IInputReceiver
 
 	public void Heal(float amount)
 	{
-		GD.Print("Healing");
 		if (_currentHealth <= 0)
 			return;
-
 		var oldHealth = _currentHealth;
 		_currentHealth = Mathf.Min(_currentHealth + amount, MaxHealth);
-
 		if (_currentHealth > oldHealth)
 		{
 			EmitSignal(SignalName.HealthChanged, _currentHealth, MaxHealth);
-			GD.Print($"Player healed for {amount}, Current Health: {_currentHealth}/{MaxHealth}");
-		}
-		else
-		{
-			GD.Print($"Player already at max health");
 		}
 	}
 
-	public void AddAmmo(int amount)
-	{
-		GD.Print($"Player received {amount} ammo");
-	}
+	public void AddAmmo(int amount) { }
 
-	public bool EquipWeapon(PackedScene weaponScene)
+	public void ApplyGunPowerup(PowerupType type, float multiplier, float duration)
 	{
-		if (weaponScene == null)
-		{
-			GD.PrintErr("EquipWeapon called with null scene");
-			return false;
-		}
-
-		GD.Print($"Player equipped weapon: {weaponScene.ResourcePath}");
-		return true;
+		_gun?.ApplyPowerup(type, multiplier, duration);
 	}
 }
