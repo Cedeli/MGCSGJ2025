@@ -5,6 +5,7 @@ public partial class HUD : Control
 {
     private Label _timerLabel;
     private Label _roundLabel;
+    private Label _scoreLabel;
     private ProgressBar _playerHealthBar;
     private ProgressBar _shipHealthBar;
     private Button _pauseButton;
@@ -29,6 +30,7 @@ public partial class HUD : Control
 
         _timerLabel = GetNodeOrNull<Label>("TopLeftPanel/TopLeftInfo/TimerLabel");
         _roundLabel = GetNodeOrNull<Label>("TopLeftPanel/TopLeftInfo/RoundLabel");
+        _scoreLabel = GetNodeOrNull<Label>("TopLeftPanel/TopLeftInfo/ScoreLabel");
         _playerHealthBar = GetNodeOrNull<ProgressBar>(
             "LeftHealthBars/StatusPanel/BarsContainer/PlayerHealthBar"
         );
@@ -38,29 +40,20 @@ public partial class HUD : Control
         _pauseButton = GetNodeOrNull<Button>("PauseButton");
 
         if (_pauseButton != null)
-        {
             _pauseButton.Pressed += OnPauseButtonPressed;
-        }
         else
             GD.PrintErr("HUD Error: PauseButton node not found!");
 
-        // avoid errors in the future
         if (_timerLabel == null)
-            GD.PrintErr(
-                "HUD Error: TimerLabel node not found at 'TopLeftPanel/TopLeftInfo/TimerLabel'"
-            );
+            GD.PrintErr("HUD Error: TimerLabel node not found");
         if (_roundLabel == null)
-            GD.PrintErr(
-                "HUD Error: RoundLabel node not found at 'TopLeftPanel/TopLeftInfo/RoundLabel'"
-            );
+            GD.PrintErr("HUD Error: RoundLabel node not found");
+        if (_scoreLabel == null)
+            GD.PrintErr("HUD Error: ScoreLabel node not found");
         if (_playerHealthBar == null)
-            GD.PrintErr(
-                "HUD Error: PlayerHealthBar node not found at 'LeftHealthBars/StatusPanel/BarsContainer/PlayerHealthBar'"
-            );
+            GD.PrintErr("HUD Error: PlayerHealthBar node not found");
         if (_shipHealthBar == null)
-            GD.PrintErr(
-                "HUD Error: ShipHealthBar node not found at 'LeftHealthBars/StatusPanel/BarsContainer/ShipHealthBar'"
-            );
+            GD.PrintErr("HUD Error: ShipHealthBar node not found");
 
         CallDeferred(nameof(ConnectToGameSignals));
     }
@@ -72,27 +65,27 @@ public partial class HUD : Control
         {
             _gameScene.RoundChanged += UpdateRound;
             _gameScene.RoundTimerUpdate += UpdateTimer;
-            UpdateRound(_gameScene.GetCurrentRound()); // sync
+            _gameScene.ScoreUpdated += UpdateScore;
+            UpdateRound(_gameScene.GetCurrentRound());
+            UpdateScore(_gameScene.GetCurrentScore());
         }
         else
             GD.PrintErr("HUD Error: Could not find Game scene to connect signals");
 
-        // Find Player via group
         _player = GetNodeFromGroupHelper<Player>(Player.PlayerGroup);
         if (_player != null)
         {
             _player.HealthChanged += UpdatePlayerHealth;
-            UpdatePlayerHealth(_player.CurrentHealth, _player.MaxHealth); //sync
+            UpdatePlayerHealth(_player.CurrentHealth, _player.MaxHealth);
         }
         else
             GD.PrintErr("HUD Error: Could not find Player for health signal");
 
-        // Find Ship via group
         _ship = GetNodeFromGroupHelper<Ship>(Ship.ShipGroup);
         if (_ship != null)
         {
             _ship.HullChanged += UpdateShipHealth;
-            UpdateShipHealth(_ship.CurrentHull, _ship.MaxHull); // sync
+            UpdateShipHealth(_ship.CurrentHull, _ship.MaxHull);
         }
         else
             GD.PrintErr("HUD Error: Could not find Ship for hull signal");
@@ -100,7 +93,50 @@ public partial class HUD : Control
 
     public override void _ExitTree()
     {
-        // Future implementation
+        if (_gameScene != null && IsInstanceValid(_gameScene))
+        {
+            if (
+                _gameScene.IsConnected(
+                    Game.SignalName.RoundChanged,
+                    Callable.From<int>(UpdateRound)
+                )
+            )
+                _gameScene.RoundChanged -= UpdateRound;
+            if (
+                _gameScene.IsConnected(
+                    Game.SignalName.RoundTimerUpdate,
+                    Callable.From<float>(UpdateTimer)
+                )
+            )
+                _gameScene.RoundTimerUpdate -= UpdateTimer;
+            if (
+                _gameScene.IsConnected(
+                    Game.SignalName.ScoreUpdated,
+                    Callable.From<int>(UpdateScore)
+                )
+            )
+                _gameScene.ScoreUpdated -= UpdateScore;
+        }
+        if (_player != null && IsInstanceValid(_player))
+        {
+            if (
+                _player.IsConnected(
+                    Player.SignalName.HealthChanged,
+                    Callable.From<float, float>(UpdatePlayerHealth)
+                )
+            )
+                _player.HealthChanged -= UpdatePlayerHealth;
+        }
+        if (_ship != null && IsInstanceValid(_ship))
+        {
+            if (
+                _ship.IsConnected(
+                    Ship.SignalName.HullChanged,
+                    Callable.From<float, float>(UpdateShipHealth)
+                )
+            )
+                _ship.HullChanged -= UpdateShipHealth;
+        }
     }
 
     // Callbacks
@@ -114,6 +150,12 @@ public partial class HUD : Control
     {
         if (_roundLabel != null)
             _roundLabel.Text = $"Round: {round}";
+    }
+
+    public void UpdateScore(int score)
+    {
+        if (_scoreLabel != null)
+            _scoreLabel.Text = $"Score: {score}";
     }
 
     public void UpdatePlayerHealth(float currentHealth, float maxHealth)

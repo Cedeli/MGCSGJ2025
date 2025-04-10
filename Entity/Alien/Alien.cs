@@ -3,146 +3,151 @@ using Godot;
 
 public partial class Alien : GravityEntity
 {
-    [ExportGroup("Stats")]
-    [Export]
-    public float Health = 100.0f;
+	[Signal]
+	public delegate void DiedEventHandler();
 
-    [Export]
-    public float AttackDamage = 10.0f;
+	[ExportGroup("Stats")]
+	[Export]
+	public float Health = 100.0f;
 
-    [Export]
-    public float AttackCooldown = 1.0f;
+	[Export]
+	public float AttackDamage = 10.0f;
 
-    [ExportGroup("AI Behavior")]
-    [Export]
-    public float MoveForce = 50.0f;
+	[Export]
+	public float AttackCooldown = 1.0f;
 
-    [Export]
-    public float TargetUpdateInterval = 0.5f;
+	[ExportGroup("AI Behavior")]
+	[Export]
+	public float MoveForce = 50.0f;
 
-    [Export]
-    public float AttackRange = 3.0f;
+	[Export]
+	public float TargetUpdateInterval = 0.5f;
 
-    private Node3D _currentTarget = null;
-    private float _targetUpdateTimer = 0.0f;
-    private float _attackTimer = 0.0f;
+	[Export]
+	public float AttackRange = 3.0f;
 
-    private Player _playerCache = null;
-    private Ship _shipCache = null;
+	private Node3D _currentTarget = null;
+	private float _targetUpdateTimer = 0.0f;
+	private float _attackTimer = 0.0f;
 
-    public override void _PhysicsProcess(double delta)
-    {
-        base._PhysicsProcess(delta);
+	private Player _playerCache = null;
+	private Ship _shipCache = null;
 
-        float fDelta = (float)delta;
-        _targetUpdateTimer -= fDelta;
-        _attackTimer -= fDelta;
+	public override void _PhysicsProcess(double delta)
+	{
+		base._PhysicsProcess(delta);
 
-        if (_targetUpdateTimer <= 0f)
-        {
-            FindClosestTarget();
-            _targetUpdateTimer = TargetUpdateInterval;
-        }
+		float fDelta = (float)delta;
+		_targetUpdateTimer -= fDelta;
+		_attackTimer -= fDelta;
 
-        // Move and Attack
-        if (_currentTarget != null && IsInstanceValid(_currentTarget))
-        {
-            MoveTowardsTarget(fDelta);
-            CheckAttackRange();
-        }
-    }
+		if (_targetUpdateTimer <= 0f)
+		{
+			FindClosestTarget();
+			_targetUpdateTimer = TargetUpdateInterval;
+		}
 
-    private void FindClosestTarget()
-    {
-        if (_playerCache == null || !IsInstanceValid(_playerCache))
-            _playerCache = GetNodeFromGroupHelper<Player>(Player.PlayerGroup);
+		// Move and Attack
+		if (_currentTarget != null && IsInstanceValid(_currentTarget))
+		{
+			MoveTowardsTarget(fDelta);
+			CheckAttackRange();
+		}
+	}
 
-        if (_shipCache == null || !IsInstanceValid(_shipCache))
-            _shipCache = GetNodeFromGroupHelper<Ship>(Ship.ShipGroup);
+	private void FindClosestTarget()
+	{
+		if (_playerCache == null || !IsInstanceValid(_playerCache))
+			_playerCache = GetNodeFromGroupHelper<Player>(Player.PlayerGroup);
 
-        Node3D closestTarget = null;
-        float closestDistSq = float.MaxValue;
-        Vector3 currentPos = GlobalPosition;
+		if (_shipCache == null || !IsInstanceValid(_shipCache))
+			_shipCache = GetNodeFromGroupHelper<Ship>(Ship.ShipGroup);
 
-        if (_playerCache != null && IsInstanceValid(_playerCache) && !_playerCache.IsDead())
-        {
-            float distSq = currentPos.DistanceSquaredTo(_playerCache.GlobalPosition);
-            if (distSq < closestDistSq)
-            {
-                closestDistSq = distSq;
-                closestTarget = _playerCache;
-            }
-        }
+		Node3D closestTarget = null;
+		float closestDistSq = float.MaxValue;
+		Vector3 currentPos = GlobalPosition;
 
-        if (_shipCache != null && IsInstanceValid(_shipCache) && !_shipCache.IsDead())
-        {
-            float distSq = currentPos.DistanceSquaredTo(_shipCache.GlobalPosition);
-            if (distSq < closestDistSq)
-            {
-                closestTarget = _shipCache;
-            }
-        }
-        _currentTarget = closestTarget;
-    }
+		if (_playerCache != null && IsInstanceValid(_playerCache) && !_playerCache.IsDead())
+		{
+			float distSq = currentPos.DistanceSquaredTo(_playerCache.GlobalPosition);
+			if (distSq < closestDistSq)
+			{
+				closestDistSq = distSq;
+				closestTarget = _playerCache;
+			}
+		}
 
-    private void MoveTowardsTarget(float delta)
-    {
-        Vector3 directionToTarget = (_currentTarget.GlobalPosition - GlobalPosition).Normalized();
-        ApplyCentralForce(directionToTarget * MoveForce);
-    }
+		if (_shipCache != null && IsInstanceValid(_shipCache) && !_shipCache.IsDead())
+		{
+			float distSq = currentPos.DistanceSquaredTo(_shipCache.GlobalPosition);
+			if (distSq < closestDistSq)
+			{
+				closestTarget = _shipCache;
+			}
+		}
+		_currentTarget = closestTarget;
+	}
 
-    private void CheckAttackRange()
-    {
-        if (_attackTimer > 0f)
-            return;
+	private void MoveTowardsTarget(float delta)
+	{
+		Vector3 directionToTarget = (_currentTarget.GlobalPosition - GlobalPosition).Normalized();
+		ApplyCentralForce(directionToTarget * MoveForce);
+	}
 
-        float distSq = GlobalPosition.DistanceSquaredTo(_currentTarget.GlobalPosition);
-        if (distSq < AttackRange * AttackRange)
-        {
-            Attack(_currentTarget);
-            _attackTimer = AttackCooldown;
-        }
-    }
+	private void CheckAttackRange()
+	{
+		if (_attackTimer > 0f)
+			return;
 
-    private void Attack(Node3D target)
-    {
-        GD.Print($"{Name} attacking {target.Name}");
+		float distSq = GlobalPosition.DistanceSquaredTo(_currentTarget.GlobalPosition);
+		if (distSq < AttackRange * AttackRange)
+		{
+			Attack(_currentTarget);
+			_attackTimer = AttackCooldown;
+		}
+	}
 
-        if (target is Player player)
-        {
-            player.TakeDamage(AttackDamage);
-        }
-        else if (target is Ship ship)
-        {
-            ship.TakeDamage(AttackDamage);
-        }
-    }
+	private void Attack(Node3D target)
+	{
+		GD.Print($"{Name} attacking {target.Name}");
 
-    private T GetNodeFromGroupHelper<T>(string group)
-        where T : Node
-    {
-        var nodes = GetTree().GetNodesInGroup(group);
-        if (nodes.Count > 0 && nodes[0] is T typedNode)
-            return typedNode;
-        return null;
-    }
+		if (target is Player player)
+		{
+			player.TakeDamage(AttackDamage);
+		}
+		else if (target is Ship ship)
+		{
+			ship.TakeDamage(AttackDamage);
+		}
+	}
 
-    public void TakeDamage(float amount)
-    {
-        if (Health <= 0)
-            return;
-        Health -= amount;
-        if (Health <= 0)
-            Die();
-    }
+	private T GetNodeFromGroupHelper<T>(string group)
+		where T : Node
+	{
+		var nodes = GetTree().GetNodesInGroup(group);
+		if (nodes.Count > 0 && nodes[0] is T typedNode)
+			return typedNode;
+		return null;
+	}
 
-    private void Die()
-    {
-        if (Health <= 0 && !IsQueuedForDeletion())
-        {
-            QueueFree();
-        }
-    }
+	public void TakeDamage(float amount)
+	{
+		if (Health <= 0)
+			return;
+		Health -= amount;
+		if (Health <= 0)
+			Die();
+	}
 
-    public bool IsDead() => Health <= 0;
+	private void Die()
+	{
+		if (Health <= 0 && !IsQueuedForDeletion())
+		{
+			// Emit the signal before queueing free
+			EmitSignal(SignalName.Died);
+			QueueFree();
+		}
+	}
+
+	public bool IsDead() => Health <= 0;
 }

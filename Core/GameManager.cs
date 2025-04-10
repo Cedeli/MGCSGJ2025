@@ -14,6 +14,8 @@ public partial class GameManager : Node
     private Dictionary<string, PackedScene> _sceneCache = new Dictionary<string, PackedScene>();
     private Stack<Node> _sceneStack = new Stack<Node>();
 
+    private int _lastGameScore = 0;
+
     public override void _Ready()
     {
         if (sceneContainer == null)
@@ -41,6 +43,17 @@ public partial class GameManager : Node
         {
             GD.Print($"{Name}: Using pre-assigned scene container.");
         }
+    }
+
+    public void SetLastGameScore(int score)
+    {
+        _lastGameScore = score;
+        GD.Print($"GameManager: Last game score set to {_lastGameScore}");
+    }
+
+    public int GetLastGameScore()
+    {
+        return _lastGameScore;
     }
 
     public void PushScene(string scenePath, bool hideAndPausePrevious = true)

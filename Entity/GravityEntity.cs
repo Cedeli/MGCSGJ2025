@@ -1,13 +1,19 @@
-using Godot;
 using System;
 using System.Collections.Generic;
+using Godot;
 
 public partial class GravityEntity : RigidBody3D
 {
-    [ExportGroup("Movement")] [Export] public float MoveSpeed = 5.0f;
-    [Export] public float JumpImpulse = 10.0f;
+    [ExportGroup("Movement")]
+    [Export]
+    public float MoveSpeed = 5.0f;
 
-    [ExportGroup("Components")] [Export] protected ShapeCast3D GroundCast;
+    [Export]
+    public float JumpImpulse = 10.0f;
+
+    [ExportGroup("Components")]
+    [Export]
+    protected ShapeCast3D GroundCast;
 
     [Export(PropertyHint.Range, "0.1, 5.0, 0.1")]
     protected float GroundCastLength = 0.5f;
@@ -112,7 +118,8 @@ public partial class GravityEntity : RigidBody3D
             var influenceRadius = celestialBody.Radius * GravityInfluenceRadiusMultiplier;
             var influenceRadiusSqr = influenceRadius * influenceRadius;
 
-            if (!(distanceSqr < influenceRadiusSqr) || !(distanceSqr < closestDistanceSqr)) continue;
+            if (!(distanceSqr < influenceRadiusSqr) || !(distanceSqr < closestDistanceSqr))
+                continue;
             closestDistanceSqr = distanceSqr;
             closestBody = celestialBody;
         }
@@ -124,7 +131,9 @@ public partial class GravityEntity : RigidBody3D
     {
         if (_currentGravitySource != null && IsInstanceValid(_currentGravitySource))
         {
-            _targetGravityDirection = (_currentGravitySource.GlobalPosition - GlobalPosition).Normalized();
+            _targetGravityDirection = (
+                _currentGravitySource.GlobalPosition - GlobalPosition
+            ).Normalized();
             var surfaceGravity = _currentGravitySource.SurfaceGravity;
             var distanceFalloff = CalculateGravityFalloff();
             _effectiveGravityMagnitude = surfaceGravity * distanceFalloff;
@@ -136,7 +145,8 @@ public partial class GravityEntity : RigidBody3D
         }
 
         _currentGravityDirection = _currentGravityDirection
-            .Lerp(_targetGravityDirection, delta * GravityDirectionLerpSpeed).Normalized();
+            .Lerp(_targetGravityDirection, delta * GravityDirectionLerpSpeed)
+            .Normalized();
     }
 
     private float CalculateGravityFalloff()
@@ -147,7 +157,8 @@ public partial class GravityEntity : RigidBody3D
         var distance = GlobalPosition.DistanceTo(_currentGravitySource.GlobalPosition);
         var surfaceRadius = _currentGravitySource.Radius;
 
-        if (distance < 0.01f) return 1.0f;
+        if (distance < 0.01f)
+            return 1.0f;
 
         return distance <= surfaceRadius ? 1.0f : Mathf.Pow(surfaceRadius / distance, 2);
     }
@@ -196,9 +207,10 @@ public partial class GravityEntity : RigidBody3D
 
         if (forward.LengthSquared() < 0.001f)
         {
-            forward = Mathf.Abs(up.Dot(Vector3.Forward)) > 0.999f
-                ? (Vector3.Right - up * up.Dot(Vector3.Right)).Normalized()
-                : (Vector3.Forward - up * up.Dot(Vector3.Forward)).Normalized();
+            forward =
+                Mathf.Abs(up.Dot(Vector3.Forward)) > 0.999f
+                    ? (Vector3.Right - up * up.Dot(Vector3.Right)).Normalized()
+                    : (Vector3.Forward - up * up.Dot(Vector3.Forward)).Normalized();
         }
 
         var right = up.Cross(forward).Normalized();

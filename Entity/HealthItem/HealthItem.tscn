@@ -1,6 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://du6fekeeg1n4k"]
+[gd_scene load_steps=6 format=3 uid="uid://47knx42tism6"]
 
-[ext_resource type="Script" uid="uid://cky31yrr6hqc5" path="res://Entity/Item/Item.cs" id="1_item_cs"]
+[ext_resource type="Script" uid="uid://ihx0vqjawna4" path="res://Entity/HealthItem/HealthItem.cs" id="1_lntxa"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_item"]
 radius = 0.3
@@ -10,17 +10,15 @@ radius = 0.3
 height = 0.6
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_item"]
-albedo_color = Color(0.9, 0.9, 0.2, 1)
+albedo_color = Color(0.2, 0.9, 0.2, 1)
 metallic = 0.1
 roughness = 0.7
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_groundcast_item"]
 radius = 0.1
 
-[node name="Item" type="RigidBody3D" node_paths=PackedStringArray("GroundCast")]
-script = ExtResource("1_item_cs")
-MoveSpeed = 0.0
-JumpImpulse = 0.0
+[node name="HealthItem" type="RigidBody3D" node_paths=PackedStringArray("GroundCast")]
+script = ExtResource("1_lntxa")
 GroundCast = NodePath("GroundCast")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
