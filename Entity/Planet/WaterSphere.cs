@@ -1,68 +1,69 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 [Tool]
 public partial class WaterSphere : Node3D
 {
-    #region Nodes
-
     private MeshInstance3D _waterMeshInstance;
     private Planet _parentPlanet;
 
     private const string WaterMeshInstanceNodeName = "WaterMeshInstance3D";
 
-    #endregion
-
-    #region Exports
+    [Export] public Shader WaterShaderResource { get; set; }
 
     [Export(PropertyHint.Range, "0.0, 1.0, 0.01")]
     public float WaterLevel { get; set; } = 0.98f;
 
-    [Export]
-    public Color WaterColor { get; set; } = new Color(0.05f, 0.3f, 0.5f, 0.8f);
-
-    [Export(PropertyHint.Range, "0.0, 5.0, 0.1")]
-    public float FresnelPower { get; set; } = 2.0f;
+    [Export(PropertyHint.ColorNoAlpha)] public Color ShallowColorValue { get; set; } = new(0.25f, 0.75f, 1.0f);
 
     [Export(PropertyHint.Range, "0.0, 1.0, 0.01")]
-    public float WaterTransparency { get; set; } = 0.7f;
+    public float ShallowColorAlpha { get; set; } = 0.7f;
+
+    [Export(PropertyHint.ColorNoAlpha)] public Color DeepColorValue { get; set; } = new(0.0f, 0.15f, 0.4f);
 
     [Export(PropertyHint.Range, "0.0, 1.0, 0.01")]
-    public float WaterGlossiness { get; set; } = 0.9f;
-
-    [Export(PropertyHint.Range, "0.0, 2.0, 0.01")]
-    public float WaveHeight { get; set; } = 0.02f;
-
-    [Export(PropertyHint.Range, "0.1, 10.0, 0.1")]
-    public float WaveSpeed { get; set; } = 1.0f;
+    public float DeepColorAlpha { get; set; } = 1.0f;
 
     [Export(PropertyHint.Range, "0.1, 20.0, 0.1")]
-    public float WaveScale { get; set; } = 5.0f;
+    public float DepthDistance { get; set; } = 5.0f;
 
-    [Export]
-    public bool FollowPlanetRadius { get; set; } = true;
+    [Export(PropertyHint.ColorNoAlpha)] public Color FoamColorValue { get; set; } = new(1.0f, 1.0f, 1.0f);
 
-    #endregion
+    [Export(PropertyHint.Range, "0.0, 1.0, 0.01")]
+    public float FoamColorAlpha { get; set; } = 1.0f;
 
-    #region Godot Lifecycle Methods
+    [Export(PropertyHint.Range, "0.0, 2.0, 0.01")]
+    public float FoamDepthThreshold { get; set; } = 0.2f;
+
+    [Export(PropertyHint.Range, "0.01, 1.0, 0.01")]
+    public float FoamSoftness { get; set; } = 0.5f;
+
+    [Export(PropertyHint.Range, "0.0, 1.0, 0.01")]
+    public float WaterGlossiness { get; set; } = 0.95f;
+
+    [Export(PropertyHint.Range, "0.0, 1.0, 0.01")]
+    public float WaterMetallic { get; set; }
+
+    [Export] public bool FollowPlanetRadius { get; set; } = true;
 
     public override void _Ready()
     {
         base._Ready();
-        
+
+        var waterMesh = GetNode<MeshInstance3D>(WaterMeshInstanceNodeName);
+        if (waterMesh == null)
+        {
+            GD.PushError($"WaterSphere: Could not find MeshInstance3D node named '{WaterMeshInstanceNodeName}'.");
+            _waterMeshInstance = new MeshInstance3D();
+            _waterMeshInstance.Name = WaterMeshInstanceNodeName;
+            AddChild(_waterMeshInstance);
+        }
+
         FindParentPlanet();
         CreateWaterSphere();
-        
-        if (_parentPlanet != null)
-        {
-            _parentPlanet.Connect("radius_changed", Callable.From(OnPlanetRadiusChanged));
-        }
-    }
 
-    public override void _Process(double delta)
-    {
-        base._Process(delta);
-        UpdateShaderTime((float)delta);
+        _parentPlanet?.Connect("radius_changed", Callable.From(OnPlanetRadiusChanged));
     }
 
     public override void _ExitTree()
@@ -71,29 +72,48 @@ public partial class WaterSphere : Node3D
         {
             _parentPlanet.Disconnect("radius_changed", Callable.From(OnPlanetRadiusChanged));
         }
+
         base._ExitTree();
     }
 
     public override string[] _GetConfigurationWarnings()
     {
-        var warnings = new System.Collections.Generic.List<string>();
-        
-        if (_waterMeshInstance == null)
+        var warnings = new List<string>();
+
+        if (!HasNode(WaterMeshInstanceNodeName))
         {
-            warnings.Add($"Required node '{WaterMeshInstanceNodeName}' (MeshInstance3D) is missing.");
+            warnings.Add(
+                $"Required node '{WaterMeshInstanceNodeName}' (MeshInstance3D) is missing or has a different name.");
         }
 
-        if (_parentPlanet == null)
+        if (WaterShaderResource == null)
         {
-            warnings.Add("WaterSphere should be a child of a Planet node.");
+            warnings.Add("The 'Water Shader Resource' property must be assigned a valid Shader resource.");
         }
+
+        Node parent = GetParent();
+        bool foundPlanet = false;
+        while (parent != null)
+        {
+            if (parent is Planet)
+            {
+                foundPlanet = true;
+                break;
+            }
+
+            if (parent.GetParent() == null) break;
+            parent = parent.GetParent();
+        }
+
+        if (!foundPlanet)
+        {
+            warnings.Add(
+                "WaterSphere performs best as a child (direct or indirect) of a Planet node for radius synchronization.");
+        }
+
 
         return warnings.ToArray();
     }
-
-    #endregion
-
-    #region Initialization Methods
 
     private void FindParentPlanet()
     {
@@ -105,40 +125,34 @@ public partial class WaterSphere : Node3D
                 _parentPlanet = planet;
                 break;
             }
-            
+
             if (parent.GetParent() == null) break;
             parent = parent.GetParent();
         }
-        
-        if (_parentPlanet == null)
+
+        if (_parentPlanet == null && Engine.IsEditorHint())
         {
-            GD.PushWarning("WaterSphere: No parent Planet found. Water radius will not adjust automatically.");
+            GD.Print(
+                "WaterSphere: No parent Planet found during FindParentPlanet. Water radius might not sync automatically if 'Follow Planet Radius' is enabled.");
         }
     }
 
-    #endregion
-
-    #region Water Sphere Creation
-
     public void CreateWaterSphere()
     {
-        float radius = CalculateWaterRadius();
-        
-        // Create a sphere mesh for water
+        if (_waterMeshInstance == null) return;
+
+        var radius = CalculateWaterRadius();
+
         var sphereMesh = new SphereMesh();
         sphereMesh.Radius = radius;
         sphereMesh.Height = radius * 2;
         sphereMesh.RadialSegments = 64;
         sphereMesh.Rings = 32;
-        
-        // Create the water material with fresnel effect
+
         var waterMaterial = CreateWaterMaterial();
-        
-        // Apply to the mesh instance
+
         _waterMeshInstance.Mesh = sphereMesh;
         _waterMeshInstance.MaterialOverride = waterMaterial;
-        
-        GD.Print($"WaterSphere: Created water sphere with radius {radius}");
     }
 
     private float CalculateWaterRadius()
@@ -147,127 +161,73 @@ public partial class WaterSphere : Node3D
         {
             return _parentPlanet.Radius * WaterLevel;
         }
-        
-        // Default radius if no planet is found
-        return 10.0f * WaterLevel;
+
+        var nodeParent = GetParent<Node3D>();
+        if (nodeParent != null)
+        {
+            return nodeParent.Scale.X * WaterLevel;
+        }
+
+        return 1.0f * WaterLevel;
     }
 
     private ShaderMaterial CreateWaterMaterial()
     {
+        if (WaterShaderResource == null)
+        {
+            GD.PushError("WaterSphere: Cannot create material, WaterShaderResource is not set.");
+            return null;
+        }
+
         var shaderMaterial = new ShaderMaterial();
-        shaderMaterial.Shader = CreateWaterShader();
-        
-        // Set initial parameters
-        shaderMaterial.SetShaderParameter("water_color", WaterColor);
-        shaderMaterial.SetShaderParameter("fresnel_power", FresnelPower);
-        shaderMaterial.SetShaderParameter("transparency", WaterTransparency);
-        shaderMaterial.SetShaderParameter("glossiness", WaterGlossiness);
-        shaderMaterial.SetShaderParameter("wave_height", WaveHeight);
-        shaderMaterial.SetShaderParameter("wave_speed", WaveSpeed);
-        shaderMaterial.SetShaderParameter("wave_scale", WaveScale);
-        shaderMaterial.SetShaderParameter("time", 0.0f);
-        
+        shaderMaterial.Shader = WaterShaderResource;
+
+        SetMaterialParameters(shaderMaterial);
+
         return shaderMaterial;
     }
 
-    private Shader CreateWaterShader()
+    private void SetMaterialParameters(ShaderMaterial material)
     {
-        var shader = new Shader();
-        shader.Code = @"
-shader_type spatial;
-render_mode blend_mix, depth_prepass_alpha, diffuse_lambert, specular_schlick_ggx;
+        if (material == null) return;
 
-uniform vec4 water_color : source_color = vec4(0.05, 0.3, 0.5, 0.8);
-uniform float fresnel_power : hint_range(0.0, 5.0) = 2.0;
-uniform float transparency : hint_range(0.0, 1.0) = 0.7;
-uniform float glossiness : hint_range(0.0, 1.0) = 0.9;
-uniform float wave_height : hint_range(0.0, 2.0) = 0.02;
-uniform float wave_speed : hint_range(0.1, 10.0) = 1.0;
-uniform float wave_scale : hint_range(0.1, 20.0) = 5.0;
-uniform float time = 0.0;
-
-varying vec3 vertex_pos;
-varying vec3 normal_interp;
-
-void vertex() {
-    vertex_pos = VERTEX;
-    
-    // Add some gentle wave displacement
-    float wave = sin(VERTEX.x * wave_scale + time * wave_speed) * 
-                cos(VERTEX.z * wave_scale + time * wave_speed * 0.8) * 
-                sin(VERTEX.y * wave_scale + time * wave_speed * 1.2);
-    
-    VERTEX += NORMAL * wave * wave_height;
-    normal_interp = NORMAL;
-}
-
-void fragment() {
-    // Basic water color
-    ALBEDO = water_color.rgb;
-    
-    // Calculate fresnel effect
-    vec3 view_dir = normalize(CAMERA_POSITION_WORLD - VERTEX);
-    float fresnel = pow(1.0 - dot(NORMAL, view_dir), fresnel_power);
-    
-    // Apply fresnel to alpha and reflection
-    ALPHA = min(1.0, water_color.a + fresnel * 0.5);
-    
-    // Water properties
-    METALLIC = 0.1;
-    ROUGHNESS = 1.0 - glossiness;
-    SPECULAR = 0.5 + fresnel * 0.2;
-    
-    // Add refraction
-    REFRACTION = 0.05 * (1.0 - fresnel);
-    
-    // Subsurface scattering effect
-    SSS_STRENGTH = 0.5;
-    
-    // Control transparency
-    ALPHA *= transparency;
-}
-";
-        return shader;
+        material.SetShaderParameter("shallow_color", new Color(ShallowColorValue, ShallowColorAlpha));
+        material.SetShaderParameter("deep_color", new Color(DeepColorValue, DeepColorAlpha));
+        material.SetShaderParameter("depth_distance", DepthDistance);
+        material.SetShaderParameter("foam_color", new Color(FoamColorValue, FoamColorAlpha));
+        material.SetShaderParameter("foam_depth_threshold", FoamDepthThreshold);
+        material.SetShaderParameter("foam_softness", FoamSoftness);
+        material.SetShaderParameter("roughness", 1.0f - WaterGlossiness);
+        material.SetShaderParameter("metallic", WaterMetallic);
     }
 
-    #endregion
-
-    #region Update Methods
-
-    private void UpdateShaderTime(float delta)
-    {
-        if (_waterMeshInstance?.MaterialOverride is ShaderMaterial material)
-        {
-            float currentTime = material.GetShaderParameter("time").As<float>();
-            float newTime = currentTime + delta;
-            material.SetShaderParameter("time", newTime);
-        }
-    }
 
     public void UpdateWaterParameters()
     {
         if (_waterMeshInstance?.MaterialOverride is ShaderMaterial material)
         {
-            material.SetShaderParameter("water_color", WaterColor);
-            material.SetShaderParameter("fresnel_power", FresnelPower);
-            material.SetShaderParameter("transparency", WaterTransparency);
-            material.SetShaderParameter("glossiness", WaterGlossiness);
-            material.SetShaderParameter("wave_height", WaveHeight);
-            material.SetShaderParameter("wave_speed", WaveSpeed);
-            material.SetShaderParameter("wave_scale", WaveScale);
+            SetMaterialParameters(material);
         }
-        
+
         UpdateWaterRadius();
     }
 
     private void UpdateWaterRadius()
     {
-        float radius = CalculateWaterRadius();
-        
-        if (_waterMeshInstance?.Mesh is SphereMesh sphereMesh)
+        if (_waterMeshInstance == null) return;
+        var radius = CalculateWaterRadius();
+
+        switch (_waterMeshInstance.Mesh)
         {
-            sphereMesh.Radius = radius;
-            sphereMesh.Height = radius * 2;
+            case SphereMesh sphereMesh when Mathf.IsEqualApprox(sphereMesh.Radius, radius):
+                return;
+            case SphereMesh sphereMesh:
+                sphereMesh.Radius = radius;
+                sphereMesh.Height = radius * 2;
+                break;
+            case null:
+                CreateWaterSphere();
+                break;
         }
     }
 
@@ -279,27 +239,31 @@ void fragment() {
         }
     }
 
-    #endregion
-
-    #region Public Methods
 
     [Signal]
     public delegate void WaterParametersChangedEventHandler();
 
-    // Method to be called when properties change in the editor
+
     public void NotifyPropertyChanged()
     {
+        if (!Engine.IsEditorHint()) return;
+
         UpdateWaterParameters();
         EmitSignal(SignalName.WaterParametersChanged);
     }
 
-    // Public method to update water level and recalculate radius
     public void SetWaterLevel(float level)
     {
         WaterLevel = Mathf.Clamp(level, 0.0f, 1.0f);
         UpdateWaterRadius();
-        NotifyPropertyChanged();
-    }
+        if (_waterMeshInstance?.MaterialOverride is ShaderMaterial material)
+        {
+            SetMaterialParameters(material);
+        }
 
-    #endregion
+        if (Engine.IsEditorHint())
+        {
+            NotifyPropertyChanged();
+        }
+    }
 }

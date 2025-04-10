@@ -93,15 +93,6 @@ public partial class Planet : CelestialBody
     [Export(PropertyHint.File, "*.gdshader")]
     public string PlanetShaderPath { get; set; } = "";
 
-    [Export(PropertyHint.Range, "0.8, 1.2, 0.001")]
-    public float MinAltitudeFactor { get; set; } = 0.98f;
-
-    [Export(PropertyHint.Range, "0.8, 1.2, 0.001")]
-    public float MaxAltitudeFactor { get; set; } = 1.04f;
-
-    [Export(PropertyHint.Range, "0.0, 1.0, 0.01")]
-    public float TextureInfluence { get; set; } = 0.8f;
-
     [Export(PropertyHint.Range, "0.0, 1.0, 0.01")]
     public float PlanetRoughness { get; set; } = 0.8f;
 
@@ -279,17 +270,9 @@ public partial class Planet : CelestialBody
             return;
         }
 
-        if (_meshInstance.GetSurfaceOverrideMaterial(0) is ShaderMaterial currentMaterial)
-        {
-            currentMaterial.SetShaderParameter("base_radius", Radius);
-            currentMaterial.SetShaderParameter("min_altitude_factor", MinAltitudeFactor);
-            currentMaterial.SetShaderParameter("max_altitude_factor", MaxAltitudeFactor);
-            currentMaterial.SetShaderParameter("texture_influence", TextureInfluence);
-            currentMaterial.SetShaderParameter("roughness", PlanetRoughness);
-        }
-
-        GD.Print(
-            $"Planet '{Name}': Shader parameters updated (Radius: {Radius}, MinAlt: {MinAltitudeFactor}, MaxAlt: {MaxAltitudeFactor}).");
+        if (_meshInstance.GetSurfaceOverrideMaterial(0) is not ShaderMaterial currentMaterial) return;
+        currentMaterial.SetShaderParameter("base_radius", Radius);
+        currentMaterial.SetShaderParameter("roughness", PlanetRoughness);
     }
 
     protected override void UpdateShapeAndMesh()
