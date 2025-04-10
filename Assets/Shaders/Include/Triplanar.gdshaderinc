@@ -3,7 +3,9 @@
 // Modified noise functions from Unity to Godot by Henrik Söderlund
 // Code inherited from https://github.com/SebLague/Solar-System
 
-#include "res://materials/shaders/include/Math.gdshaderinc"
+// Problem to access these files when Triplanar included from compute shader
+// for some reason
+#include "res://Assets/Shaders/Include/Math.gdshaderinc"
 
 vec3 UnpackNormal(vec4 packednormal)
 {
@@ -118,8 +120,8 @@ vec3 triplanarNormalTangentSpaceWithOffset(vec3 vertPos, vec3 normal, float scal
 	return ObjectToTangentVector(tangent, normal, textureNormal);
 }
 
+// https://bgolus.medium.com/normal-mapping-for-a-triplanar-shader-10bf39dca05a#d655
 vec3 triplanarNormalUDN(vec3 vertPos, vec3 normal, float scale, vec2 offset, sampler2D normalMap) {
-	// https://bgolus.medium.com/normal-mapping-for-a-triplanar-shader-10bf39dca05a#d655
 	// Calculate triplanar blend
 	vec3 blendWeight = saturate3(normal*normal*normal*normal);
 	// Divide blend weight by the sum of its components. This will make x + y + z = 1

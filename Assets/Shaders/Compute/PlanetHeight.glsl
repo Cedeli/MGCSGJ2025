@@ -1,35 +1,57 @@
 #[compute]
 #version 450
 
+#include "res://Assets/Shaders/Include/Math.gdshaderinc"
+#include "res://Assets/Shaders/Include/SimplexNoise.gdshaderinc"
+#include "res://Assets/Shaders/Include/FractalNoise.gdshaderinc"
+
 layout(local_size_x = 512, local_size_y = 1, local_size_z = 1) in;
 
-// SSBO using std430 layout (vec3 requires 16-byte alignment)
-layout(set = 0, binding = 0, std430) readonly buffer VertexBuffer {
-    vec3 vertices[];
-};
+layout (set = 0, binding = 0, std430) readonly buffer Vertices {
+	float data[];
+} vertices;
 
-// SSBO using std430 layout (float is 4 bytes)
-layout(set = 0, binding = 1, std430) writeonly buffer HeightBuffer {
-    float heights[];
-};
+layout (set = 0, binding = 1, std430) writeonly buffer Heights {
+	float data[];
+} heights;
 
-// UBO using std140 layout
-layout(set = 0, binding = 2, std140) uniform ComputeParams {
-    uint numVertices;
-    float testValue;
+layout (set = 0, binding = 2) restrict buffer ParamsBlock {
+	float numVertices;
+	float oceanDepthMultiplier;
+	float oceanFloorDepth;
+	float oceanFloorSmoothing;
+	float mountainBlend;
 } params;
 
+layout (set = 0, binding = 3) restrict buffer NoiseParamsBlock {
+	vec4 noiseParams_continents[3];
+	vec4 noiseParams_mask[3];
+	vec4 noiseParams_mountains[3];
+} noise_params;
+
 void main() {
-    uint id = gl_GlobalInvocationID.x;
-
-    uint numVerts = params.numVertices;
-    float tValue = params.testValue;
-
-    if (id >= numVerts) {
+	if (gl_GlobalInvocationID.x >= int(params.numVertices)) {
         return;
     }
+	
+	float x = vertices.data[gl_GlobalInvocationID.x * 3];
+	float y = vertices.data[gl_GlobalInvocationID.x * 3 + 1];
+	float z = vertices.data[gl_GlobalInvocationID.x * 3 + 2];
 
-    vec3 vertexPos = vertices[id];
+	vec3 pos = normalize(vec3(x,y,z));
 
-    heights[id] = 1.0 + sin(vertexPos.y * tValue) * 0.05;
+	float continentShape = simpleNoise_2(pos, noise_params.noiseParams_continents);
+	continentShape = smoothMax(continentShape, -params.oceanFloorDepth, params.oceanFloorSmoothing);
+
+	if (continentShape < 0.0) {
+		continentShape *= 1.0 + params.oceanDepthMultiplier;
+	}
+
+	float ridgeNoise = smoothedRidgidNoise(pos, noise_params.noiseParams_mountains);
+
+
+	float mask = Blend(0.0, params.mountainBlend, simpleNoise_2(pos, noise_params.noiseParams_mask));
+	float finalHeight = 1.0 + continentShape * 0.01 + ridgeNoise * 0.01 * mask;
+
+	heights.data[gl_GlobalInvocationID.x] = finalHeight;
 }
