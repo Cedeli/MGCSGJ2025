@@ -27,9 +27,10 @@ environment = SubResource("Environment_1jsug")
 
 [node name="InputManager" parent="." instance=ExtResource("1_85np5")]
 
-[node name="Planet" parent="." node_paths=PackedStringArray("CollisionShape", "MeshInstance") instance=ExtResource("2_0s07r")]
-CollisionShape = NodePath("CollisionShape3D")
-MeshInstance = NodePath("MeshInstance3D")
+[node name="Planet" parent="." instance=ExtResource("2_0s07r")]
+EnableOutline = true
+OutlineThickness = 0.5
+OutlineColor = Color(1, 1, 1, 1)
 
 [node name="Player" parent="." groups=["input_receivers"] instance=ExtResource("3_1jsug")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 71, 0)
