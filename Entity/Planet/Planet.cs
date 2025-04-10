@@ -15,7 +15,7 @@ public partial class Planet : CelestialBody
     #endregion
 
     #region Exports
-    
+
     [Export]
     public PlanetHeight TerrainModifier
     {
@@ -27,17 +27,17 @@ public partial class Planet : CelestialBody
                 GD.PushWarning($"Planet '{Name}': Cannot set TerrainModifier, Generator node not found.");
                 return;
             }
-            
+
             if (_generator.TerrainModifier == value) return;
             _generator.TerrainModifier = value;
-            
+
             if (Engine.IsEditorHint())
             {
                 UpdateConfigurationWarnings();
             }
         }
     }
-    
+
     [Export(PropertyHint.Range, "0,200,1")]
     public int Resolution
     {
@@ -90,6 +90,21 @@ public partial class Planet : CelestialBody
         }
     }
 
+    [Export(PropertyHint.File, "*.gdshader")]
+    public string PlanetShaderPath { get; set; } = "";
+
+    [Export(PropertyHint.Range, "0.8, 1.2, 0.001")]
+    public float MinAltitudeFactor { get; set; } = 0.98f;
+
+    [Export(PropertyHint.Range, "0.8, 1.2, 0.001")]
+    public float MaxAltitudeFactor { get; set; } = 1.04f;
+
+    [Export(PropertyHint.Range, "0.0, 1.0, 0.01")]
+    public float TextureInfluence { get; set; } = 0.8f;
+
+    [Export(PropertyHint.Range, "0.0, 1.0, 0.01")]
+    public float PlanetRoughness { get; set; } = 0.8f;
+
     #endregion
 
     #region Godot Lifecycle Methods
@@ -103,7 +118,7 @@ public partial class Planet : CelestialBody
     public override void _Ready()
     {
         base._Ready();
-        
+
         FindRequiredNodes();
         ConnectGeneratorSignals();
         RequestUpdate();
@@ -163,12 +178,10 @@ public partial class Planet : CelestialBody
     {
         if (_generator == null) return;
 
-        if (!_generator.IsConnected(SphereGenerator.SignalName.ParametersChanged, Callable.From(RequestUpdate)))
-        {
-            var err = _generator.Connect(SphereGenerator.SignalName.ParametersChanged, Callable.From(RequestUpdate));
-            if (err != Error.Ok)
-                GD.PushError($"Planet: Failed to connect to Generator's ParametersChanged signal: {err}");
-        }
+        if (_generator.IsConnected(SphereGenerator.SignalName.ParametersChanged, Callable.From(RequestUpdate))) return;
+        var err = _generator.Connect(SphereGenerator.SignalName.ParametersChanged, Callable.From(RequestUpdate));
+        if (err != Error.Ok)
+            GD.PushError($"Planet: Failed to connect to Generator's ParametersChanged signal: {err}");
     }
 
     private void DisconnectGeneratorSignals()
@@ -209,10 +222,12 @@ public partial class Planet : CelestialBody
             GD.PushWarning($"Planet '{Name}': Mesh generation failed or resulted in an empty mesh.");
             _meshInstance.Mesh = null;
             _collisionShape.Shape = null;
+            _meshInstance.SetSurfaceOverrideMaterial(0, null);
             return;
         }
 
         _meshInstance.Mesh = generatedMesh;
+        ApplyMaterialAndParameters();
 
         if (GenerateCollision)
         {
@@ -241,16 +256,52 @@ public partial class Planet : CelestialBody
         }
     }
 
+    private void ApplyMaterialAndParameters()
+    {
+        if (_meshInstance == null)
+        {
+            GD.PushWarning($"Planet '{Name}': Cannot apply material, MeshInstance3D is null.");
+            return;
+        }
+
+        if (string.IsNullOrEmpty(PlanetShaderPath))
+        {
+            GD.PushWarning($"Planet '{Name}': Cannot apply material, PlanetShaderPath is not set.");
+            _meshInstance.SetSurfaceOverrideMaterial(0, null);
+            return;
+        }
+
+        var shader = GD.Load<Shader>(PlanetShaderPath);
+        if (shader == null)
+        {
+            GD.PushError($"Planet '{Name}': Failed to load shader from path: {PlanetShaderPath}");
+            _meshInstance.SetSurfaceOverrideMaterial(0, null);
+            return;
+        }
+
+        if (_meshInstance.GetSurfaceOverrideMaterial(0) is ShaderMaterial currentMaterial)
+        {
+            currentMaterial.SetShaderParameter("base_radius", Radius);
+            currentMaterial.SetShaderParameter("min_altitude_factor", MinAltitudeFactor);
+            currentMaterial.SetShaderParameter("max_altitude_factor", MaxAltitudeFactor);
+            currentMaterial.SetShaderParameter("texture_influence", TextureInfluence);
+            currentMaterial.SetShaderParameter("roughness", PlanetRoughness);
+        }
+
+        GD.Print(
+            $"Planet '{Name}': Shader parameters updated (Radius: {Radius}, MinAlt: {MinAltitudeFactor}, MaxAlt: {MaxAltitudeFactor}).");
+    }
+
     protected override void UpdateShapeAndMesh()
     {
-        if (!IsInsideTree())
-            return;
+        if (!IsInsideTree()) return;
 
         if (_generator == null)
         {
             GD.PushWarning(
                 $"Planet '{Name}': No Generator found. Falling back to basic CelestialBody sphere generation.");
             base.UpdateShapeAndMesh();
+            _meshInstance?.SetSurfaceOverrideMaterial(0, null);
         }
         else
         {
