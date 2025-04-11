@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://b38n11hyimrx1"]
+[gd_scene load_steps=21 format=3 uid="uid://b38n11hyimrx1"]
 
 [ext_resource type="PackedScene" uid="uid://dqsf2uo1bqci8" path="res://Input/InputManager.tscn" id="1_1q8bt"]
 [ext_resource type="Script" uid="uid://cwc4n1u7db367" path="res://Scenes/Game/Game.cs" id="1_bsqcq"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://dwtte5rcg7xu7" path="res://Entity/ScrapItem/ScrapItem.tscn" id="5_fg52j"]
 [ext_resource type="PackedScene" uid="uid://3gendnc4ovb" path="res://Entity/Planet/Moon.tscn" id="5_y3kpf"]
 [ext_resource type="PackedScene" uid="uid://cfdmshqym6x8y" path="res://Entity/Player/Player.tscn" id="7_gvja8"]
+[ext_resource type="Script" uid="uid://r5b2g1sl2fh4" path="res://Scenes/Game/EnemySpawner.cs" id="8_jf0ra"]
 [ext_resource type="PackedScene" uid="uid://c7d8eglsg1h2" path="res://Entity/Ship/Ship.tscn" id="13_bsqcq"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ln2h6"]
@@ -56,10 +57,12 @@ _healthItemScene = ExtResource("2_edkrd")
 _ammoItemScene = ExtResource("3_bsqcq")
 _powerupItemScene = ExtResource("4_jf0ra")
 _scrapItemScene = ExtResource("5_fg52j")
-MaxItemsPerRound = 8
-ScrapItemProbability = 0.5
 
 [node name="InputManager" parent="." instance=ExtResource("1_1q8bt")]
+
+[node name="EnemySpawner" type="Node" parent="."]
+script = ExtResource("8_jf0ra")
+_alienScene = ExtResource("2_bsqcq")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_3k6gv")

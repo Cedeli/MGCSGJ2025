@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://c7d8eglsg1h2"]
+[gd_scene load_steps=7 format=3 uid="uid://c7d8eglsg1h2"]
 
 [ext_resource type="Script" uid="uid://ddmdy7wwnbbte" path="res://Entity/Ship/Ship.cs" id="1_ship_cs"]
 [ext_resource type="PackedScene" uid="uid://ipnrfid737qj" path="res://Assets/Ship/ship.glb" id="2_xsukb"]
@@ -7,12 +7,16 @@
 height = 1.27002
 radius = 1.21729
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_groundcast_ship"]
-radius = 0.2
-
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_xsukb"]
 radius = 0.651845
 height = 1.61898
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_groundcast_ship"]
+radius = 0.2
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_ios0i"]
+height = 0.07
+radius = 0.15
 
 [node name="Ship" type="RigidBody3D" node_paths=PackedStringArray("GroundCast")]
 script = ExtResource("1_ship_cs")
@@ -25,6 +29,10 @@ GroundCastLength = 1.5
 transform = Transform3D(0.7, 0, 0, 0, -0.7, 6.1196e-08, 0, -6.1196e-08, -0.7, -0.0437714, 0.389329, -0.00655821)
 shape = SubResource("CylinderShape3D_xsukb")
 
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.531118, 0)
+shape = SubResource("CapsuleShape3D_xsukb")
+
 [node name="GroundCast" type="ShapeCast3D" parent="."]
 shape = SubResource("SphereShape3D_groundcast_ship")
 target_position = Vector3(0, -1.5, 0)
@@ -32,6 +40,18 @@ target_position = Vector3(0, -1.5, 0)
 [node name="Model" parent="." instance=ExtResource("2_xsukb")]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, -0.29739, 0)
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.531118, 0)
-shape = SubResource("CapsuleShape3D_xsukb")
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.837285, -0.271667, 0.804659)
+shape = SubResource("CylinderShape3D_ios0i")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.800882, -0.271667, 0.804659)
+shape = SubResource("CylinderShape3D_ios0i")
+
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.817407, -0.271667, -0.802086)
+shape = SubResource("CylinderShape3D_ios0i")
+
+[node name="CollisionShape3D6" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.847163, -0.271667, -0.84531)
+shape = SubResource("CylinderShape3D_ios0i")
