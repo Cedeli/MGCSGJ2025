@@ -62,10 +62,6 @@ _healthItemScene = ExtResource("3_jf0ra")
 _ammoItemScene = ExtResource("4_bsqcq")
 _powerupItemScene = ExtResource("5_6581v")
 _scrapItemScene = ExtResource("6_6hht6")
-HealthItemProbability = 0.0
-AmmoItemProbability = 1.0
-PowerupItemProbability = 0.0
-ScrapItemProbability = 0.0
 
 [node name="InputManager" parent="." instance=ExtResource("1_1q8bt")]
 
