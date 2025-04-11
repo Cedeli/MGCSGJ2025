@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Godot;
 
 public partial class Result : Control
@@ -39,6 +40,8 @@ public partial class Result : Control
 		RestartButton.Pressed += OnRestartButtonPressed;
 
 		var parameters = _gameManager.GetParameters();
+
+		_audioManager.PlayBGM("res://Assets/Audio/lose.mp3");
 
 		UpdateResultUI(parameters);
 	}
@@ -106,7 +109,7 @@ public partial class Result : Control
 
 		if (resultMessageLabel != null && gameOverHeaderLabel != null)
 		{
-			if (reason.Contains("Died") || reason.Contains("Destroyed"))
+			if (reason.Contains("Player Eliminated") || reason.Contains("Ship Destroyed"))
 			{
 				resultMessageLabel.Text = "MISSION FAILED";
 				resultMessageLabel.AddThemeColorOverride("font_color", Colors.Red);
@@ -125,12 +128,15 @@ public partial class Result : Control
 	private void OnMainMenuButtonPressed()
 	{
 		_audioManager.PlaySFX(SfxButtonPath);
+		_audioManager.PlayBGM("res://Assets/Audio/menu.mp3");
 		_gameManager.ChangeScene("res://Scenes/MainMenu/MainMenu.tscn");
 	}
 
-	private void OnRestartButtonPressed()
+	private async void OnRestartButtonPressed()
 	{
 		_audioManager.PlaySFX(SfxButtonPath);
+		_gameManager.PushScene("res://Scenes/Loading/Loading.tscn");
+		await ToSignal(GetTree().CreateTimer(0.1f), Timer.SignalName.Timeout);
 		_gameManager.ChangeScene("res://Scenes/Game/Game.tscn");
 	}
 }

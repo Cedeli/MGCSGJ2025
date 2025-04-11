@@ -4,6 +4,7 @@ using Godot;
 public partial class Player : GravityEntity, IInputReceiver
 {
     private AudioManager _audioManager;
+    private SettingsManager _settingsManager;
     public const string PlayerGroup = "player";
 
     [Signal]
@@ -36,6 +37,28 @@ public partial class Player : GravityEntity, IInputReceiver
     public float MaxHealth = 100f;
     private float _currentHealth;
 
+    private bool _weaponBobbingEnabled = true;
+    private Vector3 _currentWeaponBobOffset = Vector3.Zero;
+    private Vector3 _targetWeaponBobOffset = Vector3.Zero;
+    private Vector3 _initialWeaponLocalPosition = Vector3.Zero;
+
+    [ExportGroup("Weapon Bobbing Settings")]
+    [Export]
+    private float WeaponBobbingIntensity = 0.0015f;
+
+    [Export]
+    private float WeaponBobbingReturnSpeed = 8.0f;
+
+    [Export]
+    private float WeaponBobbingFollowSpeed = 12.0f;
+
+    [Export]
+    private float MaxWeaponBobOffsetX = 0.08f;
+
+    [Export]
+    private float MaxWeaponBobOffsetY = 0.05f;
+
+    // --- Other Fields ---
     private MovementController _currentMovementController;
     private PlanetaryMovementController _planetaryMovement;
 
@@ -53,12 +76,67 @@ public partial class Player : GravityEntity, IInputReceiver
         AddToGroup("input_receivers");
         Input.SetMouseMode(Input.MouseModeEnum.Captured);
 
+        _settingsManager = GetNode<SettingsManager>("/root/SettingsManager");
+
         _currentHealth = MaxHealth;
         _planetaryMovement = new PlanetaryMovementController(this);
         _currentMovementController = _planetaryMovement;
 
+        if (_gun != null)
+        {
+            _initialWeaponLocalPosition = _gun.Position;
+        }
+
+        if (_settingsManager != null)
+        {
+            _weaponBobbingEnabled = _settingsManager.WeaponBobbingEnabled;
+            if (
+                !_settingsManager.IsConnected(
+                    SettingsManager.SignalName.WeaponBobbingToggled,
+                    Callable.From<bool>(OnWeaponBobbingToggled)
+                )
+            )
+                _settingsManager.WeaponBobbingToggled += OnWeaponBobbingToggled;
+        }
+        else { }
+
         EmitSignal(SignalName.HealthChanged, _currentHealth, MaxHealth);
         AddToGroup(PlayerGroup);
+    }
+
+    public override void _ExitTree()
+    {
+        base._ExitTree();
+        if (
+            _settingsManager != null
+            && _settingsManager.IsConnected(
+                SettingsManager.SignalName.WeaponBobbingToggled,
+                Callable.From<bool>(OnWeaponBobbingToggled)
+            )
+        )
+        {
+            _settingsManager.WeaponBobbingToggled -= OnWeaponBobbingToggled;
+        }
+    }
+
+    public override void _Process(double delta)
+    {
+        if (_gun != null)
+        {
+            if (_weaponBobbingEnabled)
+            {
+                ProcessWeaponBobbing((float)delta);
+            }
+            else if (_gun.Position != _initialWeaponLocalPosition)
+            {
+                _targetWeaponBobOffset = Vector3.Zero;
+                _currentWeaponBobOffset = _currentWeaponBobOffset.Lerp(
+                    Vector3.Zero,
+                    (float)delta * WeaponBobbingReturnSpeed * 2f
+                );
+                _gun.Position = _initialWeaponLocalPosition + _currentWeaponBobOffset;
+            }
+        }
     }
 
     public override void _PhysicsProcess(double delta)
@@ -73,31 +151,52 @@ public partial class Player : GravityEntity, IInputReceiver
         ProcessBufferedJump();
     }
 
-    public void OnMoveInput(Vector2 direction)
+    // temporary raw input for bobbing outside of input api because of time constraints
+    public override void _Input(InputEvent @event)
+    {
+        if (Input.MouseMode == Input.MouseModeEnum.Captured)
+        {
+            if (@event is InputEventMouseMotion mouseMotion)
+            {
+                Vector2 lookDeltaRaw = mouseMotion.Relative;
+                UpdateCameraPitch(lookDeltaRaw.Y);
+                _yawAngle -= Mathf.DegToRad(lookDeltaRaw.X * MouseSensitivity);
+                _yawAngle = Mathf.Wrap(_yawAngle, -Mathf.Pi, Mathf.Pi);
+                if (_weaponBobbingEnabled && _gun != null)
+                {
+                    _targetWeaponBobOffset.X -= lookDeltaRaw.X * WeaponBobbingIntensity;
+                    _targetWeaponBobOffset.Y += lookDeltaRaw.Y * WeaponBobbingIntensity;
+
+                    _targetWeaponBobOffset.X = Mathf.Clamp(
+                        _targetWeaponBobOffset.X,
+                        -MaxWeaponBobOffsetX,
+                        MaxWeaponBobOffsetX
+                    );
+                    _targetWeaponBobOffset.Y = Mathf.Clamp(
+                        _targetWeaponBobOffset.Y,
+                        -MaxWeaponBobOffsetY,
+                        MaxWeaponBobOffsetY
+                    );
+                    _targetWeaponBobOffset.Z = 0;
+                }
+            }
+        }
+    }
+
+    public void ProcessMoveInput(Vector2 direction)
     {
         _movementInput = direction.LimitLength();
     }
 
-    public void OnLookInput(Vector2 lookDelta)
-    {
-        _yawAngle -= Mathf.DegToRad(lookDelta.X * MouseSensitivity);
-        _yawAngle = Mathf.Wrap(_yawAngle, -Mathf.Pi, Mathf.Pi);
+    public void OnMoveInput(Vector2 direction) => ProcessMoveInput(direction);
 
-        if (_camera != null)
-        {
-            UpdateCameraPitch(lookDelta.Y);
-        }
-    }
+    public void OnLookInput(Vector2 lookDelta) { }
 
     public void OnShootInput()
     {
         if (_gun != null)
         {
             _gun.Shoot();
-        }
-        else
-        {
-            GD.PrintErr($"{Name}: Cannot shoot, Gun reference is null.");
         }
     }
 
@@ -107,22 +206,16 @@ public partial class Player : GravityEntity, IInputReceiver
         {
             _gun.Reload();
         }
-        else
-        {
-            GD.PrintErr($"{Name}: Cannot reload, Gun reference is null.");
-        }
     }
 
     public void SetInputBuffer(InputBuffer buffer)
     {
         _inputBuffer = buffer ?? throw new ArgumentNullException(nameof(buffer));
-        GD.Print("Player: InputBuffer assigned.");
     }
 
     public void SetInputManager(InputManager manager)
     {
         _inputManager = manager ?? throw new ArgumentNullException(nameof(manager));
-        GD.Print("Player: InputManager assigned.");
     }
 
     private void UpdateCameraOrientation()
@@ -158,15 +251,40 @@ public partial class Player : GravityEntity, IInputReceiver
         );
     }
 
-    private void UpdateCameraPitch(float lookYDelta)
+    private void UpdateCameraPitch(float rawLookYDelta)
     {
-        var pitchChange = Mathf.DegToRad(-lookYDelta * MouseSensitivity * (InvertY ? -1f : 1f));
+        if (_camera == null)
+            return;
+
+        var pitchChange = Mathf.DegToRad(-rawLookYDelta * MouseSensitivity * (InvertY ? -1f : 1f));
 
         _camera.RotateX(pitchChange);
 
         var cameraRotation = _camera.Rotation;
         cameraRotation.X = Mathf.Clamp(cameraRotation.X, MinPitchAngle, MaxPitchAngle);
         _camera.Rotation = cameraRotation;
+    }
+
+    private void ProcessWeaponBobbing(float delta)
+    {
+        _targetWeaponBobOffset = _targetWeaponBobOffset.Lerp(
+            Vector3.Zero,
+            delta * WeaponBobbingReturnSpeed
+        );
+        _currentWeaponBobOffset = _currentWeaponBobOffset.Lerp(
+            _targetWeaponBobOffset,
+            delta * WeaponBobbingFollowSpeed
+        );
+        _gun.Position = _initialWeaponLocalPosition + _currentWeaponBobOffset;
+    }
+
+    private void OnWeaponBobbingToggled(bool enabled)
+    {
+        _weaponBobbingEnabled = enabled;
+        if (!_weaponBobbingEnabled && _gun != null)
+        {
+            _targetWeaponBobOffset = Vector3.Zero;
+        }
     }
 
     private void ProcessBufferedJump()
@@ -227,7 +345,6 @@ public partial class Player : GravityEntity, IInputReceiver
         {
             return _gun.AddReserveAmmo(amount);
         }
-        GD.PrintErr($"{Name}: Cannot add reserve ammo, Gun reference is null.");
         return false;
     }
 
@@ -237,14 +354,7 @@ public partial class Player : GravityEntity, IInputReceiver
         {
             _gun.ApplyPowerup(type, multiplier, duration);
         }
-        else
-        {
-            GD.PrintErr($"{Name}: Cannot apply powerup, Gun reference is null.");
-        }
     }
 
-    private void OnMovementModeChanged(InputManager.MovementMode newMode)
-    {
-        GD.Print($"Player: Movement mode changed to {newMode}.");
-    }
+    private void OnMovementModeChanged(InputManager.MovementMode newMode) { }
 }

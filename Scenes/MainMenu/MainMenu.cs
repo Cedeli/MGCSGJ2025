@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Godot;
 
 public partial class MainMenu : Control
@@ -12,6 +13,9 @@ public partial class MainMenu : Control
 	protected Button StartButton;
 
 	[Export]
+	protected Button SettingsButton;
+
+	[Export]
 	protected Button CreditsButton;
 
 	[Export]
@@ -23,14 +27,28 @@ public partial class MainMenu : Control
 		_audioManager = GetNode<AudioManager>("/root/AudioManager");
 
 		StartButton.Pressed += OnStartButtonPressed;
+		SettingsButton.Pressed += OnSettingsButtonPressed;
 		CreditsButton.Pressed += OnCreditsButtonPressed;
 		QuitButton.Pressed += OnQuitButtonPressed;
 	}
 
-	private void OnStartButtonPressed()
+	private async void OnStartButtonPressed()
 	{
 		_audioManager.PlaySFX(SfxButtonPath);
+		StartButton.Disabled = true;
+		SettingsButton.Disabled = true;
+		CreditsButton.Disabled = true;
+		QuitButton.Disabled = true;
+
+		_gameManager.PushScene("res://Scenes/Loading/Loading.tscn");
+		await ToSignal(GetTree().CreateTimer(0.1f), Timer.SignalName.Timeout);
 		_gameManager.ChangeScene("res://Scenes/Game/Game.tscn");
+	}
+
+	private void OnSettingsButtonPressed()
+	{
+		_audioManager.PlaySFX(SfxButtonPath);
+		_gameManager.ChangeScene("res://Scenes/Settings/Settings.tscn");
 	}
 
 	private void OnCreditsButtonPressed()

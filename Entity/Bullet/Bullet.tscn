@@ -63,7 +63,7 @@ height = 0.06
 radial_segments = 32
 rings = 16
 
-[node name="Bullet" type="RigidBody3D" node_paths=PackedStringArray("_particle", "GroundCast")]
+[node name="Bullet" type="RigidBody3D" node_paths=PackedStringArray("GroundCast")]
 collision_layer = 2
 gravity_scale = 0.0
 contact_monitor = true
@@ -72,7 +72,6 @@ linear_damp_mode = 1
 angular_damp_mode = 1
 script = ExtResource("1_xkwyg")
 Speed = 0.0
-_particle = NodePath("GPUParticles3D")
 GroundCast = NodePath("GroundCast")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
