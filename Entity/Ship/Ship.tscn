@@ -1,19 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://c7d8eglsg1h2"]
+[gd_scene load_steps=5 format=3 uid="uid://c7d8eglsg1h2"]
 
 [ext_resource type="Script" uid="uid://ddmdy7wwnbbte" path="res://Entity/Ship/Ship.cs" id="1_ship_cs"]
+[ext_resource type="PackedScene" uid="uid://ipnrfid737qj" path="res://Assets/Ship/ship.glb" id="2_xsukb"]
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ship"]
-radius = 1.0
-height = 3.0
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_ship"]
-radius = 1.0
-height = 3.0
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ship"]
-albedo_color = Color(0.7, 0.7, 0.8, 1)
-metallic = 0.5
-roughness = 0.4
+[sub_resource type="BoxShape3D" id="BoxShape3D_xsukb"]
+size = Vector3(2.75311, 2.74957, 1.54071)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_groundcast_ship"]
 radius = 0.2
@@ -26,14 +17,12 @@ GroundCast = NodePath("GroundCast")
 GroundCastLength = 1.5
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
-shape = SubResource("CapsuleShape3D_ship")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
-mesh = SubResource("CapsuleMesh_ship")
-surface_material_override/0 = SubResource("StandardMaterial3D_ship")
+transform = Transform3D(0.7, 0, 0, 0, -3.0598e-08, -0.7, 0, 0.7, -3.0598e-08, -0.0437714, 0.283543, -0.00655822)
+shape = SubResource("BoxShape3D_xsukb")
 
 [node name="GroundCast" type="ShapeCast3D" parent="."]
 shape = SubResource("SphereShape3D_groundcast_ship")
 target_position = Vector3(0, -1.5, 0)
+
+[node name="Model" parent="." instance=ExtResource("2_xsukb")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, -0.29739, 0)

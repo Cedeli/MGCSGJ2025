@@ -22,6 +22,11 @@ public partial class KeyboardMouseInput : InputProvider
 		{
 			EmitShootInput();
 		}
+
+		if (Input.IsActionJustPressed("reload"))
+		{
+			EmitReloadInput();
+		}
 	}
 
 	private void ProcessMovementInput()

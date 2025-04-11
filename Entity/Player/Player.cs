@@ -15,6 +15,7 @@ public partial class Player : GravityEntity, IInputReceiver
 	private const float MinPitchAngle = -Mathf.Pi / 2.0f + 0.01f;
 	private const float MaxPitchAngle = Mathf.Pi / 2.0f - 0.01f;
 
+	[ExportGroup("Components")]
 	[Export]
 	private Node3D _cameraPivot;
 
@@ -49,12 +50,10 @@ public partial class Player : GravityEntity, IInputReceiver
 	{
 		base._Ready();
 
-		if (_gun == null)
-		{
-			_gun = GetNodeOrNull<Gun>("Pivot/Camera3D/Gun");
-			if (_gun == null)
-				GD.PrintErr($"{Name}: Gun node not found or assigned");
-		}
+		if (_cameraPivot == null)
+			GD.PrintErr($"{Name}: Camera Pivot not assigned.");
+		if (_camera == null)
+			GD.PrintErr($"{Name}: Camera3D not assigned.");
 
 		Input.SetMouseMode(Input.MouseModeEnum.Captured);
 		_currentHealth = MaxHealth;
@@ -62,6 +61,7 @@ public partial class Player : GravityEntity, IInputReceiver
 		_currentMovementController = _planetaryMovement;
 
 		EmitSignal(SignalName.HealthChanged, _currentHealth, MaxHealth);
+		AddToGroup(PlayerGroup);
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -85,7 +85,26 @@ public partial class Player : GravityEntity, IInputReceiver
 
 	public void OnShootInput()
 	{
-		_gun?.Shoot();
+		if (_gun != null)
+		{
+			_gun.Shoot();
+		}
+		else
+		{
+			GD.PrintErr($"{Name}: Cannot shoot, Gun reference is null.");
+		}
+	}
+
+	public void OnReloadInput()
+	{
+		if (_gun != null)
+		{
+			_gun.Reload();
+		}
+		else
+		{
+			GD.PrintErr($"{Name}: Cannot reload, Gun reference is null.");
+		}
 	}
 
 	public void SetInputBuffer(InputBuffer buffer) => _inputBuffer = buffer;
@@ -129,13 +148,15 @@ public partial class Player : GravityEntity, IInputReceiver
 
 	public Node3D GetCameraPivot() => _cameraPivot;
 
+	public Gun GetGun() => _gun;
+
 	public void TakeDamage(float amount)
 	{
 		if (_currentHealth <= 0)
 			return;
 		_currentHealth = Mathf.Max(0, _currentHealth - amount);
 		_audioManager = GetNode<AudioManager>("/root/AudioManager");
-		_audioManager.PlaySFX("res://Assets/Audio/hit_1.wav");
+		_audioManager?.PlaySFX("res://Assets/Audio/hit_1.wav");
 		EmitSignal(SignalName.HealthChanged, _currentHealth, MaxHealth);
 		if (_currentHealth <= 0)
 			Die();
@@ -168,10 +189,25 @@ public partial class Player : GravityEntity, IInputReceiver
 		}
 	}
 
-	public void AddAmmo(int amount) { }
+	public bool TryAddGunReserveAmmo(int amount)
+	{
+		if (_gun != null)
+		{
+			return _gun.AddReserveAmmo(amount);
+		}
+		GD.PrintErr($"{Name}: Cannot add reserve ammo, Gun reference is null.");
+		return false;
+	}
 
 	public void ApplyGunPowerup(PowerupType type, float multiplier, float duration)
 	{
-		_gun?.ApplyPowerup(type, multiplier, duration);
+		if (_gun != null)
+		{
+			_gun.ApplyPowerup(type, multiplier, duration);
+		}
+		else
+		{
+			GD.PrintErr($"{Name}: Cannot apply powerup, Gun reference is null.");
+		}
 	}
 }

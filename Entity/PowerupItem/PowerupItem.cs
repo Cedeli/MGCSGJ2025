@@ -1,4 +1,3 @@
-// File: Entity/PowerupItem/PowerupItem.cs
 using System;
 using Godot;
 

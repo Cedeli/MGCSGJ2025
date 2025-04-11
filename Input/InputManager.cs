@@ -85,6 +85,15 @@ public partial class InputManager : Node
 						{
 							_keyboardMouseInput.ShootInput += player.OnShootInput;
 						}
+						if (
+							!_keyboardMouseInput.IsConnected(
+								InputProvider.SignalName.ReloadInput,
+								Callable.From(player.OnReloadInput)
+							)
+						)
+						{
+							_keyboardMouseInput.ReloadInput += player.OnReloadInput;
+						}
 					}
 				}
 			}

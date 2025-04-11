@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://2fyja8k10rtp"]
+
+[node name="ObjectiveMarker" type="ColorRect"]
+z_index = 1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(8, 8)
+color = Color(1, 0.8, 0, 0.2)

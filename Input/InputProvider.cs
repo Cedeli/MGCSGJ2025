@@ -17,6 +17,9 @@ public abstract partial class InputProvider : Node
 	[Signal]
 	public delegate void ShootInputEventHandler();
 
+	[Signal]
+	public delegate void ReloadInputEventHandler();
+
 	protected void EmitMoveInput(Vector2 direction) => EmitSignal(SignalName.MoveInput, direction);
 
 	protected void EmitLookInput(Vector2 lookDelta) => EmitSignal(SignalName.LookInput, lookDelta);
@@ -24,6 +27,8 @@ public abstract partial class InputProvider : Node
 	protected void EmitJumpInput() => EmitSignal(SignalName.JumpInput);
 
 	protected void EmitShootInput() => EmitSignal(SignalName.ShootInput);
+
+	protected void EmitReloadInput() => EmitSignal(SignalName.ReloadInput);
 
 	public void SetInputBuffer(InputBuffer buffer)
 	{

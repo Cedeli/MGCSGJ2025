@@ -1,84 +1,63 @@
-[gd_scene load_steps=8 format=3 uid="uid://b6x8j6y4v4q2d"]
+[gd_scene load_steps=12 format=3 uid="uid://b6x8j6y4v4q2d"]
 
 [ext_resource type="Script" uid="uid://0huiod1t7wn6" path="res://Scenes/HUD/HUD.cs" id="1_hud_cs"]
 [ext_resource type="FontFile" uid="uid://citmarc50s2xp" path="res://Assets/Fonts/GameFont.ttf" id="2_game_font"]
+[ext_resource type="Script" uid="uid://km7fp2yrkpe5" path="res://Scenes/HUD/MiniMap.cs" id="3_eqxii"]
+[ext_resource type="PackedScene" uid="uid://3xeyj82toyyg" path="res://Scenes/HUD/EnemyMarker.tscn" id="4_7nfgj"]
+[ext_resource type="PackedScene" uid="uid://b5bonce58nogo" path="res://Scenes/HUD/PlayerMarker.tscn" id="4_12x1q"]
+[ext_resource type="PackedScene" uid="uid://2fyja8k10rtp" path="res://Scenes/HUD/ObjectiveMarker.tscn" id="5_lbxf6"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_HealthBg"]
-bg_color = Color(0.12, 0.12, 0.14, 0.8)
+bg_color = Color(0.0509804, 0.0588235, 0.0784314, 0.0862745)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.35, 0.35, 0.4, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-shadow_color = Color(0, 0, 0, 0.25)
-shadow_size = 3
-shadow_offset = Vector2(1, 1)
+border_color = Color(0.2, 0.5, 0.8, 0.7)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0.3, 0.6, 0.3)
+shadow_size = 5
+shadow_offset = Vector2(0, 2)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_PlayerFill"]
-bg_color = Color(0.1, 0.85, 0.2, 0.95)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.3, 1, 0.4, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
+bg_color = Color(0.1, 0.85, 0.2, 0)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ShipFill"]
-bg_color = Color(0.15, 0.45, 0.95, 0.95)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.3, 0.6, 1, 1)
-corner_radius_top_left = 3
-corner_radius_top_right = 3
-corner_radius_bottom_right = 3
-corner_radius_bottom_left = 3
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_PauseButtonHover"]
-content_margin_left = 10.0
-content_margin_top = 6.0
-content_margin_right = 10.0
-content_margin_bottom = 6.0
-bg_color = Color(0.18, 0.18, 0.22, 0.9)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.8, 0.8, 0.9, 1)
+bg_color = Color(0.15, 0.45, 0.95, 0)
 corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
-shadow_color = Color(0, 0, 0, 0.4)
-shadow_size = 5
-shadow_offset = Vector2(2, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_12x1q"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+draw_center = false
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_PauseButton"]
-content_margin_left = 10.0
-content_margin_top = 6.0
-content_margin_right = 10.0
-content_margin_bottom = 6.0
-bg_color = Color(0.12, 0.12, 0.14, 0.85)
+content_margin_left = 15.0
+content_margin_top = 8.0
+content_margin_right = 15.0
+content_margin_bottom = 8.0
+bg_color = Color(0.08, 0.09, 0.12, 0.9)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.7, 0.7, 0.8, 0.9)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-shadow_color = Color(0, 0, 0, 0.3)
-shadow_size = 4
-shadow_offset = Vector2(2, 2)
+border_color = Color(0.3, 0.6, 0.9, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0.2, 0.4, 0.4)
+shadow_size = 6
+shadow_offset = Vector2(0, 2)
 
 [node name="HUD" type="Control"]
 layout_mode = 3
@@ -89,15 +68,399 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_hud_cs")
 
+[node name="HUDFrame" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 4
+
 [node name="TopLeftPanel" type="Panel" parent="."]
 layout_mode = 0
-offset_left = 15.0
-offset_top = 15.0
-offset_right = 225.0
-offset_bottom = 120.0
+offset_left = 49.0
+offset_top = 47.0
+offset_right = 334.0
+offset_bottom = 157.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_HealthBg")
 
+[node name="Glow" type="ColorRect" parent="TopLeftPanel"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -5.0
+offset_top = -5.0
+offset_right = 5.0
+offset_bottom = 5.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2, 0.5, 0.8, 0.15)
+
+[node name="PanelHeader" type="Label" parent="TopLeftPanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = -20.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.4, 0.8, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0.4, 0.8, 0.5)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("2_game_font")
+theme_override_font_sizes/font_size = 14
+text = "MISSION STATUS"
+horizontal_alignment = 1
+
 [node name="TopLeftInfo" type="VBoxContainer" parent="TopLeftPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = 15.0
+offset_right = -15.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+
+[node name="TimerContainer" type="HBoxContainer" parent="TopLeftPanel/TopLeftInfo"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TimeIcon" type="TextureRect" parent="TopLeftPanel/TopLeftInfo/TimerContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TimerLabel" type="Label" parent="TopLeftPanel/TopLeftInfo/TimerContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.7, 0.9, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0.3, 0.6, 0.5)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("2_game_font")
+theme_override_font_sizes/font_size = 18
+text = "TIME: 00:00.0"
+vertical_alignment = 1
+
+[node name="RoundContainer" type="HBoxContainer" parent="TopLeftPanel/TopLeftInfo"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="RoundIcon" type="TextureRect" parent="TopLeftPanel/TopLeftInfo/RoundContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="RoundLabel" type="Label" parent="TopLeftPanel/TopLeftInfo/RoundContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.7, 0.9, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0.3, 0.6, 0.5)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("2_game_font")
+theme_override_font_sizes/font_size = 18
+text = "ROUND: 1"
+vertical_alignment = 1
+
+[node name="ScoreContainer" type="HBoxContainer" parent="TopLeftPanel/TopLeftInfo"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ScoreIcon" type="TextureRect" parent="TopLeftPanel/TopLeftInfo/ScoreContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ScoreLabel" type="Label" parent="TopLeftPanel/TopLeftInfo/ScoreContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.7, 0.9, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0.3, 0.6, 0.5)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("2_game_font")
+theme_override_font_sizes/font_size = 18
+text = "SCORE: 0"
+vertical_alignment = 1
+
+[node name="LeftHealthBars" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 55.0
+offset_top = -212.0
+offset_right = 479.0
+offset_bottom = -49.0
+grow_vertical = 0
+theme_override_constants/separation = 15
+
+[node name="StatusPanel" type="Panel" parent="LeftHealthBars"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_HealthBg")
+
+[node name="Glow" type="ColorRect" parent="LeftHealthBars/StatusPanel"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -5.0
+offset_top = -5.0
+offset_right = 5.0
+offset_bottom = 5.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2, 0.5, 0.8, 0.15)
+
+[node name="PanelHeader" type="Label" parent="LeftHealthBars/StatusPanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = -20.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.4, 0.8, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0.4, 0.8, 0.5)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("2_game_font")
+theme_override_font_sizes/font_size = 14
+text = "SYSTEM STATUS"
+horizontal_alignment = 1
+
+[node name="BarsContainer" type="VBoxContainer" parent="LeftHealthBars/StatusPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = 15.0
+offset_right = -15.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="PlayerHealthContainer" type="VBoxContainer" parent="LeftHealthBars/StatusPanel/BarsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="PlayerHeader" type="HBoxContainer" parent="LeftHealthBars/StatusPanel/BarsContainer/PlayerHealthContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PlayerIcon" type="TextureRect" parent="LeftHealthBars/StatusPanel/BarsContainer/PlayerHealthContainer/PlayerHeader"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PlayerLabel" type="Label" parent="LeftHealthBars/StatusPanel/BarsContainer/PlayerHealthContainer/PlayerHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.2, 0.9, 0.4, 1)
+theme_override_colors/font_shadow_color = Color(0, 0.5, 0.2, 0.5)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("2_game_font")
+theme_override_font_sizes/font_size = 16
+text = "OPERATOR HEALTH"
+vertical_alignment = 1
+
+[node name="PlayerHealthValue" type="Label" parent="LeftHealthBars/StatusPanel/BarsContainer/PlayerHealthContainer/PlayerHeader"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.9, 0.4, 1)
+theme_override_colors/font_shadow_color = Color(0, 0.5, 0.2, 0.5)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("2_game_font")
+theme_override_font_sizes/font_size = 16
+text = "75%"
+vertical_alignment = 1
+
+[node name="PlayerHealthBar" type="ProgressBar" parent="LeftHealthBars/StatusPanel/BarsContainer/PlayerHealthContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_HealthBg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_PlayerFill")
+step = 1.0
+value = 75.0
+show_percentage = false
+
+[node name="PlayerHealthGradient" type="ColorRect" parent="LeftHealthBars/StatusPanel/BarsContainer/PlayerHealthContainer/PlayerHealthBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = -3.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.75, 1)
+color = Color(0.2, 0.9, 0.4, 1)
+
+[node name="PlayerHealthShine" type="ColorRect" parent="LeftHealthBars/StatusPanel/BarsContainer/PlayerHealthContainer/PlayerHealthBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = -3.0
+offset_bottom = -13.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.75, 1)
+color = Color(1, 1, 1, 0.2)
+
+[node name="ShipHealthContainer" type="VBoxContainer" parent="LeftHealthBars/StatusPanel/BarsContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="ShipHeader" type="HBoxContainer" parent="LeftHealthBars/StatusPanel/BarsContainer/ShipHealthContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ShipIcon" type="TextureRect" parent="LeftHealthBars/StatusPanel/BarsContainer/ShipHealthContainer/ShipHeader"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ShipLabel" type="Label" parent="LeftHealthBars/StatusPanel/BarsContainer/ShipHealthContainer/ShipHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.3, 0.5, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0.2, 0.6, 0.5)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("2_game_font")
+theme_override_font_sizes/font_size = 16
+text = "SHIP INTEGRITY"
+vertical_alignment = 1
+
+[node name="ShipHealthValue" type="Label" parent="LeftHealthBars/StatusPanel/BarsContainer/ShipHealthContainer/ShipHeader"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.5, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0.2, 0.6, 0.5)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("2_game_font")
+theme_override_font_sizes/font_size = 16
+text = "75%"
+vertical_alignment = 1
+
+[node name="ShipHealthBar" type="ProgressBar" parent="LeftHealthBars/StatusPanel/BarsContainer/ShipHealthContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_HealthBg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_ShipFill")
+max_value = 200.0
+step = 1.0
+value = 150.0
+show_percentage = false
+
+[node name="ShipHealthGradient" type="ColorRect" parent="LeftHealthBars/StatusPanel/BarsContainer/ShipHealthContainer/ShipHealthBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = -3.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.75, 1)
+color = Color(0.3, 0.5, 1, 1)
+
+[node name="ShipHealthShine" type="ColorRect" parent="LeftHealthBars/StatusPanel/BarsContainer/ShipHealthContainer/ShipHealthBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = -3.0
+offset_bottom = -13.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.75, 1)
+color = Color(1, 1, 1, 0.2)
+
+[node name="AmmoPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -532.0
+offset_top = -107.0
+offset_right = -63.0
+offset_bottom = -57.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_12x1q")
+
+[node name="Glow" type="ColorRect" parent="AmmoPanel"]
+visible = false
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -5.0
+offset_top = -5.0
+offset_right = 5.0
+offset_bottom = 5.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2, 0.5, 0.8, 0.15)
+
+[node name="PanelHeader" type="Label" parent="AmmoPanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = -20.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.4, 0.8, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0.4, 0.8, 0.5)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("2_game_font")
+theme_override_font_sizes/font_size = 14
+text = "WEAPONS"
+horizontal_alignment = 1
+
+[node name="AmmoContainer" type="HBoxContainer" parent="AmmoPanel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -108,135 +471,350 @@ offset_right = -15.0
 offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 8
-
-[node name="TimerLabel" type="Label" parent="TopLeftPanel/TopLeftInfo"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_fonts/font = ExtResource("2_game_font")
-theme_override_font_sizes/font_size = 18
-text = "Time: 0.0s"
-vertical_alignment = 1
-
-[node name="RoundLabel" type="Label" parent="TopLeftPanel/TopLeftInfo"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_fonts/font = ExtResource("2_game_font")
-theme_override_font_sizes/font_size = 18
-text = "Round: 0"
-vertical_alignment = 1
-
-[node name="ScoreLabel" type="Label" parent="TopLeftPanel/TopLeftInfo"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_fonts/font = ExtResource("2_game_font")
-theme_override_font_sizes/font_size = 18
-text = "Score: 0"
-vertical_alignment = 1
-
-[node name="LeftHealthBars" type="VBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_left = 15.0
-offset_top = -180.0
-offset_right = 115.0
-offset_bottom = 180.0
-grow_vertical = 2
-theme_override_constants/separation = 15
-
-[node name="StatusPanel" type="Panel" parent="LeftHealthBars"]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_HealthBg")
-
-[node name="BarsContainer" type="HBoxContainer" parent="LeftHealthBars/StatusPanel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 15.0
-offset_top = 15.0
-offset_right = -15.0
-offset_bottom = -40.0
-grow_horizontal = 2
-grow_vertical = 2
 theme_override_constants/separation = 15
 alignment = 1
 
-[node name="PlayerHealthBar" type="ProgressBar" parent="LeftHealthBars/StatusPanel/BarsContainer"]
+[node name="AmmoCount" type="Label" parent="AmmoPanel/AmmoContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_styles/background = SubResource("StyleBoxFlat_HealthBg")
-theme_override_styles/fill = SubResource("StyleBoxFlat_PlayerFill")
-step = 1.0
-value = 75.0
-fill_mode = 3
-show_percentage = false
-
-[node name="ShipHealthBar" type="ProgressBar" parent="LeftHealthBars/StatusPanel/BarsContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_styles/background = SubResource("StyleBoxFlat_HealthBg")
-theme_override_styles/fill = SubResource("StyleBoxFlat_ShipFill")
-max_value = 200.0
-step = 1.0
-value = 150.0
-fill_mode = 3
-show_percentage = false
-
-[node name="LabelsContainer" type="HBoxContainer" parent="LeftHealthBars/StatusPanel"]
-layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 15.0
-offset_top = -35.0
-offset_right = -15.0
-offset_bottom = -10.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_constants/separation = 15
-alignment = 1
-
-[node name="PlayerLabel" type="Label" parent="LeftHealthBars/StatusPanel/LabelsContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.8, 0.2, 1)
+theme_override_colors/font_shadow_color = Color(0.6, 0.4, 0, 0.5)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
 theme_override_fonts/font = ExtResource("2_game_font")
-theme_override_font_sizes/font_size = 14
-text = "P"
+theme_override_font_sizes/font_size = 24
+text = "30 / 120"
 horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="ShipLabel" type="Label" parent="LeftHealthBars/StatusPanel/LabelsContainer"]
+[node name="WeaponType" type="Label" parent="AmmoPanel/AmmoContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.5)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
 theme_override_fonts/font = ExtResource("2_game_font")
-theme_override_font_sizes/font_size = 14
-text = "S"
+theme_override_font_sizes/font_size = 20
+text = "RAY BLASTER"
 horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="PauseButton" type="Button" parent="."]
-unique_name_in_owner = true
+[node name="MiniMap" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -70.0
-offset_top = 15.0
-offset_right = -15.0
-offset_bottom = 50.0
+offset_left = -250.0
+offset_top = 61.0
+offset_right = -56.0
+offset_bottom = 254.0
 grow_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_HealthBg")
+script = ExtResource("3_eqxii")
+EnemyMarkerContainerPath = NodePath("MapContainer/MapGrid")
+MapGridPath = NodePath("MapContainer/MapGrid")
+PlayerMarkerScene = ExtResource("4_12x1q")
+ObjectiveMarkerScene = ExtResource("5_lbxf6")
+EnemyMarkerScene = ExtResource("4_7nfgj")
+
+[node name="Glow" type="ColorRect" parent="MiniMap"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -5.0
+offset_top = -5.0
+offset_right = 5.0
+offset_bottom = 5.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.2, 0.5, 0.8, 0.15)
+
+[node name="PanelHeader" type="Label" parent="MiniMap"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = -20.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.4, 0.8, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0.4, 0.8, 0.5)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("2_game_font")
+theme_override_font_sizes/font_size = 14
+text = "TACTICAL MAP"
+horizontal_alignment = 1
+
+[node name="MapContainer" type="ColorRect" parent="MiniMap"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0.1, 0.2, 0.5)
+
+[node name="MapGrid" type="Control" parent="MiniMap/MapContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GridLines" type="Control" parent="MiniMap/MapContainer/MapGrid"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HLine1" type="ColorRect" parent="MiniMap/MapContainer/MapGrid/GridLines"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -0.5
+offset_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.3, 0.6, 0.9, 0.3)
+
+[node name="HLine2" type="ColorRect" parent="MiniMap/MapContainer/MapGrid/GridLines"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -45.5
+offset_bottom = -44.5
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.3, 0.6, 0.9, 0.2)
+
+[node name="HLine3" type="ColorRect" parent="MiniMap/MapContainer/MapGrid/GridLines"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = 44.5
+offset_bottom = 45.5
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.3, 0.6, 0.9, 0.2)
+
+[node name="VLine1" type="ColorRect" parent="MiniMap/MapContainer/MapGrid/GridLines"]
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -0.5
+offset_right = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.3, 0.6, 0.9, 0.3)
+
+[node name="VLine2" type="ColorRect" parent="MiniMap/MapContainer/MapGrid/GridLines"]
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -45.5
+offset_right = -44.5
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.3, 0.6, 0.9, 0.2)
+
+[node name="VLine3" type="ColorRect" parent="MiniMap/MapContainer/MapGrid/GridLines"]
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 44.5
+offset_right = 45.5
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.3, 0.6, 0.9, 0.2)
+
+[node name="MapBorder" type="ColorRect" parent="MiniMap/MapContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.3, 0.6, 0.9, 0.5)
+
+[node name="MapFill" type="ColorRect" parent="MiniMap/MapContainer/MapBorder"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0.1, 0.2, 0.5)
+
+[node name="NotificationArea" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = 50.0
+offset_right = 150.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="NotificationLabel" type="Label" parent="NotificationArea"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -125.0
+offset_top = -20.0
+offset_right = 125.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.5)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("2_game_font")
+theme_override_font_sizes/font_size = 24
+text = "ENEMY DETECTED"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Crosshair" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CrosshairInner" type="ColorRect" parent="Crosshair"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1.0
+offset_top = -1.0
+offset_right = 1.0
+offset_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.8, 0.9, 1, 0.8)
+
+[node name="CrosshairTop" type="ColorRect" parent="Crosshair"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -0.5
+offset_top = -8.0
+offset_right = 0.5
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.8, 0.9, 1, 0.8)
+
+[node name="CrosshairBottom" type="ColorRect" parent="Crosshair"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_top = 3.0
+offset_right = 1.0
+offset_bottom = 8.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.8, 0.9, 1, 0.8)
+
+[node name="CrosshairLeft" type="ColorRect" parent="Crosshair"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -8.0
+offset_top = -0.5
+offset_right = -3.0
+offset_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.8, 0.9, 1, 0.8)
+
+[node name="CrosshairRight" type="ColorRect" parent="Crosshair"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 3.0
+offset_top = -0.5
+offset_right = 8.0
+offset_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.8, 0.9, 1, 0.8)
+
+[node name="PauseButton" type="Button" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -34.0
+offset_top = 47.0
+offset_right = 32.0
+offset_bottom = 90.0
+grow_horizontal = 2
 tooltip_text = "Pause Game"
 focus_mode = 0
 theme_override_fonts/font = ExtResource("2_game_font")
-theme_override_font_sizes/font_size = 16
-theme_override_styles/hover = SubResource("StyleBoxFlat_PauseButtonHover")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/hover = SubResource("StyleBoxFlat_PauseButton")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_PauseButton")
 theme_override_styles/normal = SubResource("StyleBoxFlat_PauseButton")
 text = "II"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+unique_name_in_owner = true

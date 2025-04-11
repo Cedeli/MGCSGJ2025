@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://j4kvo1b7egck"]
+[gd_scene load_steps=23 format=3 uid="uid://j4kvo1b7egck"]
 
 [ext_resource type="Script" uid="uid://cwc4n1u7db367" path="res://Scenes/Game/Game.cs" id="1_3k6gv"]
 [ext_resource type="PackedScene" uid="uid://dsix13euckuf1" path="res://Entity/CelestialBody.tscn" id="1_r150o"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://dqsf2uo1bqci8" path="res://Input/InputManager.tscn" id="3_xbxml"]
 [ext_resource type="PackedScene" uid="uid://dxl4tn3o3jt3e" path="res://Entity/AmmoItem/AmmoItem.tscn" id="4_3586x"]
 [ext_resource type="PackedScene" uid="uid://c7d8eglsg1h2" path="res://Entity/Ship/Ship.tscn" id="5_3k6gv"]
+[ext_resource type="PackedScene" uid="uid://dwtte5rcg7xu7" path="res://Entity/ScrapItem/ScrapItem.tscn" id="6_3586x"]
 [ext_resource type="PackedScene" uid="uid://c7kgmaf0g1h2" path="res://Entity/Alien/Alien.tscn" id="7_1q8bt"]
 [ext_resource type="PackedScene" uid="uid://b4n5o6p7q8sat" path="res://Entity/PowerupItem/PowerupItem.tscn" id="8_new_powerup"]
 
@@ -77,6 +78,7 @@ _alienScene = ExtResource("7_1q8bt")
 _healthItemScene = ExtResource("3_m1o7v")
 _ammoItemScene = ExtResource("4_3586x")
 _powerupItemScene = ExtResource("8_new_powerup")
+_scrapItemScene = ExtResource("6_3586x")
 MaxItemsPerRound = 10
 ItemSpawnChance = 1.0
 AmmoItemProbability = 0.5
@@ -138,10 +140,10 @@ surface_material_override/0 = SubResource("StandardMaterial3D_fg52j")
 shape = SubResource("SphereShape3D_6581v")
 
 [node name="Player" parent="SolarSystem" groups=["input_receivers", "player"] instance=ExtResource("2_gwu2e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3012.99, 10.8691, 299.507)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3012.99, 10.8691, 64.7613)
 
 [node name="Ship" parent="SolarSystem" groups=["ship"] instance=ExtResource("5_3k6gv")]
-transform = Transform3D(1, 0, 0, 0, 0.999502, 0.0315678, 0, -0.0315678, 0.999502, 3009.46, 13.2554, 294.96)
+transform = Transform3D(1, 0, 0, 0, 0.999502, 0.0315678, 0, -0.0315678, 0.999502, 3009.46, 13.2554, 60.2143)
 
 [editable path="SolarSystem/Sun"]
 [editable path="SolarSystem/Earth"]

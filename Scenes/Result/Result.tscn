@@ -1,40 +1,148 @@
-[gd_scene load_steps=6 format=3 uid="uid://d8z0l8w6a7p4s"]
+[gd_scene load_steps=14 format=3 uid="uid://el4060wp0ud1"]
 
-[ext_resource type="Script" path="res://Scenes/Result/Result.cs" id="1_4m6o5"]
+[ext_resource type="Script" uid="uid://blcfw347jwk8a" path="res://Scenes/Result/Result.cs" id="1_4m6o5"]
 [ext_resource type="Shader" uid="uid://dnox0thh7iu8c" path="res://Assets/Shaders/Space/space_2d.gdshader" id="2_3l4m5"]
+[ext_resource type="FontFile" uid="uid://citmarc50s2xp" path="res://Assets/Fonts/GameFont.ttf" id="3_font"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1"]
 shader = ExtResource("2_3l4m5")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1"]
-bg_color = Color(0.2, 0.2, 0.2, 0.8)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.4, 0.4, 0.4, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-shadow_color = Color(0, 0, 0, 0.3)
-shadow_size = 4
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_MainPanel"]
+bg_color = Color(0.06, 0.07, 0.09, 0.92)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.6, 0.9, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0.1, 0.4, 0.7, 0.25)
+shadow_size = 8
+shadow_offset = Vector2(0, 2)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2"]
-bg_color = Color(0.3, 0.3, 0.3, 0.9)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_PanelHeader"]
+bg_color = Color(0.12, 0.16, 0.22, 0.95)
 border_width_bottom = 2
-border_color = Color(0.5, 0.5, 0.5, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-shadow_color = Color(0, 0, 0, 0.3)
-shadow_size = 4
+border_color = Color(0.2, 0.6, 0.9, 0.8)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
 
-[node name="Result" type="Control"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_PanelFooter"]
+bg_color = Color(0.08, 0.12, 0.18, 0.95)
+border_width_top = 1
+border_color = Color(0.2, 0.6, 0.9, 0.6)
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ScorePanel"]
+bg_color = Color(0.08, 0.1, 0.14, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.6, 0.9, 0.5)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ButtonHover"]
+content_margin_left = 15.0
+content_margin_top = 8.0
+content_margin_right = 15.0
+content_margin_bottom = 8.0
+bg_color = Color(0.1, 0.35, 0.55, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.3, 0.7, 0.95, 0.9)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+shadow_color = Color(0.1, 0.4, 0.8, 0.3)
+shadow_size = 3
+shadow_offset = Vector2(0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ButtonPressed"]
+content_margin_left = 15.0
+content_margin_top = 8.0
+content_margin_right = 15.0
+content_margin_bottom = 8.0
+bg_color = Color(0.05, 0.25, 0.45, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.5, 0.85, 0.9)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+shadow_color = Color(0.1, 0.4, 0.8, 0.1)
+shadow_size = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ButtonNormal"]
+content_margin_left = 15.0
+content_margin_top = 8.0
+content_margin_right = 15.0
+content_margin_bottom = 8.0
+bg_color = Color(0.08, 0.18, 0.28, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.6, 0.9, 0.7)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+shadow_color = Color(0.1, 0.4, 0.8, 0.2)
+shadow_size = 2
+shadow_offset = Vector2(0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_RestartButtonHover"]
+content_margin_left = 15.0
+content_margin_top = 8.0
+content_margin_right = 15.0
+content_margin_bottom = 8.0
+bg_color = Color(0.25, 0.4, 0.2, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.5, 0.9, 0.4, 0.9)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+shadow_color = Color(0.1, 0.5, 0.1, 0.3)
+shadow_size = 3
+shadow_offset = Vector2(0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_RestartButton"]
+content_margin_left = 15.0
+content_margin_top = 8.0
+content_margin_right = 15.0
+content_margin_bottom = 8.0
+bg_color = Color(0.2, 0.28, 0.18, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.4, 0.8, 0.3, 0.7)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+shadow_color = Color(0.1, 0.4, 0.1, 0.2)
+shadow_size = 2
+shadow_offset = Vector2(0, 1)
+
+[node name="Result" type="Control" node_paths=PackedStringArray("MainMenuButton", "RestartButton", "ResultTextLabel", "RoundValueLabel", "ReasonValueLabel", "TimeValueLabel", "EnemiesValueLabel")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -42,6 +150,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_4m6o5")
+MainMenuButton = NodePath("ResultPanel/ContentContainer/ButtonContainer/MainMenuButton")
+RestartButton = NodePath("ResultPanel/ContentContainer/ButtonContainer/RestartButton")
+ResultTextLabel = NodePath("ResultPanel/ContentContainer/ScorePanel/ScoreInfo/ResultText")
+RoundValueLabel = NodePath("ResultPanel/ContentContainer/ScorePanel/ScoreInfo/StatsGrid/RoundValue")
+ReasonValueLabel = NodePath("ResultPanel/ContentContainer/ScorePanel/ScoreInfo/StatsGrid/ReasonValue")
+TimeValueLabel = NodePath("ResultPanel/ContentContainer/ScorePanel/ScoreInfo/StatsGrid/TimeValue")
+EnemiesValueLabel = NodePath("ResultPanel/ContentContainer/ScorePanel/ScoreInfo/StatsGrid/EnemiesValue")
 
 [node name="Background" type="ColorRect" parent="."]
 material = SubResource("ShaderMaterial_1")
@@ -52,76 +167,314 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Panel" type="Panel" parent="."]
+[node name="BackgroundVignette" type="ColorRect" parent="."]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -250.0
-offset_top = -150.0
-offset_right = 250.0
-offset_bottom = 150.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_1")
+color = Color(0, 0, 0, 0.4)
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+[node name="DecorativeElements" type="Control" parent="."]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -100.0
-offset_right = 200.0
-offset_bottom = 100.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 30
+mouse_filter = 2
 
-[node name="Label" type="Label" parent="Panel/VBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 48
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-text = "Game Over"
-horizontal_alignment = 1
-
-[node name="ResultText" type="Label" parent="Panel/VBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 32
-text = "Your Score: 0"
+[node name="GameOverHeader" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -240.0
+offset_top = 100.0
+offset_right = 240.0
+offset_bottom = 160.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 0.9)
+theme_override_colors/font_shadow_color = Color(0.1, 0.4, 0.8, 0.4)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/shadow_outline_size = 5
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 54
+text = "MISSION COMPLETE"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer"]
+[node name="ResultPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -337.5
+offset_top = -201.5
+offset_right = 337.5
+offset_bottom = 201.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_MainPanel")
+
+[node name="PanelDecoration" type="Control" parent="ResultPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="HeaderBar" type="Panel" parent="ResultPanel/PanelDecoration"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 40.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelHeader")
+
+[node name="FooterBar" type="Panel" parent="ResultPanel/PanelDecoration"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -32.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelFooter")
+
+[node name="CornerTL" type="Panel" parent="ResultPanel/PanelDecoration"]
+layout_mode = 0
+offset_left = -2.0
+offset_top = -2.0
+offset_right = 20.0
+offset_bottom = 20.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelHeader")
+
+[node name="CornerTR" type="Panel" parent="ResultPanel/PanelDecoration"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -20.0
+offset_top = -2.0
+offset_right = 2.0
+offset_bottom = 20.0
+grow_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelHeader")
+
+[node name="CornerBL" type="Panel" parent="ResultPanel/PanelDecoration"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -2.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 2.0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelFooter")
+
+[node name="CornerBR" type="Panel" parent="ResultPanel/PanelDecoration"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 2.0
+offset_bottom = 2.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelFooter")
+
+[node name="HeaderLabel" type="Label" parent="ResultPanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 8.0
+offset_bottom = 32.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.2, 0.6, 0.9, 0.9)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 18
+text = "MISSION RESULTS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ContentContainer" type="VBoxContainer" parent="ResultPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = 50.0
+offset_right = -40.0
+offset_bottom = -56.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 25
+
+[node name="ScorePanel" type="Panel" parent="ResultPanel/ContentContainer"]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ScorePanel")
+
+[node name="ScoreInfo" type="VBoxContainer" parent="ResultPanel/ContentContainer/ScorePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 15.0
+offset_top = 12.0
+offset_right = -15.0
+offset_bottom = 247.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 15
+
+[node name="ResultText" type="Label" parent="ResultPanel/ContentContainer/ScorePanel/ScoreInfo"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 0.95)
+theme_override_colors/font_shadow_color = Color(0, 0.4, 0.8, 0.2)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 34
+text = "YOUR SCORE: N"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StatsGrid" type="GridContainer" parent="ResultPanel/ContentContainer/ScorePanel/ScoreInfo"]
+layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 2
+
+[node name="TimeSurvived" type="Label" parent="ResultPanel/ContentContainer/ScorePanel/ScoreInfo/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 0.9)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 20
+text = "TIME SURVIVED:"
+
+[node name="TimeValue" type="Label" parent="ResultPanel/ContentContainer/ScorePanel/ScoreInfo/StatsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 0.9)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 20
+text = "00:00.0"
+horizontal_alignment = 2
+
+[node name="Enemies" type="Label" parent="ResultPanel/ContentContainer/ScorePanel/ScoreInfo/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 0.9)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 20
+text = "ENEMIES DEFEATED:"
+
+[node name="EnemiesValue" type="Label" parent="ResultPanel/ContentContainer/ScorePanel/ScoreInfo/StatsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 0.9)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 20
+text = "0"
+horizontal_alignment = 2
+
+[node name="RoundReached" type="Label" parent="ResultPanel/ContentContainer/ScorePanel/ScoreInfo/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 0.9)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 20
+text = "ROUND REACHED:"
+
+[node name="RoundValue" type="Label" parent="ResultPanel/ContentContainer/ScorePanel/ScoreInfo/StatsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 0.9)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 20
+text = "0"
+horizontal_alignment = 2
+
+[node name="ReasonLabel" type="Label" parent="ResultPanel/ContentContainer/ScorePanel/ScoreInfo/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 0.9)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 20
+text = "RESULT:"
+
+[node name="ReasonValue" type="Label" parent="ResultPanel/ContentContainer/ScorePanel/ScoreInfo/StatsGrid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 0.9)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 20
+text = "N/A"
+horizontal_alignment = 2
+
+[node name="Divider" type="Panel" parent="ResultPanel/ContentContainer/ScorePanel/ScoreInfo"]
+custom_minimum_size = Vector2(0, 2)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelHeader")
+
+[node name="ResultMessage" type="Label" parent="ResultPanel/ContentContainer/ScorePanel/ScoreInfo"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.85, 0.4, 0.9)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 24
+text = "MISSION SUCCESSFUL!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ButtonContainer" type="HBoxContainer" parent="ResultPanel/ContentContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+theme_override_constants/separation = 30
 alignment = 1
-theme_override_constants/separation = 20
 
-[node name="MainMenuButton" type="Button" parent="Panel/VBoxContainer/HBoxContainer"]
+[node name="MainMenuButton" type="Button" parent="ResultPanel/ContentContainer/ButtonContainer"]
+custom_minimum_size = Vector2(160, 0)
 layout_mode = 2
-theme_override_colors/font_hover_color = Color(0.8, 0.8, 0.8, 1)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(0.6, 0.6, 0.6, 1)
+focus_mode = 0
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 0.9)
+theme_override_colors/font_pressed_color = Color(0.7, 0.8, 0.9, 1)
+theme_override_fonts/font = ExtResource("3_font")
 theme_override_font_sizes/font_size = 20
-theme_override_styles/hover = SubResource("StyleBoxFlat_2")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_2")
-theme_override_styles/normal = SubResource("StyleBoxFlat_2")
-text = "Main Menu"
+theme_override_styles/hover = SubResource("StyleBoxFlat_ButtonHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ButtonPressed")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ButtonNormal")
+text = "MAIN MENU"
 
-[node name="RestartButton" type="Button" parent="Panel/VBoxContainer/HBoxContainer"]
+[node name="RestartButton" type="Button" parent="ResultPanel/ContentContainer/ButtonContainer"]
+custom_minimum_size = Vector2(160, 0)
 layout_mode = 2
-theme_override_colors/font_hover_color = Color(0.8, 0.8, 0.8, 1)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(0.6, 0.6, 0.6, 1)
+focus_mode = 0
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.8, 0.95, 0.8, 0.9)
+theme_override_colors/font_pressed_color = Color(0.7, 0.9, 0.7, 1)
+theme_override_fonts/font = ExtResource("3_font")
 theme_override_font_sizes/font_size = 20
-theme_override_styles/hover = SubResource("StyleBoxFlat_2")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_2")
-theme_override_styles/normal = SubResource("StyleBoxFlat_2")
-text = "Restart" 
+theme_override_styles/hover = SubResource("StyleBoxFlat_RestartButtonHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ButtonPressed")
+theme_override_styles/normal = SubResource("StyleBoxFlat_RestartButton")
+text = "RESTART"

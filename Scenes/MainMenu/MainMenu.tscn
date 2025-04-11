@@ -1,40 +1,120 @@
-[gd_scene load_steps=6 format=3 uid="uid://b6x8j6u4y5n2q"]
+[gd_scene load_steps=12 format=3 uid="uid://b6x8j6u4y5n2q"]
 
 [ext_resource type="Script" uid="uid://dc6txilhgebds" path="res://Scenes/MainMenu/MainMenu.cs" id="1_2k4m3"]
 [ext_resource type="Shader" uid="uid://dnox0thh7iu8c" path="res://Assets/Shaders/Space/space_2d.gdshader" id="2_3l4m5"]
+[ext_resource type="FontFile" uid="uid://citmarc50s2xp" path="res://Assets/Fonts/GameFont.ttf" id="3_game_font"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1"]
 shader = ExtResource("2_3l4m5")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1"]
-bg_color = Color(0.2, 0.2, 0.2, 0.8)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.4, 0.4, 0.4, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-shadow_color = Color(0, 0, 0, 0.3)
-shadow_size = 4
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_PanelAccent"]
+bg_color = Color(0.05, 0.06, 0.08, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.6, 0.9, 0.4)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+shadow_color = Color(0.1, 0.5, 0.9, 0.1)
+shadow_size = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2"]
-bg_color = Color(0.3, 0.3, 0.3, 0.9)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.5, 0.5, 0.5, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-shadow_color = Color(0, 0, 0, 0.3)
-shadow_size = 4
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_TitleDeco"]
+bg_color = Color(0.2, 0.5, 0.8, 0.8)
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_radius_bottom_left = 1
+shadow_color = Color(0.1, 0.6, 1, 0.4)
+shadow_size = 3
 
-[node name="MainMenu" type="Control"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_PanelBg"]
+bg_color = Color(0.06, 0.08, 0.12, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.6, 0.9, 0.4)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0, 0, 0, 0.4)
+shadow_size = 8
+shadow_offset = Vector2(0, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_Divider"]
+bg_color = Color(0.2, 0.5, 0.8, 0.6)
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_radius_bottom_left = 1
+shadow_color = Color(0.1, 0.4, 0.8, 0.3)
+shadow_size = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ButtonHover"]
+content_margin_left = 15.0
+content_margin_top = 8.0
+content_margin_right = 15.0
+content_margin_bottom = 8.0
+bg_color = Color(0.1, 0.18, 0.26, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.3, 0.7, 1, 0.9)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0.1, 0.5, 0.9, 0.3)
+shadow_size = 5
+shadow_offset = Vector2(0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ButtonPressed"]
+content_margin_left = 15.0
+content_margin_top = 8.0
+content_margin_right = 15.0
+content_margin_bottom = 8.0
+bg_color = Color(0.05, 0.12, 0.2, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.6, 0.9, 0.9)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0.1, 0.5, 0.9, 0.2)
+shadow_size = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ButtonNormal"]
+content_margin_left = 15.0
+content_margin_top = 8.0
+content_margin_right = 15.0
+content_margin_bottom = 8.0
+bg_color = Color(0.08, 0.1, 0.14, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.5, 0.8, 0.8)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0, 0.3, 0.6, 0.2)
+shadow_size = 3
+shadow_offset = Vector2(0, 1)
+
+[node name="MainMenu" type="Control" node_paths=PackedStringArray("StartButton", "CreditsButton", "QuitButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -42,6 +122,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_2k4m3")
+StartButton = NodePath("MainPanel/MenuContainer/StartButton")
+CreditsButton = NodePath("MainPanel/MenuContainer/CreditsButton")
+QuitButton = NodePath("MainPanel/MenuContainer/QuitButton")
 
 [node name="Background" type="ColorRect" parent="."]
 material = SubResource("ShaderMaterial_1")
@@ -52,83 +135,290 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="GameTitle" type="Label" parent="."]
+[node name="BackgroundElements" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TopLeftCornerAccent" type="Panel" parent="BackgroundElements"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 260.0
+offset_bottom = 23.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelAccent")
+
+[node name="TopLeftCornerAccentVert" type="Panel" parent="BackgroundElements"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 23.0
+offset_bottom = 160.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelAccent")
+
+[node name="BottomRightCornerAccent" type="Panel" parent="BackgroundElements"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -260.0
+offset_top = -23.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelAccent")
+
+[node name="BottomRightCornerAccentVert" type="Panel" parent="BackgroundElements"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -23.0
+offset_top = -160.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelAccent")
+
+[node name="TitleContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -300.0
+offset_left = -400.0
 offset_top = 100.0
-offset_right = 300.0
-offset_bottom = 200.0
+offset_right = 400.0
+offset_bottom = 240.0
 grow_horizontal = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 2
-theme_override_font_sizes/font_size = 72
-text = "SPACE GAME"
+theme_override_constants/separation = 15
+
+[node name="GameTitle" type="Label" parent="TitleContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.1, 0.4, 0.8, 0.5)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/shadow_outline_size = 2
+theme_override_fonts/font = ExtResource("3_game_font")
+theme_override_font_sizes/font_size = 76
+text = "SPACEGAME"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Panel" type="Panel" parent="."]
+[node name="SubTitle" type="Label" parent="TitleContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.85, 1, 0.8)
+theme_override_colors/font_shadow_color = Color(0.1, 0.4, 0.8, 0.4)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/shadow_outline_size = 1
+theme_override_fonts/font = ExtResource("3_game_font")
+theme_override_font_sizes/font_size = 24
+text = "THE SPACE GAME"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TitleDecoration" type="Control" parent="TitleContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LeftLine" type="Panel" parent="TitleContainer/TitleDecoration"]
+custom_minimum_size = Vector2(120, 3)
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -1.5
+offset_right = 120.0
+offset_bottom = 1.5
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_TitleDeco")
+
+[node name="Polygon" type="Polygon2D" parent="TitleContainer/TitleDecoration/LeftLine"]
+position = Vector2(130, 1.5)
+color = Color(0.2, 0.5, 0.8, 0.8)
+polygon = PackedVector2Array(0, -6, 0, 6, 12, 0)
+
+[node name="RightLine" type="Panel" parent="TitleContainer/TitleDecoration"]
+custom_minimum_size = Vector2(120, 3)
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -120.0
+offset_top = -1.5
+offset_bottom = 1.5
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_TitleDeco")
+
+[node name="Polygon" type="Polygon2D" parent="TitleContainer/TitleDecoration/RightLine"]
+position = Vector2(-10, 1.5)
+rotation = 3.14159
+color = Color(0.2, 0.5, 0.8, 0.8)
+polygon = PackedVector2Array(0, -6, 0, 6, 12, 0)
+
+[node name="MainPanel" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -50.0
-offset_right = 200.0
-offset_bottom = 150.0
+offset_left = -225.0
+offset_top = -60.0
+offset_right = 225.0
+offset_bottom = 225.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_1")
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelBg")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+[node name="CornerDecoration1" type="Panel" parent="MainPanel"]
+layout_mode = 0
+offset_left = -4.0
+offset_top = -4.0
+offset_right = 16.0
+offset_bottom = 16.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelAccent")
+
+[node name="CornerDecoration2" type="Panel" parent="MainPanel"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -16.0
+offset_top = -4.0
+offset_right = 4.0
+offset_bottom = 16.0
+grow_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelAccent")
+
+[node name="CornerDecoration3" type="Panel" parent="MainPanel"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -4.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 4.0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelAccent")
+
+[node name="CornerDecoration4" type="Panel" parent="MainPanel"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 4.0
+offset_bottom = 4.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelAccent")
+
+[node name="MenuContainer" type="VBoxContainer" parent="MainPanel"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -150.0
-offset_top = -75.0
-offset_right = 150.0
-offset_bottom = 75.0
+offset_left = -175.0
+offset_top = -110.0
+offset_right = 175.0
+offset_bottom = 110.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 20
 
-[node name="StartButton" type="Button" parent="Panel/VBoxContainer"]
+[node name="MenuHeader" type="Label" parent="MainPanel/MenuContainer"]
 layout_mode = 2
-theme_override_colors/font_hover_color = Color(0.8, 0.8, 0.8, 1)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(0.6, 0.6, 0.6, 1)
-theme_override_font_sizes/font_size = 20
-theme_override_styles/hover = SubResource("StyleBoxFlat_2")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_2")
-theme_override_styles/normal = SubResource("StyleBoxFlat_2")
-text = "Start Game"
+theme_override_colors/font_color = Color(0.3, 0.7, 1, 0.8)
+theme_override_colors/font_shadow_color = Color(0.1, 0.4, 0.8, 0.3)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/shadow_outline_size = 1
+theme_override_fonts/font = ExtResource("3_game_font")
+theme_override_font_sizes/font_size = 22
+text = "MAIN MENU"
+horizontal_alignment = 1
+vertical_alignment = 1
 
-[node name="CreditsButton" type="Button" parent="Panel/VBoxContainer"]
+[node name="Divider" type="Panel" parent="MainPanel/MenuContainer"]
+custom_minimum_size = Vector2(0, 2)
 layout_mode = 2
-theme_override_colors/font_hover_color = Color(0.8, 0.8, 0.8, 1)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(0.6, 0.6, 0.6, 1)
-theme_override_font_sizes/font_size = 20
-theme_override_styles/hover = SubResource("StyleBoxFlat_2")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_2")
-theme_override_styles/normal = SubResource("StyleBoxFlat_2")
-text = "Credits"
+theme_override_styles/panel = SubResource("StyleBoxFlat_Divider")
 
-[node name="QuitButton" type="Button" parent="Panel/VBoxContainer"]
+[node name="StartButton" type="Button" parent="MainPanel/MenuContainer"]
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
-theme_override_colors/font_hover_color = Color(0.8, 0.8, 0.8, 1)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(0.6, 0.6, 0.6, 1)
-theme_override_font_sizes/font_size = 20
-theme_override_styles/hover = SubResource("StyleBoxFlat_2")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_2")
-theme_override_styles/normal = SubResource("StyleBoxFlat_2")
-text = "Quit"
+focus_mode = 0
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 0.9)
+theme_override_colors/font_pressed_color = Color(0.7, 0.9, 1, 1)
+theme_override_fonts/font = ExtResource("3_game_font")
+theme_override_font_sizes/font_size = 22
+theme_override_styles/hover = SubResource("StyleBoxFlat_ButtonHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ButtonPressed")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ButtonNormal")
+text = "START MISSION"
+
+[node name="CreditsButton" type="Button" parent="MainPanel/MenuContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 0.9)
+theme_override_colors/font_pressed_color = Color(0.7, 0.9, 1, 1)
+theme_override_fonts/font = ExtResource("3_game_font")
+theme_override_font_sizes/font_size = 22
+theme_override_styles/hover = SubResource("StyleBoxFlat_ButtonHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ButtonPressed")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ButtonNormal")
+text = "CREDITS"
+
+[node name="QuitButton" type="Button" parent="MainPanel/MenuContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 0.9)
+theme_override_colors/font_pressed_color = Color(0.7, 0.9, 1, 1)
+theme_override_fonts/font = ExtResource("3_game_font")
+theme_override_font_sizes/font_size = 22
+theme_override_styles/hover = SubResource("StyleBoxFlat_ButtonHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ButtonPressed")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ButtonNormal")
+text = "EXIT"
+
+[node name="VersionLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -40.0
+offset_right = 200.0
+offset_bottom = -20.0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.7, 0.8, 0.9, 0.7)
+theme_override_fonts/font = ExtResource("3_game_font")
+theme_override_font_sizes/font_size = 14
+text = "VERSION 0.1.0"
+vertical_alignment = 1

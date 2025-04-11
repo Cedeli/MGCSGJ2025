@@ -5,6 +5,10 @@ public partial class Credits : Control
     private GameManager _gameManager;
     private AudioManager _audioManager;
 
+    [ExportGroup("Components")]
+    [Export]
+    protected Button BackButton;
+
     private const string SfxButtonPath = "res://Assets/Audio/button_1.wav";
 
     public override void _Ready()
@@ -12,8 +16,7 @@ public partial class Credits : Control
         _gameManager = GetNode<GameManager>("/root/GameManager");
         _audioManager = GetNode<AudioManager>("/root/AudioManager");
 
-        var backButton = GetNode<Button>("Panel/VBoxContainer/BackButton");
-        backButton.Pressed += OnBackButtonPressed;
+        BackButton.Pressed += OnBackButtonPressed;
     }
 
     private void OnBackButtonPressed()

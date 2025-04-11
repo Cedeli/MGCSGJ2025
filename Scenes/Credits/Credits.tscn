@@ -1,40 +1,110 @@
-[gd_scene load_steps=6 format=3 uid="uid://c70ak7v506o3r"]
+[gd_scene load_steps=11 format=3 uid="uid://c70ak7v506o3r"]
 
 [ext_resource type="Script" uid="uid://l1prvo2ud6dg" path="res://Scenes/Credits/Credits.cs" id="1_3l5n4"]
 [ext_resource type="Shader" uid="uid://dnox0thh7iu8c" path="res://Assets/Shaders/Space/space_2d.gdshader" id="2_3l4m5"]
+[ext_resource type="FontFile" uid="uid://citmarc50s2xp" path="res://Assets/Fonts/GameFont.ttf" id="3_font"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1"]
 shader = ExtResource("2_3l4m5")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1"]
-bg_color = Color(0.2, 0.2, 0.2, 0.8)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.4, 0.4, 0.4, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-shadow_color = Color(0, 0, 0, 0.3)
-shadow_size = 4
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_PanelGlow"]
+bg_color = Color(0.05, 0.06, 0.08, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.6, 0.9, 0.4)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+shadow_color = Color(0.1, 0.5, 0.9, 0.1)
+shadow_size = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2"]
-bg_color = Color(0.3, 0.3, 0.3, 0.9)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.5, 0.5, 0.5, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-shadow_color = Color(0, 0, 0, 0.3)
-shadow_size = 4
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_MainPanel"]
+bg_color = Color(0.06, 0.07, 0.09, 0.92)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.6, 0.9, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0, 0.4, 0.8, 0.15)
+shadow_size = 6
+shadow_offset = Vector2(0, 2)
 
-[node name="Credits" type="Control"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_TitleBar"]
+bg_color = Color(0.08, 0.12, 0.18, 1)
+border_width_bottom = 1
+border_color = Color(0.2, 0.6, 0.9, 0.8)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ButtonHover"]
+content_margin_left = 15.0
+content_margin_top = 8.0
+content_margin_right = 15.0
+content_margin_bottom = 8.0
+bg_color = Color(0.1, 0.3, 0.5, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.3, 0.7, 0.95, 0.9)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0.1, 0.5, 0.9, 0.3)
+shadow_size = 4
+shadow_offset = Vector2(0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ButtonPressed"]
+content_margin_left = 15.0
+content_margin_top = 8.0
+content_margin_right = 15.0
+content_margin_bottom = 8.0
+bg_color = Color(0.06, 0.18, 0.32, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.5, 0.8, 0.8)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0, 0.4, 0.8, 0.1)
+shadow_size = 2
+shadow_offset = Vector2(0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ButtonNormal"]
+content_margin_left = 15.0
+content_margin_top = 8.0
+content_margin_right = 15.0
+content_margin_bottom = 8.0
+bg_color = Color(0.08, 0.15, 0.22, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.6, 0.9, 0.7)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0, 0.4, 0.8, 0.2)
+shadow_size = 3
+shadow_offset = Vector2(0, 1)
+
+[node name="Credits" type="Control" node_paths=PackedStringArray("BackButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -42,6 +112,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_3l5n4")
+BackButton = NodePath("CreditsPanel/BackButtonContainer/BackButton")
 
 [node name="Background" type="ColorRect" parent="."]
 material = SubResource("ShaderMaterial_1")
@@ -52,61 +123,401 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Panel" type="Panel" parent="."]
+[node name="BackgroundElements" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TopLeftCornerAccent" type="Panel" parent="BackgroundElements"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 245.0
+offset_bottom = 8.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="TopLeftCornerAccentVert" type="Panel" parent="BackgroundElements"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 8.0
+offset_bottom = 145.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="TopRightCornerAccent" type="Panel" parent="BackgroundElements"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -245.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = 8.0
+grow_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="TopRightCornerAccentVert" type="Panel" parent="BackgroundElements"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -8.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = 145.0
+grow_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="BottomLeftCornerAccent" type="Panel" parent="BackgroundElements"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = -8.0
+offset_right = 245.0
+offset_bottom = -5.0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="BottomLeftCornerAccentVert" type="Panel" parent="BackgroundElements"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = -145.0
+offset_right = 8.0
+offset_bottom = -5.0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="BottomRightCornerAccent" type="Panel" parent="BackgroundElements"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -245.0
+offset_top = -8.0
+offset_right = -5.0
+offset_bottom = -5.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="BottomRightCornerAccentVert" type="Panel" parent="BackgroundElements"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -8.0
+offset_top = -145.0
+offset_right = -5.0
+offset_bottom = -5.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="CreditsPanel" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -150.0
-offset_right = 200.0
-offset_bottom = 150.0
+offset_left = -300.0
+offset_top = -250.0
+offset_right = 300.0
+offset_bottom = 325.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_1")
+theme_override_styles/panel = SubResource("StyleBoxFlat_MainPanel")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+[node name="CornerDecoration1" type="Panel" parent="CreditsPanel"]
+layout_mode = 0
+offset_left = -4.0
+offset_top = -4.0
+offset_right = 20.0
+offset_bottom = 20.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="CornerDecoration2" type="Panel" parent="CreditsPanel"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -20.0
+offset_top = -4.0
+offset_right = 4.0
+offset_bottom = 20.0
+grow_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="CornerDecoration3" type="Panel" parent="CreditsPanel"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -4.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 4.0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="CornerDecoration4" type="Panel" parent="CreditsPanel"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 4.0
+offset_bottom = 4.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="TitleBar" type="Panel" parent="CreditsPanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 45.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_TitleBar")
+
+[node name="TitleLabel" type="Label" parent="CreditsPanel/TitleBar"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -150.0
-offset_top = -100.0
-offset_right = 150.0
-offset_bottom = 100.0
+offset_left = -60.0
+offset_top = -15.0
+offset_right = 60.0
+offset_bottom = 15.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 20
-
-[node name="Label" type="Label" parent="Panel/VBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 32
-text = "Credits"
-horizontal_alignment = 1
-
-[node name="CreditsText" type="Label" parent="Panel/VBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 20
-text = "Game Developed By:
-Bitshift
-For MGCSGJ2025
-"
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 0.95)
+theme_override_colors/font_shadow_color = Color(0, 0.4, 0.8, 0.3)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/shadow_outline_size = 1
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 26
+text = "CREDITS"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="BackButton" type="Button" parent="Panel/VBoxContainer"]
+[node name="HexagonDecoration1" type="Polygon2D" parent="CreditsPanel/TitleBar"]
+position = Vector2(95, 22.5)
+scale = Vector2(0.6, 0.6)
+color = Color(0.2, 0.6, 0.9, 0.4)
+polygon = PackedVector2Array(10, 0, 5, 8.66, -5, 8.66, -10, 0, -5, -8.66, 5, -8.66)
+
+[node name="HexagonDecoration2" type="Polygon2D" parent="CreditsPanel/TitleBar"]
+position = Vector2(505, 22.5)
+scale = Vector2(0.6, 0.6)
+color = Color(0.2, 0.6, 0.9, 0.4)
+polygon = PackedVector2Array(10, 0, 5, 8.66, -5, 8.66, -10, 0, -5, -8.66, 5, -8.66)
+
+[node name="ContentPanel" type="VBoxContainer" parent="CreditsPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 55.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 25
+
+[node name="TopLine" type="Panel" parent="CreditsPanel/ContentPanel"]
+custom_minimum_size = Vector2(0, 1)
 layout_mode = 2
-theme_override_colors/font_hover_color = Color(0.8, 0.8, 0.8, 1)
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_pressed_color = Color(0.6, 0.6, 0.6, 1)
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="TeamSection" type="VBoxContainer" parent="CreditsPanel/ContentPanel"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="SectionTitle" type="Label" parent="CreditsPanel/ContentPanel/TeamSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.6, 0.9, 0.9)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 22
+text = "DEVELOPMENT TEAM"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label" type="Label" parent="CreditsPanel/ContentPanel/TeamSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 0.9)
 theme_override_font_sizes/font_size = 20
-theme_override_styles/hover = SubResource("StyleBoxFlat_2")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_2")
-theme_override_styles/normal = SubResource("StyleBoxFlat_2")
-text = "Back to Main Menu"
+text = "BITSHIFT"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Role" type="Label" parent="CreditsPanel/ContentPanel/TeamSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.8, 0.9, 0.8)
+theme_override_font_sizes/font_size = 16
+text = "Game Design & Development"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EventSection" type="VBoxContainer" parent="CreditsPanel/ContentPanel"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="SectionTitle" type="Label" parent="CreditsPanel/ContentPanel/EventSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.6, 0.9, 0.9)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 22
+text = "EVENT"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label" type="Label" parent="CreditsPanel/ContentPanel/EventSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 0.9)
+theme_override_font_sizes/font_size = 20
+text = "MGCSGJ2025"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TechnologySection" type="VBoxContainer" parent="CreditsPanel/ContentPanel"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="SectionTitle" type="Label" parent="CreditsPanel/ContentPanel/TechnologySection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.6, 0.9, 0.9)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 22
+text = "TECHNOLOGY"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label" type="Label" parent="CreditsPanel/ContentPanel/TechnologySection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 0.9)
+theme_override_font_sizes/font_size = 18
+text = "Godot Engine"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label2" type="Label" parent="CreditsPanel/ContentPanel/TechnologySection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 0.9)
+theme_override_font_sizes/font_size = 18
+text = "C# Framework"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ThankYouSection" type="VBoxContainer" parent="CreditsPanel/ContentPanel"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="SectionTitle" type="Label" parent="CreditsPanel/ContentPanel/ThankYouSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.6, 0.9, 0.9)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 22
+text = "SPECIAL THANKS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label" type="Label" parent="CreditsPanel/ContentPanel/ThankYouSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 0.9)
+theme_override_font_sizes/font_size = 18
+text = "To all the players for their support"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CopyrightSection" type="VBoxContainer" parent="CreditsPanel/ContentPanel"]
+layout_mode = 2
+size_flags_vertical = 10
+theme_override_constants/separation = 5
+
+[node name="SectionLine" type="Panel" parent="CreditsPanel/ContentPanel/CopyrightSection"]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="Label" type="Label" parent="CreditsPanel/ContentPanel/CopyrightSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.7, 0.8, 0.7)
+theme_override_font_sizes/font_size = 14
+text = "© 2025 BITSHIFT. ALL RIGHTS RESERVED."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BackButtonContainer" type="HBoxContainer" parent="CreditsPanel"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 50.0
+offset_top = -122.0
+offset_right = -50.0
+offset_bottom = -72.0
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 1
+
+[node name="BackButton" type="Button" parent="CreditsPanel/BackButtonContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 0.9)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/hover = SubResource("StyleBoxFlat_ButtonHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ButtonPressed")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ButtonNormal")
+text = "RETURN TO MAIN MENU"
+
+[node name="ButtonDecoration1" type="Panel" parent="CreditsPanel/BackButtonContainer/BackButton"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -35.0
+offset_top = -1.0
+offset_right = -15.0
+offset_bottom = 1.0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="ButtonDecoration2" type="Panel" parent="CreditsPanel/BackButtonContainer/BackButton"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 15.0
+offset_top = -1.0
+offset_right = 35.0
+offset_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")

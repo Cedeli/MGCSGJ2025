@@ -18,7 +18,7 @@ public partial class Alien : GravityEntity
 
 	[ExportGroup("AI Behavior")]
 	[Export]
-	public float MoveForce = 50.0f;
+	public float MoveForce = 10.0f;
 
 	[Export]
 	public float TargetUpdateInterval = 0.5f;

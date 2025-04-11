@@ -7,18 +7,24 @@ public partial class MainMenu : Control
 
 	private const string SfxButtonPath = "res://Assets/Audio/button_1.wav";
 
+	[ExportGroup("Components")]
+	[Export]
+	protected Button StartButton;
+
+	[Export]
+	protected Button CreditsButton;
+
+	[Export]
+	protected Button QuitButton;
+
 	public override void _Ready()
 	{
 		_gameManager = GetNode<GameManager>("/root/GameManager");
 		_audioManager = GetNode<AudioManager>("/root/AudioManager");
 
-		var startButton = GetNode<Button>("Panel/VBoxContainer/StartButton");
-		var creditsButton = GetNode<Button>("Panel/VBoxContainer/CreditsButton");
-		var quitButton = GetNode<Button>("Panel/VBoxContainer/QuitButton");
-
-		startButton.Pressed += OnStartButtonPressed;
-		creditsButton.Pressed += OnCreditsButtonPressed;
-		quitButton.Pressed += OnQuitButtonPressed;
+		StartButton.Pressed += OnStartButtonPressed;
+		CreditsButton.Pressed += OnCreditsButtonPressed;
+		QuitButton.Pressed += OnQuitButtonPressed;
 	}
 
 	private void OnStartButtonPressed()
