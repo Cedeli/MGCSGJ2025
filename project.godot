@@ -10,9 +10,12 @@ config_version=5
 
 [application]
 
-config/name="MGCSGJ2025"
+config/name="Moonhold"
+config/description="Created for MGC Summer Gamejam 2025
+Survive alien horde until your ship is ready for ignition!"
 run/main_scene="res://Scenes/Main/Main.tscn"
 config/features=PackedStringArray("4.4", "C#", "Forward Plus")
+boot_splash/show_image=false
 config/icon="res://icon.svg"
 
 [audio]
