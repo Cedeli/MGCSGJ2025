@@ -49,8 +49,10 @@ public partial class Gun : Node3D
 	private bool _isReloading = false;
 
 	private AudioManager _audioManager;
+
 	private const string SHOOT_SFX_PATH = "res://Assets/Audio/bullet_1.wav";
-	private const string RELOAD_SFX_PATH = "res://Assets/Audio/reload_placeholder.wav";
+	private const string OUT_SFX_PATH = "res://Assets/Audio/gun_out.wav";
+	private const string RELOAD_SFX_PATH = "res://Assets/Audio/gun_reload.ogg";
 
 	private Dictionary<PowerupType, Timer> _powerupTimers = new();
 
@@ -99,7 +101,10 @@ public partial class Gun : Node3D
 	public void Shoot()
 	{
 		if (!_canShoot || _isReloading)
+		{
+			// _audioManager.PlaySFX(OUT_SFX_PATH);
 			return;
+		}
 
 		if (_currentClipAmmo <= 0)
 		{
@@ -154,7 +159,7 @@ public partial class Gun : Node3D
 		_canShoot = false;
 		_reloadTimer.Start();
 		GD.Print("Gun: Reloading...");
-		// _audioManager.PlaySFX(RELOAD_SFX_PATH);
+		_audioManager.PlaySFX(RELOAD_SFX_PATH);
 	}
 
 	private void OnReloadFinished()

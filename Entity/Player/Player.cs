@@ -1,5 +1,5 @@
-using Godot;
 using System;
+using Godot;
 
 public partial class Player : GravityEntity, IInputReceiver
 {
@@ -15,29 +15,36 @@ public partial class Player : GravityEntity, IInputReceiver
     private const float MinPitchAngle = -Mathf.Pi / 2.0f + 0.01f;
     private const float MaxPitchAngle = Mathf.Pi / 2.0f - 0.01f;
 
-    [Export] private Node3D _cameraPivot;
-    [Export] private Camera3D _camera;
-    [Export] private Gun _gun;
+    [Export]
+    private Node3D _cameraPivot;
+
+    [Export]
+    private Camera3D _camera;
+
+    [Export]
+    private Gun _gun;
 
     [ExportGroup("Input")]
     [Export(PropertyHint.Range, "0.01,1.0")]
     public float MouseSensitivity = 0.25f;
 
-    [Export] public bool InvertY;
-    
+    [Export]
+    public bool InvertY;
+
     [ExportGroup("Stats")]
-    [Export] public float MaxHealth = 100f;
+    [Export]
+    public float MaxHealth = 100f;
     private float _currentHealth;
-    
+
     private MovementController _currentMovementController;
     private PlanetaryMovementController _planetaryMovement;
-    
+
     private InputManager _inputManager;
     private InputBuffer _inputBuffer;
 
     private Vector2 _movementInput;
     private float _yawAngle;
-    
+
     public float CurrentHealth => _currentHealth;
 
     public override void _Ready()
@@ -49,7 +56,7 @@ public partial class Player : GravityEntity, IInputReceiver
         _currentHealth = MaxHealth;
         _planetaryMovement = new PlanetaryMovementController(this);
         _currentMovementController = _planetaryMovement;
-        
+
         EmitSignal(SignalName.HealthChanged, _currentHealth, MaxHealth);
         AddToGroup(PlayerGroup);
     }
@@ -60,7 +67,7 @@ public partial class Player : GravityEntity, IInputReceiver
 
         var fDelta = (float)delta;
         UpdateCameraOrientation();
-        
+
         _currentMovementController?.PhysicsProcess(fDelta, _movementInput);
 
         ProcessBufferedJump();
@@ -75,13 +82,13 @@ public partial class Player : GravityEntity, IInputReceiver
     {
         _yawAngle -= Mathf.DegToRad(lookDelta.X * MouseSensitivity);
         _yawAngle = Mathf.Wrap(_yawAngle, -Mathf.Pi, Mathf.Pi);
-        
+
         if (_camera != null)
         {
             UpdateCameraPitch(lookDelta.Y);
         }
     }
-    
+
     public void OnShootInput()
     {
         if (_gun != null)
@@ -120,13 +127,14 @@ public partial class Player : GravityEntity, IInputReceiver
 
     private void UpdateCameraOrientation()
     {
-        if (_cameraPivot == null) return;
-    
+        if (_cameraPivot == null)
+            return;
+
         var targetUp = -GetGravityDirection().Normalized();
-        
+
         var right = Vector3.Right;
         right = (right - targetUp * right.Dot(targetUp)).Normalized();
-        
+
         if (right.LengthSquared() < 0.01f)
         {
             right = (Vector3.Forward - targetUp * Vector3.Forward.Dot(targetUp)).Normalized();
@@ -135,16 +143,19 @@ public partial class Player : GravityEntity, IInputReceiver
                 right = (Vector3.Up - targetUp * Vector3.Up.Dot(targetUp)).Normalized();
             }
         }
-        
+
         var forward = targetUp.Cross(right).Normalized();
         right = forward.Cross(targetUp).Normalized();
-        
+
         var initialBasis = new Basis(right, targetUp, forward);
-        
+
         var yawBasis = new Basis(targetUp, -_yawAngle);
         var finalBasis = yawBasis * initialBasis;
-    
-        _cameraPivot.GlobalTransform = new Transform3D(finalBasis.Orthonormalized(), GlobalPosition);
+
+        _cameraPivot.GlobalTransform = new Transform3D(
+            finalBasis.Orthonormalized(),
+            GlobalPosition
+        );
     }
 
     private void UpdateCameraPitch(float lookYDelta)
@@ -160,7 +171,8 @@ public partial class Player : GravityEntity, IInputReceiver
 
     private void ProcessBufferedJump()
     {
-        if (!(_inputBuffer?.HasBufferedAction("jump") ?? false)) return;
+        if (!(_inputBuffer?.HasBufferedAction("jump") ?? false))
+            return;
         if (_currentMovementController?.TryJump() ?? false)
         {
             _inputBuffer.ConsumeBufferedAction("jump");
@@ -177,7 +189,7 @@ public partial class Player : GravityEntity, IInputReceiver
             return;
         _currentHealth = Mathf.Max(0, _currentHealth - amount);
         _audioManager = GetNode<AudioManager>("/root/AudioManager");
-        _audioManager?.PlaySFX("res://Assets/Audio/hit_1.wav");
+        _audioManager?.PlaySFX("res://Assets/Audio/slash_1.wav");
         EmitSignal(SignalName.HealthChanged, _currentHealth, MaxHealth);
         if (_currentHealth <= 0)
             Die();
@@ -185,7 +197,8 @@ public partial class Player : GravityEntity, IInputReceiver
 
     private void Die()
     {
-        if (ProcessMode == ProcessModeEnum.Disabled) return;
+        if (ProcessMode == ProcessModeEnum.Disabled)
+            return;
         GD.Print("Player Died");
         EmitSignal(SignalName.Died);
         ProcessMode = ProcessModeEnum.Disabled;

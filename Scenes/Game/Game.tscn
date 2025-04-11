@@ -3,15 +3,15 @@
 [ext_resource type="PackedScene" uid="uid://dqsf2uo1bqci8" path="res://Input/InputManager.tscn" id="1_1q8bt"]
 [ext_resource type="Script" uid="uid://cwc4n1u7db367" path="res://Scenes/Game/Game.cs" id="1_bsqcq"]
 [ext_resource type="Shader" uid="uid://dlewbbs8byb86" path="res://Assets/Shaders/Space/space.gdshader" id="1_gwu2e"]
-[ext_resource type="PackedScene" uid="uid://c7kgmaf0g1h2" path="res://Entity/Alien/Alien.tscn" id="2_jf0ra"]
+[ext_resource type="PackedScene" uid="uid://c7kgmaf0g1h2" path="res://Entity/Alien/Alien.tscn" id="2_bsqcq"]
 [ext_resource type="PackedScene" uid="uid://dsix13euckuf1" path="res://Entity/CelestialBody.tscn" id="2_xbxml"]
-[ext_resource type="PackedScene" uid="uid://47knx42tism6" path="res://Entity/HealthItem/HealthItem.tscn" id="3_fg52j"]
+[ext_resource type="PackedScene" uid="uid://47knx42tism6" path="res://Entity/HealthItem/HealthItem.tscn" id="3_jf0ra"]
 [ext_resource type="Material" uid="uid://c7iwxejaj28u7" path="res://Assets/Materials/Sun.tres" id="3_xbxml"]
-[ext_resource type="PackedScene" uid="uid://dxl4tn3o3jt3e" path="res://Entity/AmmoItem/AmmoItem.tscn" id="4_6581v"]
+[ext_resource type="PackedScene" uid="uid://dxl4tn3o3jt3e" path="res://Entity/AmmoItem/AmmoItem.tscn" id="4_bsqcq"]
 [ext_resource type="PackedScene" uid="uid://csbonl4sxt823" path="res://Entity/Planet/Planet.tscn" id="4_ln2h6"]
-[ext_resource type="PackedScene" uid="uid://b4n5o6p7q8sat" path="res://Entity/PowerupItem/PowerupItem.tscn" id="5_6hht6"]
+[ext_resource type="PackedScene" uid="uid://b4n5o6p7q8sat" path="res://Entity/PowerupItem/PowerupItem.tscn" id="5_6581v"]
 [ext_resource type="PackedScene" uid="uid://3gendnc4ovb" path="res://Entity/Planet/Moon.tscn" id="5_y3kpf"]
-[ext_resource type="PackedScene" uid="uid://dwtte5rcg7xu7" path="res://Entity/ScrapItem/ScrapItem.tscn" id="6_kjp6r"]
+[ext_resource type="PackedScene" uid="uid://dwtte5rcg7xu7" path="res://Entity/ScrapItem/ScrapItem.tscn" id="6_6hht6"]
 [ext_resource type="PackedScene" uid="uid://cfdmshqym6x8y" path="res://Entity/Player/Player.tscn" id="7_gvja8"]
 [ext_resource type="PackedScene" uid="uid://c7d8eglsg1h2" path="res://Entity/Ship/Ship.tscn" id="13_bsqcq"]
 
@@ -65,12 +65,10 @@ environment = SubResource("Environment_3k6gv")
 
 [node name="SolarSystem" type="Node3D" parent="."]
 
-[node name="Sun" parent="SolarSystem" node_paths=PackedStringArray("CollisionShape", "MeshInstance") groups=["celestial_bodies"] instance=ExtResource("2_xbxml")]
+[node name="Sun" parent="SolarSystem" groups=["celestial_bodies"] instance=ExtResource("2_xbxml")]
 SurfaceGravity = 250.0
 InitialMass = 4e+06
 Radius = 250.0
-CollisionShape = NodePath("CollisionShape3D")
-MeshInstance = NodePath("MeshInstance3D")
 
 [node name="MeshInstance3D" parent="SolarSystem/Sun" index="0"]
 mesh = SubResource("SphereMesh_1q8bt")
