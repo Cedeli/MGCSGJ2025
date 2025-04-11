@@ -224,7 +224,6 @@ theme_override_constants/shadow_offset_y = 1
 theme_override_constants/shadow_outline_size = 1
 theme_override_fonts/font = ExtResource("3_game_font")
 theme_override_font_sizes/font_size = 24
-text = "ALONE ON THE MOON. NOT FOR LONG."
 horizontal_alignment = 1
 vertical_alignment = 1
 

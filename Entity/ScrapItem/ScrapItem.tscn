@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://dwtte5rcg7xu7"]
 
 [ext_resource type="Script" uid="uid://dec3vvp5avrjn" path="res://Entity/ScrapItem/ScrapItem.cs" id="1_scrap_cs"]
-[ext_resource type="PackedScene" uid="uid://dn8ih6er0xrac" path="res://Assets/Scrap/Gear.glb" id="2_4mu3r"]
+[ext_resource type="PackedScene" uid="uid://po8kmsl2ia1" path="res://Assets/Scrap/Gear.glb" id="2_4mu3r"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_rq87p"]
 radius = 0.482666
@@ -10,8 +10,9 @@ height = 0.965332
 [sub_resource type="SphereShape3D" id="SphereShape3D_groundcast_scrap"]
 radius = 0.1
 
-[node name="ScrapItem" type="RigidBody3D" node_paths=PackedStringArray("GroundCast")]
+[node name="ScrapItem" type="RigidBody3D" node_paths=PackedStringArray("_visualNode", "GroundCast")]
 script = ExtResource("1_scrap_cs")
+_visualNode = NodePath("Gear2")
 BobFrequency = 1.8
 SpinSpeed = 1.2
 GroundCast = NodePath("GroundCast")

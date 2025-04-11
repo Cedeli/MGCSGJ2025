@@ -9,8 +9,9 @@ radius = 0.568335
 [sub_resource type="SphereShape3D" id="SphereShape3D_groundcast_powerup"]
 radius = 0.1
 
-[node name="PowerupItem" type="RigidBody3D" node_paths=PackedStringArray("GroundCast")]
+[node name="PowerupItem" type="RigidBody3D" node_paths=PackedStringArray("_visualNode", "GroundCast")]
 script = ExtResource("1_powerup_cs")
+_visualNode = NodePath("Box")
 GroundCast = NodePath("GroundCast")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

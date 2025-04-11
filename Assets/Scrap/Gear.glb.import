@@ -3,11 +3,7 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-<<<<<<< HEAD
-uid="uid://dn8ih6er0xrac"
-=======
 uid="uid://po8kmsl2ia1"
->>>>>>> UI-Scene-Hotfix
 path="res://.godot/imported/Gear.glb-d1a34e6bd4fc48163a0df77859fea97a.scn"
 
 [deps]

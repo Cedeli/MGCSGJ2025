@@ -38,24 +38,25 @@ public partial class Bullet : GravityEntity
         if (_hitOccurred)
             return;
 
-        int contactCount = state.GetContactCount();
-        if (contactCount > 0)
+        var contactCount = state.GetContactCount();
+        if (contactCount <= 0) return;
+        for (var i = 0; i < contactCount; i++)
         {
-            for (int i = 0; i < contactCount; i++)
+            if (state.GetContactColliderObject(i) is not Node collider) continue;
+
+            switch (collider)
             {
-                if (state.GetContactColliderObject(i) is Node collider)
-                {
-                    if (collider is Alien alien && IsInstanceValid(alien))
-                    {
-                        if (!alien.IsQueuedForDeletion() && !alien.IsDead())
-                        {
-                            alien.TakeDamage(Damage);
-                            _hitOccurred = true;
-                            QueueFree();
-                            return;
-                        }
-                    }
-                }
+                case Alien alien when IsInstanceValid(alien) && !alien.IsQueuedForDeletion() && !alien.IsDead():
+                    alien.TakeDamage(Damage);
+                    _hitOccurred = true;
+                    QueueFree();
+                    return;
+                case Player:
+                    continue;
+                default:
+                    _hitOccurred = true;
+                    QueueFree();
+                    break;
             }
         }
     }
