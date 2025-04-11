@@ -163,6 +163,7 @@ public partial class Game : Node3D
 			_ship.Died += OnShipDied;
 		_gameManager.SceneChanged += OnSceneChanged;
 		_gameManager.PushScene("res://Scenes/HUD/HUD.tscn");
+		_audioManager.PlayBGM("res://Assets/Audio/combat.mp3");
 
 		ConnectInputSignals();
 		StartGame();
@@ -170,12 +171,6 @@ public partial class Game : Node3D
 
 	private void ConnectInputSignals()
 	{
-		if (_inputManager == null)
-		{
-			GD.PrintErr("Game Error: InputManager node not found in Game scene.");
-			return;
-		}
-
 		var keyboardInput = _inputManager.GetNodeOrNull<KeyboardMouseInput>("KeyboardMouseInput");
 		if (keyboardInput != null)
 		{
@@ -188,10 +183,6 @@ public partial class Game : Node3D
 			{
 				keyboardInput.PauseInput += OnPauseInputPressed;
 			}
-		}
-		else
-		{
-			GD.PrintErr("Game Error: KeyboardMouseInput node not found under InputManager.");
 		}
 	}
 

@@ -86,10 +86,6 @@ public partial class Player : GravityEntity, IInputReceiver
         {
             _initialWeaponLocalPosition = _gun.Position;
         }
-        else
-        {
-            GD.PrintErr($"Player ({Name}): Gun node is not assigned, cannot setup weapon bobbing.");
-        }
 
         if (_settingsManager != null)
         {
@@ -102,12 +98,7 @@ public partial class Player : GravityEntity, IInputReceiver
             )
                 _settingsManager.WeaponBobbingToggled += OnWeaponBobbingToggled;
         }
-        else
-        {
-            GD.PrintErr(
-                $"Player ({Name}): SettingsManager not found, weapon bobbing defaults to enabled."
-            );
-        }
+        else { }
 
         EmitSignal(SignalName.HealthChanged, _currentHealth, MaxHealth);
         AddToGroup(PlayerGroup);
