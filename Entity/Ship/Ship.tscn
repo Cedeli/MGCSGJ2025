@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://c7d8eglsg1h2"]
+[gd_scene load_steps=6 format=3 uid="uid://c7d8eglsg1h2"]
 
 [ext_resource type="Script" uid="uid://ddmdy7wwnbbte" path="res://Entity/Ship/Ship.cs" id="1_ship_cs"]
 [ext_resource type="PackedScene" uid="uid://ipnrfid737qj" path="res://Assets/Ship/ship.glb" id="2_xsukb"]
@@ -8,6 +8,9 @@ size = Vector3(2.75311, 2.74957, 1.54071)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_groundcast_ship"]
 radius = 0.2
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_xsukb"]
+radius = 0.651845
 
 [node name="Ship" type="RigidBody3D" node_paths=PackedStringArray("GroundCast")]
 script = ExtResource("1_ship_cs")
@@ -26,3 +29,7 @@ target_position = Vector3(0, -1.5, 0)
 
 [node name="Model" parent="." instance=ExtResource("2_xsukb")]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, -0.29739, 0)
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.352338, 0)
+shape = SubResource("CapsuleShape3D_xsukb")
