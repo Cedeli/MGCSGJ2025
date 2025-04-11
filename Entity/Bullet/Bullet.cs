@@ -6,7 +6,9 @@ public partial class Bullet : GravityEntity
     [Export] public float Speed = 70.0f;
 
     [Export] public float Lifetime = 3.0f;
-
+    // Particle
+    [Export] private GpuParticles3D _particle;
+    
     public float Damage = 25.0f;
 
     private Timer _lifetimeTimer;
@@ -21,6 +23,8 @@ public partial class Bullet : GravityEntity
         ContactMonitor = true;
         MaxContactsReported = 4;
 
+        _particle.Emitting = false;
+
         _lifetimeTimer = new Timer();
         _lifetimeTimer.WaitTime = Lifetime;
         _lifetimeTimer.OneShot = true;
@@ -34,7 +38,7 @@ public partial class Bullet : GravityEntity
     public override void _IntegrateForces(PhysicsDirectBodyState3D state)
     {
         base._IntegrateForces(state);
-
+        
         if (_hitOccurred)
             return;
 
@@ -43,7 +47,9 @@ public partial class Bullet : GravityEntity
         for (var i = 0; i < contactCount; i++)
         {
             if (state.GetContactColliderObject(i) is not Node collider) continue;
-
+            
+            PlayHitParticles();
+            
             switch (collider)
             {
                 case Alien alien when IsInstanceValid(alien) && !alien.IsQueuedForDeletion() && !alien.IsDead():
@@ -59,6 +65,8 @@ public partial class Bullet : GravityEntity
                     break;
             }
         }
+        
+        _particle.Emitting = _hitOccurred;
     }
 
     public void InitializeVelocity(Basis initialBasis)
@@ -71,6 +79,20 @@ public partial class Bullet : GravityEntity
         if (!_hitOccurred)
         {
             QueueFree();
+        }
+    }
+    
+    private void PlayHitParticles()
+    {
+        if (_particle != null)
+        {
+            _particle.Emitting = false; 
+            _particle.OneShot = true;   
+            _particle.Restart();        
+            _particle.Emitting = true;
+            
+            _particle.Reparent(GetTree().CurrentScene);
+            _particle.GlobalTransform = GlobalTransform;
         }
     }
 
