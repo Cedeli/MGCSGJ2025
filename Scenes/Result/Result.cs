@@ -109,7 +109,7 @@ public partial class Result : Control
 
 		if (resultMessageLabel != null && gameOverHeaderLabel != null)
 		{
-			if (reason.Contains("Died") || reason.Contains("Destroyed"))
+			if (reason.Contains("Player Eliminated") || reason.Contains("Ship Destroyed"))
 			{
 				resultMessageLabel.Text = "MISSION FAILED";
 				resultMessageLabel.AddThemeColorOverride("font_color", Colors.Red);
