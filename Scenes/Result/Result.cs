@@ -109,16 +109,17 @@ public partial class Result : Control
 			if (reason.Contains("Died") || reason.Contains("Destroyed"))
 			{
 				resultMessageLabel.Text = "MISSION FAILED";
-				resultMessageLabel.Modulate = Color.FromHtml("f2162c");
+				resultMessageLabel.AddThemeColorOverride("font_color", Colors.Red);
 				gameOverHeaderLabel.Text = "GAME OVER";
 			}
 			else
 			{
 				resultMessageLabel.Text = "MISSION SUCCESSFUL!";
-				resultMessageLabel.Modulate = Color.FromHtml("33D966E6");
+				resultMessageLabel.AddThemeColorOverride("font_color", Colors.LimeGreen);
 				gameOverHeaderLabel.Text = "MISSION COMPLETE";
 			}
 		}
+		else { }
 	}
 
 	private void OnMainMenuButtonPressed()
