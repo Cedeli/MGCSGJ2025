@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://dxl4tn3o3jt3e"]
+[gd_scene load_steps=7 format=3 uid="uid://dxl4tn3o3jt3e"]
 
 [ext_resource type="Script" uid="uid://cc4ff4qevuaas" path="res://Entity/Item/AmmoItem/AmmoItem.cs" id="1_qqyjt"]
 [ext_resource type="PackedScene" uid="uid://bojhtxrf84xal" path="res://Assets/Ammo/Yellow Box.glb" id="2_3otp5"]
@@ -10,9 +10,21 @@ height = 2.04976
 [sub_resource type="SphereShape3D" id="SphereShape3D_groundcast_item"]
 radius = 0.1
 
-[node name="AmmoItem" type="RigidBody3D" node_paths=PackedStringArray("_visualNode", "GroundCast")]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_thmuw"]
+transparency = 1
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 16.0
+
+[sub_resource type="PrismMesh" id="PrismMesh_ndg36"]
+material = SubResource("StandardMaterial3D_thmuw")
+size = Vector3(0.05, 2.735, 0.05)
+
+[node name="AmmoItem" type="RigidBody3D" node_paths=PackedStringArray("_visualNode", "_lootBeam", "GroundCast")]
 script = ExtResource("1_qqyjt")
 _visualNode = NodePath("Root Scene")
+_lootBeam = NodePath("LootBeam")
+FadeFrequency = 0.25
 GroundCast = NodePath("GroundCast")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
@@ -25,4 +37,8 @@ shape = SubResource("SphereShape3D_groundcast_item")
 target_position = Vector3(0, -0.5, 0)
 
 [node name="Root Scene" parent="." instance=ExtResource("2_3otp5")]
-transform = Transform3D(0.55, 0, 0, 0, 0.55, 0, 0, 0, 0.55, 0, 0, 0)
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+
+[node name="LootBeam" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+mesh = SubResource("PrismMesh_ndg36")

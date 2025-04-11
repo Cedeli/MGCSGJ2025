@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://b4n5o6p7q8sat"]
+[gd_scene load_steps=7 format=3 uid="uid://b4n5o6p7q8sat"]
 
 [ext_resource type="Script" uid="uid://bpfxja8q6g5dt" path="res://Entity/Item/PowerupItem/PowerupItem.cs" id="1_powerup_cs"]
 [ext_resource type="PackedScene" uid="uid://bmdai8cwbdwnk" path="res://Assets/PowerUp/Box.glb" id="2_c1tk3"]
@@ -9,13 +9,25 @@ radius = 0.568335
 [sub_resource type="SphereShape3D" id="SphereShape3D_groundcast_powerup"]
 radius = 0.1
 
-[node name="PowerupItem" type="RigidBody3D" node_paths=PackedStringArray("_visualNode", "GroundCast")]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tm1kw"]
+transparency = 1
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 16.0
+
+[sub_resource type="PrismMesh" id="PrismMesh_736ab"]
+material = SubResource("StandardMaterial3D_tm1kw")
+size = Vector3(0.05, 2.735, 0.05)
+
+[node name="PowerupItem" type="RigidBody3D" node_paths=PackedStringArray("_visualNode", "_lootBeam", "GroundCast")]
 script = ExtResource("1_powerup_cs")
 _visualNode = NodePath("Box")
+_lootBeam = NodePath("LootBeam")
+FadeFrequency = 0.25
 GroundCast = NodePath("GroundCast")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0.142304, 0)
 shape = SubResource("SphereShape3D_c1tk3")
 
 [node name="GroundCast" type="ShapeCast3D" parent="."]
@@ -24,4 +36,8 @@ shape = SubResource("SphereShape3D_groundcast_powerup")
 target_position = Vector3(0, -0.5, 0)
 
 [node name="Box" parent="." instance=ExtResource("2_c1tk3")]
-transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, -0.0769149, 0)
+transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, 0, 0, 1.6, 0, -0.0769149, 0)
+
+[node name="LootBeam" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+mesh = SubResource("PrismMesh_736ab")
