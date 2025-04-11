@@ -1,12 +1,19 @@
-[gd_scene load_steps=15 format=3 uid="uid://b38n11hyimrx1"]
+[gd_scene load_steps=22 format=3 uid="uid://b38n11hyimrx1"]
 
 [ext_resource type="PackedScene" uid="uid://dqsf2uo1bqci8" path="res://Input/InputManager.tscn" id="1_1q8bt"]
+[ext_resource type="Script" uid="uid://cwc4n1u7db367" path="res://Scenes/Game/Game.cs" id="1_bsqcq"]
 [ext_resource type="Shader" uid="uid://dlewbbs8byb86" path="res://Assets/Shaders/Space/space.gdshader" id="1_gwu2e"]
+[ext_resource type="PackedScene" uid="uid://c7kgmaf0g1h2" path="res://Entity/Alien/Alien.tscn" id="2_jf0ra"]
 [ext_resource type="PackedScene" uid="uid://dsix13euckuf1" path="res://Entity/CelestialBody.tscn" id="2_xbxml"]
+[ext_resource type="PackedScene" uid="uid://47knx42tism6" path="res://Entity/HealthItem/HealthItem.tscn" id="3_fg52j"]
 [ext_resource type="Material" uid="uid://c7iwxejaj28u7" path="res://Assets/Materials/Sun.tres" id="3_xbxml"]
+[ext_resource type="PackedScene" uid="uid://dxl4tn3o3jt3e" path="res://Entity/AmmoItem/AmmoItem.tscn" id="4_6581v"]
 [ext_resource type="PackedScene" uid="uid://csbonl4sxt823" path="res://Entity/Planet/Planet.tscn" id="4_ln2h6"]
+[ext_resource type="PackedScene" uid="uid://b4n5o6p7q8sat" path="res://Entity/PowerupItem/PowerupItem.tscn" id="5_6hht6"]
 [ext_resource type="PackedScene" uid="uid://3gendnc4ovb" path="res://Entity/Planet/Moon.tscn" id="5_y3kpf"]
+[ext_resource type="PackedScene" uid="uid://dwtte5rcg7xu7" path="res://Entity/ScrapItem/ScrapItem.tscn" id="6_kjp6r"]
 [ext_resource type="PackedScene" uid="uid://cfdmshqym6x8y" path="res://Entity/Player/Player.tscn" id="7_gvja8"]
+[ext_resource type="PackedScene" uid="uid://c7d8eglsg1h2" path="res://Entity/Ship/Ship.tscn" id="13_bsqcq"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ln2h6"]
 shader = ExtResource("1_gwu2e")
@@ -49,6 +56,12 @@ emission = Color(0.440416, 0.132269, 0.0838032, 1)
 emission_energy_multiplier = 16.0
 
 [node name="Game" type="Node3D"]
+script = ExtResource("1_bsqcq")
+_alienScene = ExtResource("2_jf0ra")
+_healthItemScene = ExtResource("3_fg52j")
+_ammoItemScene = ExtResource("4_6581v")
+_powerupItemScene = ExtResource("5_6hht6")
+_scrapItemScene = ExtResource("6_kjp6r")
 
 [node name="InputManager" parent="." instance=ExtResource("1_1q8bt")]
 
@@ -80,16 +93,21 @@ light_color = Color(1, 1, 0.784314, 1)
 light_energy = 4096.0
 omni_range = 4096.0
 
-[node name="Planet" parent="SolarSystem" node_paths=PackedStringArray("OrbitParent") groups=["celestial_bodies"] instance=ExtResource("4_ln2h6")]
+[node name="Planet" parent="SolarSystem" groups=["celestial_bodies"] instance=ExtResource("4_ln2h6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 0, 0)
-OrbitParent = NodePath("../Sun")
+SurfaceGravity = 10.0
+GravitationalConstant = 0.001
+AutoCalculateOrbitalVelocity = false
 
-[node name="Moon" parent="SolarSystem" node_paths=PackedStringArray("OrbitParent") groups=["celestial_bodies"] instance=ExtResource("5_y3kpf")]
+[node name="Moon" parent="SolarSystem" groups=["celestial_bodies"] instance=ExtResource("5_y3kpf")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 0, 300)
-SurfaceGravity = 25.0
-OrbitParent = NodePath("../Planet")
+AutoCalculateOrbitalVelocity = false
+
+[node name="Ship" parent="SolarSystem" instance=ExtResource("13_bsqcq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3002.31, 16.7895, 300)
 
 [node name="Player" parent="SolarSystem" groups=["input_receivers"] instance=ExtResource("7_gvja8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2948.87, 25, 295.946)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 16.5291, 300)
 
 [editable path="SolarSystem/Sun"]
+[editable path="SolarSystem/Player"]

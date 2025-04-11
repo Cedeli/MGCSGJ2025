@@ -20,6 +20,9 @@
 //               https://github.com/ashima/webgl-noise
 //
 
+#ifndef SIMPLEXNOISE_GDSHADERINC
+#define SIMPLEXNOISE_GDSHADERINC
+
 vec3 mod289_3(vec3 x)
 {
     return x - floor(x / 289.0) * 289.0;
@@ -190,3 +193,5 @@ vec4 snoise_grad(vec3 v)
     vec4 px = vec4(dot(x0, g0), dot(x1, g1), dot(x2, g2), dot(x3, g3));
     return 42.0 * vec4(grad, dot(m4, px));
 }
+
+#endif

@@ -3,8 +3,14 @@
 // Modified noise functions from Unity to Godot by Henrik Söderlund
 // Code inherited from https://github.com/SebLague/Solar-System
 
-#include "res://Assets/Shaders/Include/Math.gdshaderinc"
-#include "res://Assets/Shaders/Include/SimplexNoise.gdshaderinc"
+// Weird include shenanigans, adding header guards...
+#ifndef MATH_GDSHADERINC
+	#include "res://Assets/Shaders/include/Math.gdshaderinc"
+#endif
+
+#ifndef SIMPLEXNOISE_GDSHADERINC
+	#include "res://Assets/Shaders/include/SimplexNoise.gdshaderinc"
+#endif
 
 float simpleNoise_6(vec3 pos, int numLayers, float scale, float persistence, float lacunarity, float multiplier) {
 	float noiseSum = 0.0;
@@ -146,10 +152,10 @@ float simpleNoiseMusgrave(vec3 pos, vec4 params[3], float o) {
 	float multiplier = params[1].w;
 
     // first octave
-
+  
     float result = snoise(pos) + o;
     pos *= lacunarity;
-
+    
 
 	// Sum up noise layers
     float amplitude = 1.0;

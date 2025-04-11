@@ -1,5 +1,8 @@
 // Shader Utils for Godot - https://github.com/henriksod/GodotShaderUtils
 
+#ifndef MATH_GDSHADERINC
+#define MATH_GDSHADERINC
+
 const float maxFloat = 3.402823466e+38;
 
 float saturate(float value) {
@@ -65,7 +68,7 @@ vec3 depth(sampler2D tex, vec2 uv, mat4 inv_projection_matrix) {
 
 	// Normalized Device Coordinates needs to be 0 to 1 in Z axis for Vulkan
 	vec3 ndc = vec3(uv * 2.0 - 1.0, depth);
-
+	
 	// Convert between NDC and view space to get distance to camera
 	vec4 view = inv_projection_matrix * vec4(ndc, 1.0);
 	view.xyz /= view.w;
@@ -104,9 +107,11 @@ mat4 rotationMatrix(vec3 axis, float angle)
     float s = sin(angle);
     float c = cos(angle);
     float oc = 1.0 - c;
-
+    
     return transpose(mat4(vec4(oc * axis.x * axis.x + c,           oc * axis.x * axis.y - axis.z * s,  oc * axis.z * axis.x + axis.y * s,  0.0),
                 vec4(oc * axis.x * axis.y + axis.z * s,  oc * axis.y * axis.y + c,           oc * axis.y * axis.z - axis.x * s,  0.0),
                 vec4(oc * axis.z * axis.x - axis.y * s,  oc * axis.y * axis.z + axis.x * s,  oc * axis.z * axis.z + c,           0.0),
                 vec4(0.0,                                0.0,                                0.0,                                1.0)));
 }
+
+#endif
