@@ -59,6 +59,10 @@ _healthItemScene = ExtResource("2_edkrd")
 _ammoItemScene = ExtResource("3_bsqcq")
 _powerupItemScene = ExtResource("4_jf0ra")
 _scrapItemScene = ExtResource("5_fg52j")
+_maxItemsPerRound = 8
+_healthItemProbability = 0.1
+_ammoItemProbability = 0.4
+_scrapItemProbability = 0.3
 
 [node name="InputManager" parent="." instance=ExtResource("1_1q8bt")]
 
@@ -90,14 +94,12 @@ omni_range = 4096.0
 
 [node name="Planet" parent="SolarSystem" groups=["celestial_bodies"] instance=ExtResource("4_ln2h6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 0, 0)
-Resolution = 25
 SurfaceGravity = 10.0
 GravitationalConstant = 0.001
 AutoCalculateOrbitalVelocity = false
 
 [node name="Moon" parent="SolarSystem" groups=["celestial_bodies"] instance=ExtResource("5_y3kpf")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 0, 300)
-Resolution = 80
 AutoCalculateOrbitalVelocity = false
 
 [node name="Ship" parent="SolarSystem" instance=ExtResource("13_bsqcq")]
