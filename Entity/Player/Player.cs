@@ -88,25 +88,30 @@ public partial class Player : GravityEntity, IInputReceiver
     private void UpdateCameraOrientation()
     {
         if (_cameraPivot == null) return;
+    
+        var targetUp = -GetGravityDirection().Normalized();
         
-        var targetUp = -GetGravityDirection();
+        var right = Vector3.Right;
+        right = (right - targetUp * right.Dot(targetUp)).Normalized();
         
-        var targetPivotBasis = Basis.Identity;
-        targetPivotBasis.Y = targetUp;
-        
-        var referenceForward = -Vector3.Forward.Slide(targetUp).Normalized();
-        
-        if (referenceForward.LengthSquared() < 0.01f)
+        if (right.LengthSquared() < 0.01f)
         {
-            referenceForward = Vector3.Right.Slide(targetUp).Normalized();
+            right = (Vector3.Forward - targetUp * Vector3.Forward.Dot(targetUp)).Normalized();
+            if (right.LengthSquared() < 0.01f)
+            {
+                right = (Vector3.Up - targetUp * Vector3.Up.Dot(targetUp)).Normalized();
+            }
         }
         
-        targetPivotBasis.X = targetUp.Cross(referenceForward).Normalized();
-        targetPivotBasis.Z = targetPivotBasis.X.Cross(targetUp).Normalized();
+        var forward = targetUp.Cross(right).Normalized();
+        right = forward.Cross(targetUp).Normalized();
         
-        targetPivotBasis = targetPivotBasis.Rotated(targetPivotBasis.Y, _yawAngle);
-
-        _cameraPivot.GlobalTransform = new Transform3D(targetPivotBasis.Orthonormalized(), GlobalPosition);
+        var initialBasis = new Basis(right, targetUp, forward);
+        
+        var yawBasis = new Basis(targetUp, -_yawAngle);
+        var finalBasis = yawBasis * initialBasis;
+    
+        _cameraPivot.GlobalTransform = new Transform3D(finalBasis.Orthonormalized(), GlobalPosition);
     }
 
     private void UpdateCameraPitch(float lookYDelta)

@@ -1,295 +1,95 @@
-[gd_scene load_steps=20 format=3 uid="uid://j4kvo1b7egck"]
+[gd_scene load_steps=15 format=3 uid="uid://b38n11hyimrx1"]
 
-[ext_resource type="PackedScene" uid="uid://dsix13euckuf1" path="res://Entity/CelestialBody.tscn" id="1_r150o"]
-[ext_resource type="PackedScene" path="res://Entity/Player/Player.tscn" id="2_gwu2e"]
-[ext_resource type="PackedScene" uid="uid://7w733f1revd7" path="res://Entity/Planet/Planet.tscn" id="2_v4o6y"]
-[ext_resource type="Shader" uid="uid://dlewbbs8byb86" path="res://Assets/Shaders/Space/space.gdshader" id="3_xvyy0"]
+[ext_resource type="PackedScene" uid="uid://dqsf2uo1bqci8" path="res://Input/InputManager.tscn" id="1_1q8bt"]
+[ext_resource type="Shader" uid="uid://dlewbbs8byb86" path="res://Assets/Shaders/Space/space.gdshader" id="1_gwu2e"]
+[ext_resource type="PackedScene" uid="uid://dsix13euckuf1" path="res://Entity/CelestialBody.tscn" id="2_xbxml"]
+[ext_resource type="Material" uid="uid://c7iwxejaj28u7" path="res://Assets/Materials/Sun.tres" id="3_xbxml"]
+[ext_resource type="PackedScene" uid="uid://csbonl4sxt823" path="res://Entity/Planet/Planet.tscn" id="4_ln2h6"]
+[ext_resource type="PackedScene" uid="uid://3gendnc4ovb" path="res://Entity/Planet/Moon.tscn" id="5_y3kpf"]
+[ext_resource type="PackedScene" uid="uid://cfdmshqym6x8y" path="res://Entity/Player/Player.tscn" id="7_gvja8"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_space_sky"]
-shader = ExtResource("3_xvyy0")
-shader_parameter/vertical_sections = 21
-shader_parameter/star_size = 0.02
-shader_parameter/star_falloff = 4.0
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ln2h6"]
+shader = ExtResource("1_gwu2e")
+shader_parameter/vertical_sections = 15
+shader_parameter/star_size = 0.015
+shader_parameter/star_falloff = 8.0
 shader_parameter/margin = 0.05
 
-[sub_resource type="Sky" id="Sky_idj7w"]
-sky_material = SubResource("ShaderMaterial_space_sky")
+[sub_resource type="Sky" id="Sky_y3kpf"]
+sky_material = SubResource("ShaderMaterial_ln2h6")
 
-[sub_resource type="Environment" id="Environment_kln2b"]
-background_mode = 1
-sky = SubResource("Sky_idj7w")
-ambient_light_source = 3
+[sub_resource type="Environment" id="Environment_3k6gv"]
+background_mode = 2
+sky = SubResource("Sky_y3kpf")
+ambient_light_source = 2
 ambient_light_color = Color(1, 1, 1, 1)
-ambient_light_energy = 0.1
-tonemap_mode = 2
+ambient_light_energy = 0.25
+tonemap_mode = 3
 ssao_enabled = true
 glow_enabled = true
-volumetric_fog_enabled = true
-volumetric_fog_density = 0.005
 
-[sub_resource type="SphereMesh" id="SphereMesh_r150o"]
+[sub_resource type="SphereMesh" id="SphereMesh_1q8bt"]
 resource_local_to_scene = true
 radius = 250.0
 height = 500.0
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_idj7w"]
-albedo_color = Color(1, 0, 0, 1)
-emission_enabled = true
-emission = Color(0.901961, 0.439216, 0.0509804, 1)
-emission_energy_multiplier = 2.0
-rim_enabled = true
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_kln2b"]
+[sub_resource type="SphereShape3D" id="SphereShape3D_bsqcq"]
 resource_local_to_scene = true
 radius = 250.0
 
-[sub_resource type="Shader" id="Shader_ln2h6"]
-code = "
-				shader_type spatial;
-				render_mode blend_mix, depth_draw_opaque, cull_back;
+[sub_resource type="SphereMesh" id="SphereMesh_xbxml"]
+radius = 260.0
+height = 510.0
 
-				uniform vec4 base_color : source_color = vec4(0.0, 0.0, 1.0, 1.0);
-				uniform vec4 secondary_color : source_color = vec4(0.0, 1.0, 0.0, 1.0);
-				uniform float color_blend : hint_range(0.0, 1.0) = 0.5;
-				uniform float roughness : hint_range(0.0, 1.0) = 0.8;
-				uniform float metallic : hint_range(0.0, 1.0) = 0.0;
-				uniform float detail_noise_scale : hint_range(1.0, 100.0) = 20.0;
-				uniform float detail_noise_intensity : hint_range(0.0, 1.0) = 0.15;
-
-				varying float v_height_normalized;
-
-				float hash31(vec3 p3) {
-					p3 = fract(p3 * vec3(.1031, .1030, .0973));
-					p3 += dot(p3, p3.yzx + 33.33);
-					return fract((p3.x + p3.y) * p3.z);
-				}
-
-				void vertex() {
-					v_height_normalized = COLOR.r;
-				}
-
-				void fragment() {
-					float blend_factor = pow(v_height_normalized, 1.5);
-					blend_factor *= color_blend;
-					blend_factor = clamp(blend_factor, 0.0, 1.0);
-					vec4 color = mix(base_color, secondary_color, blend_factor);
-
-					vec3 world_pos_scaled = VERTEX * detail_noise_scale;
-					float noise_value = hash31(world_pos_scaled);
-					float noise_darken_factor = mix(1.0 - detail_noise_intensity, 1.0, noise_value);
-
-					ALBEDO = color.rgb * noise_darken_factor;
-					ROUGHNESS = roughness;
-					METALLIC = metallic;
-				}
-			"
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_y3kpf"]
-render_priority = 0
-shader = SubResource("Shader_ln2h6")
-shader_parameter/base_color = Color(0.152195, 0.187287, 0.218931, 1)
-shader_parameter/secondary_color = Color(0.674928, 0.703961, 0.605601, 1)
-shader_parameter/color_blend = 0.512442
-shader_parameter/roughness = 0.8
-shader_parameter/metallic = 0.0
-shader_parameter/detail_noise_scale = 46.3582
-shader_parameter/detail_noise_intensity = 0.133948
-
-[sub_resource type="Shader" id="Shader_y3kpf"]
-code = "
-				shader_type spatial;
-				render_mode blend_add, depth_draw_never, cull_front, unshaded;
-
-				uniform vec4 atmosphere_color : source_color = vec4(0.3, 0.5, 1.0, 1.0);
-				uniform float density : hint_range(0.1, 10.0) = 1.0;
-				uniform float falloff : hint_range(0.1, 10.0) = 4.0;
-
-				void vertex() { }
-
-				void fragment() {
-					float fresnel = pow(1.0 - abs(dot(normalize(VERTEX - CAMERA_POSITION_WORLD), normalize(NORMAL))), falloff);
-					ALBEDO = atmosphere_color.rgb;
-					ALPHA = fresnel * density * atmosphere_color.a;
-				}
-			"
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_3k6gv"]
-render_priority = 0
-shader = SubResource("Shader_y3kpf")
-shader_parameter/atmosphere_color = Color(0.69598, 0.737752, 0.827989, 1)
-shader_parameter/density = 0.82391
-shader_parameter/falloff = 4.29339
-
-[sub_resource type="SphereMesh" id="SphereMesh_1q8bt"]
-radius = 57.1948
-height = 114.39
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gvja8"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xbxml"]
 transparency = 1
-albedo_color = Color(0.118378, 0.254503, 0.474579, 0.696831)
-roughness = 0.247214
+albedo_color = Color(1, 0.5, 0, 0.643137)
+emission_enabled = true
+emission = Color(0.440416, 0.132269, 0.0838032, 1)
+emission_energy_multiplier = 16.0
 
-[sub_resource type="SphereMesh" id="SphereMesh_m1o7v"]
-radius = 48.1359
-height = 96.2717
+[node name="Game" type="Node3D"]
 
-[sub_resource type="Shader" id="Shader_3k6gv"]
-code = "
-				shader_type spatial;
-				render_mode blend_mix, depth_draw_opaque, cull_back;
-
-				uniform vec4 base_color : source_color = vec4(0.0, 0.0, 1.0, 1.0);
-				uniform vec4 secondary_color : source_color = vec4(0.0, 1.0, 0.0, 1.0);
-				uniform float color_blend : hint_range(0.0, 1.0) = 0.5;
-				uniform float roughness : hint_range(0.0, 1.0) = 0.8;
-				uniform float metallic : hint_range(0.0, 1.0) = 0.0;
-				uniform float detail_noise_scale : hint_range(1.0, 100.0) = 20.0;
-				uniform float detail_noise_intensity : hint_range(0.0, 1.0) = 0.15;
-
-				varying float v_height_normalized;
-
-				float hash31(vec3 p3) {
-					p3 = fract(p3 * vec3(.1031, .1030, .0973));
-					p3 += dot(p3, p3.yzx + 33.33);
-					return fract((p3.x + p3.y) * p3.z);
-				}
-
-				void vertex() {
-					v_height_normalized = COLOR.r;
-				}
-
-				void fragment() {
-					float blend_factor = pow(v_height_normalized, 1.5);
-					blend_factor *= color_blend;
-					blend_factor = clamp(blend_factor, 0.0, 1.0);
-					vec4 color = mix(base_color, secondary_color, blend_factor);
-
-					vec3 world_pos_scaled = VERTEX * detail_noise_scale;
-					float noise_value = hash31(world_pos_scaled);
-					float noise_darken_factor = mix(1.0 - detail_noise_intensity, 1.0, noise_value);
-
-					ALBEDO = color.rgb * noise_darken_factor;
-					ROUGHNESS = roughness;
-					METALLIC = metallic;
-				}
-			"
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_1q8bt"]
-render_priority = 0
-shader = SubResource("Shader_3k6gv")
-shader_parameter/base_color = Color(0.196645, 0.230632, 0.437163, 1)
-shader_parameter/secondary_color = Color(0.680309, 0.718017, 0.699614, 1)
-shader_parameter/color_blend = 0.337505
-shader_parameter/roughness = 0.9
-shader_parameter/metallic = 0.0
-shader_parameter/detail_noise_scale = 49.948
-shader_parameter/detail_noise_intensity = 0.177409
-
-[node name="Main" type="Node3D"]
+[node name="InputManager" parent="." instance=ExtResource("1_1q8bt")]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_kln2b")
+environment = SubResource("Environment_3k6gv")
 
 [node name="SolarSystem" type="Node3D" parent="."]
 
-[node name="Sun" parent="SolarSystem" node_paths=PackedStringArray("OrbitParent") groups=["celestial_bodies"] instance=ExtResource("1_r150o")]
-SurfaceGravity = 100.0
-InitialMass = 4e+07
-GravitationalConstant = 0.1
-OrbitParent = NodePath(".")
+[node name="Sun" parent="SolarSystem" node_paths=PackedStringArray("CollisionShape", "MeshInstance") groups=["celestial_bodies"] instance=ExtResource("2_xbxml")]
+SurfaceGravity = 250.0
+InitialMass = 4e+06
 Radius = 250.0
+CollisionShape = NodePath("CollisionShape3D")
+MeshInstance = NodePath("MeshInstance3D")
 
 [node name="MeshInstance3D" parent="SolarSystem/Sun" index="0"]
-mesh = SubResource("SphereMesh_r150o")
-surface_material_override/0 = SubResource("StandardMaterial3D_idj7w")
+mesh = SubResource("SphereMesh_1q8bt")
+surface_material_override/0 = ExtResource("3_xbxml")
 
 [node name="CollisionShape3D" parent="SolarSystem/Sun" index="1"]
-shape = SubResource("SphereShape3D_kln2b")
+shape = SubResource("SphereShape3D_bsqcq")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="SolarSystem/Sun"]
+mesh = SubResource("SphereMesh_xbxml")
+surface_material_override/0 = SubResource("StandardMaterial3D_xbxml")
 
 [node name="OmniLight3D" type="OmniLight3D" parent="SolarSystem/Sun"]
-light_color = Color(1, 0.87451, 0.67451, 1)
-light_energy = 2048.0
-light_specular = 1.0
-shadow_enabled = true
-shadow_blur = 5.0
-omni_range = 8192.0
+light_color = Color(1, 1, 0.784314, 1)
+light_energy = 4096.0
+omni_range = 4096.0
 
-[node name="Earth" parent="SolarSystem" node_paths=PackedStringArray("OrbitParent") groups=["celestial_bodies"] instance=ExtResource("2_v4o6y")]
+[node name="Planet" parent="SolarSystem" node_paths=PackedStringArray("OrbitParent") groups=["celestial_bodies"] instance=ExtResource("4_ln2h6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 0, 0)
-NoiseScale = 1.83124
-NoiseOctaves = 5
-NoisePersistence = 0.457873
-NoiseLacunarity = 2.41447
-NoiseOffset = Vector3(484.331, 51.3832, -362.38)
-HeightScale = 4.28555
-BaseColor = Color(0.152195, 0.187287, 0.218931, 1)
-SecondaryColor = Color(0.674928, 0.703961, 0.605601, 1)
-ColorBlend = 0.512442
-DetailNoiseScale = 46.3582
-DetailNoiseIntensity = 0.133948
-AtmosphereColor = Color(0.579266, 0.634534, 0.785912, 1)
-AtmosphereThickness = 0.0563761
-AtmosphereDensity = 0.865433
-AtmosphereFalloff = 3.00641
-WaterLevelOffsetFactor = -0.246384
-WaterColor = Color(0.106691, 0.427163, 0.443617, 1)
-WaterSpecular = 0.626804
-WaterRoughness = 0.134091
-WaterTransparency = 0.774173
 OrbitParent = NodePath("../Sun")
-AutoCalculateOrbitalVelocity = true
-Radius = 50.0
 
-[node name="PlanetVisualMeshInstance" type="MeshInstance3D" parent="SolarSystem/Earth"]
-material_override = SubResource("ShaderMaterial_y3kpf")
+[node name="Moon" parent="SolarSystem" node_paths=PackedStringArray("OrbitParent") groups=["celestial_bodies"] instance=ExtResource("5_y3kpf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 0, 300)
+SurfaceGravity = 25.0
+OrbitParent = NodePath("../Planet")
 
-[node name="AtmosphereInstance" type="MeshInstance3D" parent="SolarSystem/Earth"]
-sorting_offset = 1.0
-material_override = SubResource("ShaderMaterial_3k6gv")
-cast_shadow = 0
-mesh = SubResource("SphereMesh_1q8bt")
-
-[node name="WaterInstance" type="MeshInstance3D" parent="SolarSystem/Earth"]
-sorting_offset = 0.5
-material_override = SubResource("StandardMaterial3D_gvja8")
-cast_shadow = 0
-mesh = SubResource("SphereMesh_m1o7v")
-
-[node name="Moon" parent="SolarSystem" node_paths=PackedStringArray("OrbitParent") groups=["celestial_bodies"] instance=ExtResource("2_v4o6y")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 0, 150)
-NoiseScale = 1.8792
-NoisePersistence = 0.454216
-NoiseLacunarity = 2.69866
-NoiseOffset = Vector3(-54.9306, -861.966, 876.91)
-HeightScale = 1.00589
-BaseColor = Color(0.196645, 0.230632, 0.437163, 1)
-SecondaryColor = Color(0.680309, 0.718017, 0.699614, 1)
-ColorBlend = 0.337505
-Roughness = 0.9
-DetailNoiseScale = 49.948
-DetailNoiseIntensity = 0.177409
-HasAtmosphere = false
-AtmosphereColor = Color(0.568186, 0.571151, 0.811548, 1)
-AtmosphereThickness = 0.145732
-AtmosphereDensity = 1.22747
-AtmosphereFalloff = 3.89113
-HasWater = false
-WaterLevelOffsetFactor = -0.498638
-WaterColor = Color(0.386741, 0.474608, 0.669891, 1)
-WaterSpecular = 0.487794
-WaterRoughness = 0.189453
-WaterTransparency = 0.651313
-SurfaceGravity = 1.6
-OrbitParent = NodePath("../Earth")
-AutoCalculateOrbitalVelocity = true
-Radius = 16.0
-
-[node name="PlanetVisualMeshInstance" type="MeshInstance3D" parent="SolarSystem/Moon"]
-material_override = SubResource("ShaderMaterial_1q8bt")
-
-[node name="Player" parent="SolarSystem" instance=ExtResource("2_gwu2e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2998.51, 51.2032, -9.51956)
+[node name="Player" parent="SolarSystem" groups=["input_receivers"] instance=ExtResource("7_gvja8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2948.87, 25, 295.946)
 
 [editable path="SolarSystem/Sun"]
-[editable path="SolarSystem/Earth"]
-[editable path="SolarSystem/Moon"]

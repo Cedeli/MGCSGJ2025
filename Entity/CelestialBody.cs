@@ -9,7 +9,7 @@ public partial class CelestialBody : RigidBody3D
 
     [Export] public Vector3 InitialVelocity = Vector3.Zero;
 
-    [Export] public float GravitationalConstant = 6.6743e-11f;
+    [Export] public float GravitationalConstant = 0.001f;
 
     [Export] public CelestialBody OrbitParent;
 
@@ -34,26 +34,25 @@ public partial class CelestialBody : RigidBody3D
         }
     }
 
-    [Export] protected CollisionShape3D _collisionShape;
-
-    [Export] protected MeshInstance3D _meshInstance;
+    [Export] protected CollisionShape3D CollisionShape;
+    [Export] protected MeshInstance3D MeshInstance;
 
     private const string CelestialGroup = "celestial_bodies";
 
     public override void _Ready()
     {
-        if (_collisionShape == null)
+        if (CollisionShape == null)
         {
-            _collisionShape = GetNodeOrNull<CollisionShape3D>("CollisionShape3D");
-            if (_collisionShape == null)
+            CollisionShape = GetNodeOrNull<CollisionShape3D>("CollisionShape3D");
+            if (CollisionShape == null)
                 GD.PrintErr(
                     $"{Name}: CollisionShape3D node not found or assigned. Physics might not work correctly."
                 );
         }
 
-        if (_meshInstance == null)
+        if (MeshInstance == null)
         {
-            _meshInstance = GetNodeOrNull<MeshInstance3D>("MeshInstance3D");
+            MeshInstance = GetNodeOrNull<MeshInstance3D>("MeshInstance3D");
         }
 
         UpdateShapeAndMesh();
@@ -159,15 +158,6 @@ public partial class CelestialBody : RigidBody3D
             return;
         }
 
-        if (GravitationalConstant < 0.00001f)
-        {
-            GD.PrintErr(
-                $"{Name}: Cannot calculate orbital velocity - GravitationalConstant is too small!"
-            );
-            LinearVelocity = OrbitParent.LinearVelocity;
-            return;
-        }
-
         var velocityMagnitude = Mathf.Sqrt(GravitationalConstant * OrbitParent.Mass / distance);
 
         var orbitDirection = Vector3.Up;
@@ -189,31 +179,22 @@ public partial class CelestialBody : RigidBody3D
 
     protected virtual void UpdateShapeAndMesh()
     {
-        if (_collisionShape?.Shape is SphereShape3D sphereShape)
+        if (CollisionShape?.Shape is SphereShape3D sphereShape)
         {
             sphereShape.Radius = _radius;
         }
-        else if (_collisionShape != null)
+        else if (CollisionShape != null)
         {
-            if (_collisionShape.Shape != null)
-            {
-                GD.PrintErr(
-                    $"{Name}: CollisionShape node exists but its Shape is not a SphereShape3D. Cannot auto-update radius based on CelestialBody.Radius."
-                );
-            }
-            else
-            {
-                GD.PrintErr(
-                    $"{Name}: CollisionShape node exists but has no Shape resource assigned."
-                );
-            }
+            GD.PrintErr(
+                CollisionShape.Shape != null
+                    ? $"{Name}: CollisionShape node exists but its Shape is not a SphereShape3D. Cannot auto-update radius based on CelestialBody.Radius."
+                    : $"{Name}: CollisionShape node exists but has no Shape resource assigned."
+            );
         }
 
-        if (_meshInstance?.Mesh is SphereMesh sphereMesh)
-        {
-            sphereMesh.Radius = _radius;
-            sphereMesh.Height = _radius * 2.0f;
-        }
+        if (MeshInstance?.Mesh is not SphereMesh sphereMesh) return;
+        sphereMesh.Radius = _radius;
+        sphereMesh.Height = _radius * 2.0f;
     }
 
     private void PrintInitialState()

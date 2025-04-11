@@ -19,16 +19,18 @@ glow_enabled = true
 
 [node name="Test" type="Node3D"]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_1jsug")
-
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
-shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1jsug")
 
 [node name="InputManager" parent="." instance=ExtResource("1_85np5")]
 
 [node name="Planet" parent="." instance=ExtResource("2_0s07r")]
+EnableOutline = true
+OutlineThickness = 0.5
+OutlineColor = Color(1, 1, 1, 1)
 
 [node name="Player" parent="." groups=["input_receivers"] instance=ExtResource("3_1jsug")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 71, 0)

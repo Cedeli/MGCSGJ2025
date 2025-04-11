@@ -1,7 +1,7 @@
 shader_type spatial;
 
-uniform float base_radius : hint_range(0.1, 100.0, 0.1) = 1.0; 
-uniform float min_altitude_factor : hint_range(0.8, 1.2, 0.001) = 0.98; 
+uniform float base_radius : hint_range(0.1, 100.0, 0.1) = 1.0;
+uniform float min_altitude_factor : hint_range(0.8, 1.2, 0.001) = 0.98;
 uniform float max_altitude_factor : hint_range(0.8, 1.2, 0.001) = 1.04;
 
 uniform vec4 lowland_color : source_color = vec4(0.55, 0.45, 0.3, 1.0);
@@ -23,13 +23,13 @@ varying vec3 world_normal;
 varying float altitude;
 
 void vertex() {
-	altitude = length(VERTEX); 
+	altitude = length(VERTEX);
 
 	world_vertex = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 
-	world_normal = normalize((MODEL_MATRIX * vec4(NORMAL, 0.0)).xyz); 
+	world_normal = normalize((MODEL_MATRIX * vec4(NORMAL, 0.0)).xyz);
 
-	UV.x = (atan(NORMAL.z, NORMAL.x) / (2.0 * PI)) + 0.5; 
+	UV.x = (atan(NORMAL.z, NORMAL.x) / (2.0 * PI)) + 0.5;
 	UV.y = (asin(NORMAL.y) / PI) + 0.5;
 }
 
@@ -44,7 +44,5 @@ void fragment() {
 	ALBEDO = current_color;
 
 	METALLIC = metallic;
-	ROUGHNESS = roughness; 
-	
-	NORMAL = world_normal;
+	ROUGHNESS = roughness;
 }
