@@ -1,0 +1,14 @@
+[remap]
+
+importer="glsl"
+type="RDShaderFile"
+uid="uid://cnw52d2qjst0a"
+path="res://.godot/imported/PlanetHeight.glsl-3bcb0f9950150a2f5814b54c7eb56df5.res"
+
+[deps]
+
+source_file="res://Assets/Shaders/Compute/PlanetHeight.glsl"
+dest_files=["res://.godot/imported/PlanetHeight.glsl-3bcb0f9950150a2f5814b54c7eb56df5.res"]
+
+[params]
+

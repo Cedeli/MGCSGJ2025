@@ -1,150 +1,95 @@
-[gd_scene load_steps=23 format=3 uid="uid://j4kvo1b7egck"]
+[gd_scene load_steps=15 format=3 uid="uid://b38n11hyimrx1"]
 
-[ext_resource type="Script" uid="uid://cwc4n1u7db367" path="res://Scenes/Game/Game.cs" id="1_3k6gv"]
-[ext_resource type="PackedScene" uid="uid://dsix13euckuf1" path="res://Entity/CelestialBody.tscn" id="1_r150o"]
-[ext_resource type="PackedScene" uid="uid://cfdmshqym6x8y" path="res://Entity/Player/Player.tscn" id="2_gwu2e"]
-[ext_resource type="PackedScene" uid="uid://47knx42tism6" path="res://Entity/HealthItem/HealthItem.tscn" id="3_m1o7v"]
-[ext_resource type="PackedScene" uid="uid://dqsf2uo1bqci8" path="res://Input/InputManager.tscn" id="3_xbxml"]
-[ext_resource type="PackedScene" uid="uid://dxl4tn3o3jt3e" path="res://Entity/AmmoItem/AmmoItem.tscn" id="4_3586x"]
-[ext_resource type="PackedScene" uid="uid://c7d8eglsg1h2" path="res://Entity/Ship/Ship.tscn" id="5_3k6gv"]
-[ext_resource type="PackedScene" uid="uid://dwtte5rcg7xu7" path="res://Entity/ScrapItem/ScrapItem.tscn" id="6_3586x"]
-[ext_resource type="PackedScene" uid="uid://c7kgmaf0g1h2" path="res://Entity/Alien/Alien.tscn" id="7_1q8bt"]
-[ext_resource type="PackedScene" uid="uid://b4n5o6p7q8sat" path="res://Entity/PowerupItem/PowerupItem.tscn" id="8_new_powerup"]
+[ext_resource type="PackedScene" uid="uid://dqsf2uo1bqci8" path="res://Input/InputManager.tscn" id="1_1q8bt"]
+[ext_resource type="Shader" uid="uid://dlewbbs8byb86" path="res://Assets/Shaders/Space/space.gdshader" id="1_gwu2e"]
+[ext_resource type="PackedScene" uid="uid://dsix13euckuf1" path="res://Entity/CelestialBody.tscn" id="2_xbxml"]
+[ext_resource type="Material" uid="uid://c7iwxejaj28u7" path="res://Assets/Materials/Sun.tres" id="3_xbxml"]
+[ext_resource type="PackedScene" uid="uid://csbonl4sxt823" path="res://Entity/Planet/Planet.tscn" id="4_ln2h6"]
+[ext_resource type="PackedScene" uid="uid://3gendnc4ovb" path="res://Entity/Planet/Moon.tscn" id="5_y3kpf"]
+[ext_resource type="PackedScene" uid="uid://cfdmshqym6x8y" path="res://Entity/Player/Player.tscn" id="7_gvja8"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1q8bt"]
-sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
-ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ln2h6"]
+shader = ExtResource("1_gwu2e")
+shader_parameter/vertical_sections = 15
+shader_parameter/star_size = 0.015
+shader_parameter/star_falloff = 8.0
+shader_parameter/margin = 0.05
 
-[sub_resource type="Sky" id="Sky_idj7w"]
-sky_material = SubResource("ProceduralSkyMaterial_1q8bt")
+[sub_resource type="Sky" id="Sky_y3kpf"]
+sky_material = SubResource("ShaderMaterial_ln2h6")
 
-[sub_resource type="Environment" id="Environment_gvja8"]
-background_mode = 1
-background_energy_multiplier = 0.0
-sky = SubResource("Sky_idj7w")
+[sub_resource type="Environment" id="Environment_3k6gv"]
+background_mode = 2
+sky = SubResource("Sky_y3kpf")
 ambient_light_source = 2
 ambient_light_color = Color(1, 1, 1, 1)
-ambient_light_energy = 0.03
-tonemap_mode = 2
+ambient_light_energy = 0.25
+tonemap_mode = 3
 ssao_enabled = true
 glow_enabled = true
-volumetric_fog_enabled = true
-volumetric_fog_density = 0.005
 
-[sub_resource type="SphereMesh" id="SphereMesh_m1o7v"]
+[sub_resource type="SphereMesh" id="SphereMesh_1q8bt"]
 resource_local_to_scene = true
 radius = 250.0
 height = 500.0
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3586x"]
-albedo_color = Color(1, 0, 0, 1)
-emission_enabled = true
-emission = Color(0.901961, 0.439216, 0.0509804, 1)
-emission_energy_multiplier = 2.0
-rim_enabled = true
-rim = 0.07
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_10ki7"]
+[sub_resource type="SphereShape3D" id="SphereShape3D_bsqcq"]
 resource_local_to_scene = true
 radius = 250.0
 
-[sub_resource type="SphereMesh" id="SphereMesh_ti1oi"]
-resource_local_to_scene = true
-radius = 50.0
-height = 100.0
+[sub_resource type="SphereMesh" id="SphereMesh_xbxml"]
+radius = 260.0
+height = 510.0
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_edkrd"]
-albedo_color = Color(0.0117647, 0.533333, 1, 1)
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_bsqcq"]
-resource_local_to_scene = true
-radius = 50.0
-
-[sub_resource type="SphereMesh" id="SphereMesh_jf0ra"]
-resource_local_to_scene = true
-radius = 15.0
-height = 30.0
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fg52j"]
-albedo_color = Color(0.627451, 0.627451, 0.627451, 1)
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_6581v"]
-resource_local_to_scene = true
-radius = 15.0
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xbxml"]
+transparency = 1
+albedo_color = Color(1, 0.5, 0, 0.643137)
+emission_enabled = true
+emission = Color(0.440416, 0.132269, 0.0838032, 1)
+emission_energy_multiplier = 16.0
 
 [node name="Game" type="Node3D"]
-script = ExtResource("1_3k6gv")
-_alienScene = ExtResource("7_1q8bt")
-_healthItemScene = ExtResource("3_m1o7v")
-_ammoItemScene = ExtResource("4_3586x")
-_powerupItemScene = ExtResource("8_new_powerup")
-_scrapItemScene = ExtResource("6_3586x")
-MaxItemsPerRound = 10
-ItemSpawnChance = 1.0
-AmmoItemProbability = 0.5
+
+[node name="InputManager" parent="." instance=ExtResource("1_1q8bt")]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_gvja8")
-
-[node name="InputManager" parent="." instance=ExtResource("3_xbxml")]
+environment = SubResource("Environment_3k6gv")
 
 [node name="SolarSystem" type="Node3D" parent="."]
 
-[node name="Sun" parent="SolarSystem" groups=["celestial_bodies"] instance=ExtResource("1_r150o")]
-SurfaceGravity = 100.0
-InitialMass = 4e+07
+[node name="Sun" parent="SolarSystem" node_paths=PackedStringArray("CollisionShape", "MeshInstance") groups=["celestial_bodies"] instance=ExtResource("2_xbxml")]
+SurfaceGravity = 250.0
+InitialMass = 4e+06
 Radius = 250.0
+CollisionShape = NodePath("CollisionShape3D")
+MeshInstance = NodePath("MeshInstance3D")
 
 [node name="MeshInstance3D" parent="SolarSystem/Sun" index="0"]
-mesh = SubResource("SphereMesh_m1o7v")
-surface_material_override/0 = SubResource("StandardMaterial3D_3586x")
+mesh = SubResource("SphereMesh_1q8bt")
+surface_material_override/0 = ExtResource("3_xbxml")
 
 [node name="CollisionShape3D" parent="SolarSystem/Sun" index="1"]
-shape = SubResource("SphereShape3D_10ki7")
-debug_fill = false
-
-[node name="OmniLight3D" type="OmniLight3D" parent="SolarSystem/Sun"]
-light_color = Color(1, 0.87451, 0.67451, 1)
-light_energy = 2048.0
-light_specular = 1.0
-shadow_enabled = true
-shadow_blur = 5.0
-omni_range = 8192.0
-
-[node name="Earth" parent="SolarSystem" node_paths=PackedStringArray("OrbitParent") groups=["celestial_bodies"] instance=ExtResource("1_r150o")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 0, 0)
-SurfaceGravity = 9.8
-OrbitParent = NodePath("../Sun")
-AutoCalculateOrbitalVelocity = true
-Radius = 50.0
-
-[node name="MeshInstance3D" parent="SolarSystem/Earth" index="0"]
-mesh = SubResource("SphereMesh_ti1oi")
-surface_material_override/0 = SubResource("StandardMaterial3D_edkrd")
-
-[node name="CollisionShape3D" parent="SolarSystem/Earth" index="1"]
 shape = SubResource("SphereShape3D_bsqcq")
 
-[node name="Moon" parent="SolarSystem" node_paths=PackedStringArray("OrbitParent") groups=["celestial_bodies"] instance=ExtResource("1_r150o")]
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="SolarSystem/Sun"]
+mesh = SubResource("SphereMesh_xbxml")
+surface_material_override/0 = SubResource("StandardMaterial3D_xbxml")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="SolarSystem/Sun"]
+light_color = Color(1, 1, 0.784314, 1)
+light_energy = 4096.0
+omni_range = 4096.0
+
+[node name="Planet" parent="SolarSystem" node_paths=PackedStringArray("OrbitParent") groups=["celestial_bodies"] instance=ExtResource("4_ln2h6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 0, 0)
+OrbitParent = NodePath("../Sun")
+
+[node name="Moon" parent="SolarSystem" node_paths=PackedStringArray("OrbitParent") groups=["celestial_bodies"] instance=ExtResource("5_y3kpf")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 0, 300)
-SurfaceGravity = 50.0
-OrbitParent = NodePath("../Earth")
-AutoCalculateOrbitalVelocity = true
-Radius = 15.0
+SurfaceGravity = 25.0
+OrbitParent = NodePath("../Planet")
 
-[node name="MeshInstance3D" parent="SolarSystem/Moon" index="0"]
-mesh = SubResource("SphereMesh_jf0ra")
-surface_material_override/0 = SubResource("StandardMaterial3D_fg52j")
-
-[node name="CollisionShape3D" parent="SolarSystem/Moon" index="1"]
-shape = SubResource("SphereShape3D_6581v")
-
-[node name="Player" parent="SolarSystem" groups=["input_receivers", "player"] instance=ExtResource("2_gwu2e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3012.99, 10.8691, 64.7613)
-
-[node name="Ship" parent="SolarSystem" groups=["ship"] instance=ExtResource("5_3k6gv")]
-transform = Transform3D(1, 0, 0, 0, 0.999502, 0.0315678, 0, -0.0315678, 0.999502, 3009.46, 13.2554, 60.2143)
+[node name="Player" parent="SolarSystem" groups=["input_receivers"] instance=ExtResource("7_gvja8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2948.87, 25, 295.946)
 
 [editable path="SolarSystem/Sun"]
-[editable path="SolarSystem/Earth"]
-[editable path="SolarSystem/Moon"]
