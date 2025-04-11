@@ -1,6 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://c7kgmaf0g1h2"]
+[gd_scene load_steps=7 format=3 uid="uid://c7kgmaf0g1h2"]
 
 [ext_resource type="Script" uid="uid://bobkxgwipkcoo" path="res://Entity/Alien/Alien.cs" id="1_alien_cs"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_aboj4"]
+friction = 0.0
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_alien"]
 height = 1.5
@@ -16,6 +19,7 @@ roughness = 0.8
 radius = 0.2
 
 [node name="Alien" type="RigidBody3D" node_paths=PackedStringArray("GroundCast")]
+physics_material_override = SubResource("PhysicsMaterial_aboj4")
 script = ExtResource("1_alien_cs")
 GroundCast = NodePath("GroundCast")
 
