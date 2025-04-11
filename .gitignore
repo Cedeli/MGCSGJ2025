@@ -5,3 +5,5 @@
 # Editors
 .idea/
 .vscode/
+
+build/
