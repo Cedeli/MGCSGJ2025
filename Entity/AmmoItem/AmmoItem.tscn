@@ -1,20 +1,45 @@
-[gd_scene load_steps=6 format=3 uid="uid://dxl4tn3o3jt3e"]
+[gd_scene load_steps=8 format=3 uid="uid://dxl4tn3o3jt3e"]
 
 [ext_resource type="Script" uid="uid://cc4ff4qevuaas" path="res://Entity/AmmoItem/AmmoItem.cs" id="1_qqyjt"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_item"]
-size = Vector3(0.4, 0.4, 0.6)
-
-[sub_resource type="BoxMesh" id="BoxMesh_item"]
-size = Vector3(0.4, 0.4, 0.6)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_item"]
-albedo_color = Color(0.9, 0.6, 0.1, 1)
-metallic = 0.3
-roughness = 0.6
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qqyjt"]
+radius = 1.02488
+height = 2.04976
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_groundcast_item"]
 radius = 0.1
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_3otp5"]
+radius = 0.15
+height = 0.4
+rings = 7
+
+[sub_resource type="Gradient" id="Gradient_yegc4"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0.0309278, 0.453608, 0.757732, 0.907216, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.0673077, 0.0673077, 0.0673077, 1, 0.336538, 0.336538, 0.336538, 1, 0.625, 0.625, 0.625, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_jheo8"]
+gradient = SubResource("Gradient_yegc4")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nq4ep"]
+albedo_color = Color(1, 0, 0, 1)
+metallic = 0.19
+metallic_specular = 1.0
+emission_enabled = true
+emission = Color(0.74902, 0.0980392, 0, 1)
+emission_energy_multiplier = 3.95
+emission_on_uv2 = true
+rim_enabled = true
+refraction_scale = -0.22
+detail_enabled = true
+detail_albedo = SubResource("GradientTexture1D_jheo8")
+grow = true
+grow_amount = -1.024
+use_point_size = true
+point_size = 9.1
+use_particle_trails = true
+distance_fade_mode = 1
 
 [node name="AmmoItem" type="RigidBody3D" node_paths=PackedStringArray("GroundCast")]
 script = ExtResource("1_qqyjt")
@@ -22,14 +47,15 @@ GroundCast = NodePath("GroundCast")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
-shape = SubResource("BoxShape3D_item")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
-mesh = SubResource("BoxMesh_item")
-surface_material_override/0 = SubResource("StandardMaterial3D_item")
+shape = SubResource("CapsuleShape3D_qqyjt")
 
 [node name="GroundCast" type="ShapeCast3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000461638, 0.363041, 0.00804673)
 shape = SubResource("SphereShape3D_groundcast_item")
 target_position = Vector3(0, -0.5, 0)
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.04, 0, 0, 0, 0.4, 0, 0, 0, 0.04, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_3otp5")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("StandardMaterial3D_nq4ep")

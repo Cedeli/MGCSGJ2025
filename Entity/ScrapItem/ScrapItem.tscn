@@ -1,17 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://dwtte5rcg7xu7"]
+[gd_scene load_steps=5 format=3 uid="uid://dwtte5rcg7xu7"]
 
 [ext_resource type="Script" uid="uid://dec3vvp5avrjn" path="res://Entity/ScrapItem/ScrapItem.cs" id="1_scrap_cs"]
+[ext_resource type="PackedScene" uid="uid://dn8ih6er0xrac" path="res://Assets/Scrap/Gear.glb" id="2_4mu3r"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_scrap"]
-size = Vector3(0.4, 0.4, 0.4)
-
-[sub_resource type="BoxMesh" id="BoxMesh_scrap"]
-size = Vector3(0.4, 0.4, 0.4)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_scrap"]
-albedo_color = Color(0.6, 0.6, 0.6, 1)
-metallic = 0.6
-roughness = 0.7
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_rq87p"]
+radius = 0.482666
+height = 0.965332
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_groundcast_scrap"]
 radius = 0.1
@@ -24,12 +18,10 @@ GroundCast = NodePath("GroundCast")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
-shape = SubResource("BoxShape3D_scrap")
+shape = SubResource("CapsuleShape3D_rq87p")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
-mesh = SubResource("BoxMesh_scrap")
-surface_material_override/0 = SubResource("StandardMaterial3D_scrap")
+[node name="Gear2" parent="." instance=ExtResource("2_4mu3r")]
+transform = Transform3D(-1.15835e-08, -0.265, 0, 0.265, -1.15835e-08, 0, 0, 0, 0.265, 0, 0.19006, 0)
 
 [node name="GroundCast" type="ShapeCast3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
