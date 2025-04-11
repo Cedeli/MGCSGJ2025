@@ -3,7 +3,11 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
+<<<<<<< HEAD
 uid="uid://nenpufux1q8m"
+=======
+uid="uid://ciwa5353h87e1"
+>>>>>>> UI-Scene-Hotfix
 path="res://.godot/imported/CubeHeadwithWalkingAnimations.glb-332cae045066da138f63eb47a1bd7878.scn"
 
 [deps]

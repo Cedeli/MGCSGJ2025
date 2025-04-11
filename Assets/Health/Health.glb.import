@@ -3,7 +3,11 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
+<<<<<<< HEAD
 uid="uid://hsxklayspix3"
+=======
+uid="uid://bd7dhyqkrisl6"
+>>>>>>> UI-Scene-Hotfix
 path="res://.godot/imported/Health.glb-19532ef65bbfa6337a73a6ce48381bc0.scn"
 
 [deps]
