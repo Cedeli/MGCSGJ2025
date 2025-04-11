@@ -1,18 +1,19 @@
-[gd_scene load_steps=20 format=3 uid="uid://b38n11hyimrx1"]
+[gd_scene load_steps=21 format=3 uid="uid://b38n11hyimrx1"]
 
 [ext_resource type="PackedScene" uid="uid://dqsf2uo1bqci8" path="res://Input/InputManager.tscn" id="1_1q8bt"]
 [ext_resource type="Script" uid="uid://cwc4n1u7db367" path="res://Scenes/Game/Game.cs" id="1_bsqcq"]
 [ext_resource type="Shader" uid="uid://dlewbbs8byb86" path="res://Assets/Shaders/Space/space.gdshader" id="1_gwu2e"]
 [ext_resource type="PackedScene" uid="uid://c7kgmaf0g1h2" path="res://Entity/Alien/Alien.tscn" id="2_bsqcq"]
-[ext_resource type="PackedScene" uid="uid://47knx42tism6" path="res://Entity/HealthItem/HealthItem.tscn" id="2_edkrd"]
+[ext_resource type="PackedScene" uid="uid://47knx42tism6" path="res://Entity/Item/HealthItem/HealthItem.tscn" id="2_edkrd"]
 [ext_resource type="PackedScene" uid="uid://dsix13euckuf1" path="res://Entity/CelestialBody.tscn" id="2_xbxml"]
-[ext_resource type="PackedScene" uid="uid://dxl4tn3o3jt3e" path="res://Entity/AmmoItem/AmmoItem.tscn" id="3_bsqcq"]
+[ext_resource type="PackedScene" uid="uid://dxl4tn3o3jt3e" path="res://Entity/Item/AmmoItem/AmmoItem.tscn" id="3_bsqcq"]
 [ext_resource type="Material" uid="uid://c7iwxejaj28u7" path="res://Assets/Materials/Sun.tres" id="3_xbxml"]
-[ext_resource type="PackedScene" uid="uid://b4n5o6p7q8sat" path="res://Entity/PowerupItem/PowerupItem.tscn" id="4_jf0ra"]
+[ext_resource type="PackedScene" uid="uid://b4n5o6p7q8sat" path="res://Entity/Item/PowerupItem/PowerupItem.tscn" id="4_jf0ra"]
 [ext_resource type="PackedScene" uid="uid://csbonl4sxt823" path="res://Entity/Planet/Planet.tscn" id="4_ln2h6"]
-[ext_resource type="PackedScene" uid="uid://dwtte5rcg7xu7" path="res://Entity/ScrapItem/ScrapItem.tscn" id="5_fg52j"]
+[ext_resource type="PackedScene" uid="uid://dwtte5rcg7xu7" path="res://Entity/Item/ScrapItem/ScrapItem.tscn" id="5_fg52j"]
 [ext_resource type="PackedScene" uid="uid://3gendnc4ovb" path="res://Entity/Planet/Moon.tscn" id="5_y3kpf"]
 [ext_resource type="PackedScene" uid="uid://cfdmshqym6x8y" path="res://Entity/Player/Player.tscn" id="7_gvja8"]
+[ext_resource type="Script" uid="uid://r5b2g1sl2fh4" path="res://Scenes/Game/EnemySpawner.cs" id="8_jf0ra"]
 [ext_resource type="PackedScene" uid="uid://c7d8eglsg1h2" path="res://Entity/Ship/Ship.tscn" id="13_bsqcq"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ln2h6"]
@@ -44,6 +45,8 @@ volumetric_fog_emission_energy = 2.0
 resource_local_to_scene = true
 radius = 250.0
 height = 500.0
+radial_segments = 8
+rings = 8
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_bsqcq"]
 resource_local_to_scene = true
@@ -56,10 +59,15 @@ _healthItemScene = ExtResource("2_edkrd")
 _ammoItemScene = ExtResource("3_bsqcq")
 _powerupItemScene = ExtResource("4_jf0ra")
 _scrapItemScene = ExtResource("5_fg52j")
-MaxItemsPerRound = 8
-ScrapItemProbability = 0.5
+_maxItemsPerRound = 8
+_healthItemProbability = 0.2
+_scrapItemProbability = 0.3
 
 [node name="InputManager" parent="." instance=ExtResource("1_1q8bt")]
+
+[node name="EnemySpawner" type="Node" parent="."]
+script = ExtResource("8_jf0ra")
+_alienScene = ExtResource("2_bsqcq")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_3k6gv")
@@ -85,20 +93,19 @@ omni_range = 4096.0
 
 [node name="Planet" parent="SolarSystem" groups=["celestial_bodies"] instance=ExtResource("4_ln2h6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 0, 0)
-SurfaceGravity = 10.0
 GravitationalConstant = 0.001
-AutoCalculateOrbitalVelocity = false
 
 [node name="Moon" parent="SolarSystem" groups=["celestial_bodies"] instance=ExtResource("5_y3kpf")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 0, 300)
-AutoCalculateOrbitalVelocity = false
 
 [node name="Ship" parent="SolarSystem" instance=ExtResource("13_bsqcq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3002.31, 16.7895, 300)
-mass = 50.0
+transform = Transform3D(1, 0, 0, 0, 0.730019, -0.683427, 0, 0.683427, 0.730019, 2999.66, 15.3447, 277.393)
+mass = 30.0
+linear_velocity = Vector3(0, 0, 20)
+linear_damp = 1.0
 
 [node name="Player" parent="SolarSystem" groups=["input_receivers"] instance=ExtResource("7_gvja8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 16.5291, 300)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 15.9764, 276.234)
 
 [editable path="SolarSystem/Sun"]
 [editable path="SolarSystem/Player"]

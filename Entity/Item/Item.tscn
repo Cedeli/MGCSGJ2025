@@ -1,16 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://du6fekeeg1n4k"]
+[gd_scene load_steps=3 format=3 uid="uid://du6fekeeg1n4k"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_a4mlm"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_groundcast_item"]
 radius = 0.1
-
-[sub_resource type="SphereMesh" id="SphereMesh_6nkkr"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bhhb7"]
-albedo_color = Color(0.901961, 0.6, 0.101961, 1)
-metallic = 0.3
-roughness = 0.6
 
 [node name="Item" type="RigidBody3D"]
 
@@ -20,8 +13,3 @@ shape = SubResource("SphereShape3D_a4mlm")
 [node name="GroundCast" type="ShapeCast3D" parent="."]
 shape = SubResource("SphereShape3D_groundcast_item")
 target_position = Vector3(0, -0.5, 0)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.985, 0, 0, 0, 0.985, 0, 0, 0, 0.985, 0, 0, 0)
-mesh = SubResource("SphereMesh_6nkkr")
-surface_material_override/0 = SubResource("StandardMaterial3D_bhhb7")

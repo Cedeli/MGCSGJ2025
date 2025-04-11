@@ -7,8 +7,8 @@
 friction = 0.0
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_kc0wc"]
-radius = 0.356996
-height = 0.800744
+radius = 0.413518
+height = 0.827036
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_groundcast_alien"]
 radius = 0.2
@@ -16,10 +16,12 @@ radius = 0.2
 [node name="Alien" type="RigidBody3D" node_paths=PackedStringArray("GroundCast")]
 physics_material_override = SubResource("PhysicsMaterial_aboj4")
 script = ExtResource("1_alien_cs")
+Health = 50.0
+AttackCooldown = 2.5
 GroundCast = NodePath("GroundCast")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, -0.0449549, 0.973524, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.410744, 0)
 shape = SubResource("CapsuleShape3D_kc0wc")
 
 [node name="GroundCast" type="ShapeCast3D" parent="."]
@@ -27,4 +29,4 @@ shape = SubResource("SphereShape3D_groundcast_alien")
 target_position = Vector3(0, -0.5, 0)
 
 [node name="Root Scene" parent="." instance=ExtResource("2_kc0wc")]
-transform = Transform3D(0.69, 0, 0, 0, 0.69, 0, 0, 0, 0.69, -0.0342429, 0.417858, 0)
+transform = Transform3D(0.45, 0, 0, 0, 0.45, 0, 0, 0, 0.45, 0, 0, 0)
