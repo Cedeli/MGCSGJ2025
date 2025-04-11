@@ -20,7 +20,8 @@ radius = 0.15
 
 [node name="Ship" type="RigidBody3D" node_paths=PackedStringArray("GroundCast")]
 script = ExtResource("1_ship_cs")
-MoveSpeed = 20.0
+MaxHull = 400.0
+MoveSpeed = 0.0
 JumpImpulse = 0.0
 GroundCast = NodePath("GroundCast")
 GroundCastLength = 1.5
