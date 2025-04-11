@@ -13,8 +13,6 @@ radius = 0.1
 [node name="ScrapItem" type="RigidBody3D" node_paths=PackedStringArray("_visualNode", "GroundCast")]
 script = ExtResource("1_scrap_cs")
 _visualNode = NodePath("Gear2")
-BobFrequency = 1.8
-SpinSpeed = 1.2
 GroundCast = NodePath("GroundCast")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
