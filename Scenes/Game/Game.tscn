@@ -45,6 +45,8 @@ volumetric_fog_emission_energy = 2.0
 resource_local_to_scene = true
 radius = 250.0
 height = 500.0
+radial_segments = 8
+rings = 8
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_bsqcq"]
 resource_local_to_scene = true
