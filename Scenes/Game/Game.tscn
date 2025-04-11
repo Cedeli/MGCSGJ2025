@@ -60,8 +60,7 @@ _ammoItemScene = ExtResource("3_bsqcq")
 _powerupItemScene = ExtResource("4_jf0ra")
 _scrapItemScene = ExtResource("5_fg52j")
 _maxItemsPerRound = 8
-_healthItemProbability = 0.1
-_ammoItemProbability = 0.4
+_healthItemProbability = 0.2
 _scrapItemProbability = 0.3
 
 [node name="InputManager" parent="." instance=ExtResource("1_1q8bt")]
@@ -94,20 +93,19 @@ omni_range = 4096.0
 
 [node name="Planet" parent="SolarSystem" groups=["celestial_bodies"] instance=ExtResource("4_ln2h6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 0, 0)
-SurfaceGravity = 10.0
 GravitationalConstant = 0.001
-AutoCalculateOrbitalVelocity = false
 
 [node name="Moon" parent="SolarSystem" groups=["celestial_bodies"] instance=ExtResource("5_y3kpf")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 0, 300)
-AutoCalculateOrbitalVelocity = false
 
 [node name="Ship" parent="SolarSystem" instance=ExtResource("13_bsqcq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3002.31, 16.7895, 300)
-mass = 50.0
+transform = Transform3D(1, 0, 0, 0, 0.730019, -0.683427, 0, 0.683427, 0.730019, 2999.66, 15.3447, 277.393)
+mass = 30.0
+linear_velocity = Vector3(0, 0, 20)
+linear_damp = 1.0
 
 [node name="Player" parent="SolarSystem" groups=["input_receivers"] instance=ExtResource("7_gvja8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 16.5291, 300)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 15.9764, 276.234)
 
 [editable path="SolarSystem/Sun"]
 [editable path="SolarSystem/Player"]
