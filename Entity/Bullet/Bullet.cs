@@ -48,6 +48,8 @@ public partial class Bullet : GravityEntity
             {
                 case Alien alien when IsInstanceValid(alien) && !alien.IsQueuedForDeletion() && !alien.IsDead():
                     alien.TakeDamage(Damage);
+                    _hitOccurred = true;
+                    QueueFree();
                     return;
                 case Player:
                     continue;

@@ -6,7 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://dujsk8ogq4386" path="res://Entity/Bullet/Bullet.tscn" id="4_bullet_tscn"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_rpqav"]
-height = 1.48379
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_ic0o1"]
 radius = 0.3
@@ -20,6 +19,7 @@ _cameraPivot = NodePath("Pivot")
 _camera = NodePath("Pivot/Camera3D")
 _gun = NodePath("Pivot/Camera3D/Gun")
 GroundCast = NodePath("GroundCast")
+GroundCastLength = 0.8
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.741895, 0)
@@ -28,10 +28,10 @@ shape = SubResource("CapsuleShape3D_rpqav")
 [node name="GroundCast" type="ShapeCast3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.741895, 0)
 shape = SubResource("SphereShape3D_ic0o1")
-target_position = Vector3(0, -1.1, 0)
+target_position = Vector3(0, -0.8, 0)
 
 [node name="Pivot" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.741895, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.01649, 0)
 
 [node name="Camera3D" type="Camera3D" parent="Pivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
@@ -44,4 +44,4 @@ BulletScene = ExtResource("4_bullet_tscn")
 [node name="RayGunModel" parent="Pivot/Camera3D/Gun" instance=ExtResource("3_rj2x4")]
 
 [node name="Muzzle" type="Marker3D" parent="Pivot/Camera3D/Gun"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.907296, -3.09954)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.869679, -2.55665)
