@@ -11,16 +11,34 @@ public partial class HUD : Control
     private Label _playerHealthValueLabel;
     private Label _shipHealthValueLabel;
     private Button _pauseButton;
-
     private Label _ammoCountLabel;
 
     private GameManager _gameManager;
     private AudioManager _audioManager;
+    private SettingsManager _settingsManager;
 
     private Game _gameScene;
     private Player _player;
     private Ship _ship;
     private Gun _playerGun;
+
+    private bool _hudBobbingEnabled = true;
+    private Vector2 _currentBobOffset = Vector2.Zero;
+    private Vector2 _targetBobOffset = Vector2.Zero;
+    private Vector2 _initialPosition = Vector2.Zero;
+
+    [ExportGroup("Bobbing Settings")]
+    [Export]
+    private float BobbingIntensity = 0.4f;
+
+    [Export]
+    private float BobbingReturnSpeed = 6.0f;
+
+    [Export]
+    private float BobbingFollowSpeed = 10.0f;
+
+    [Export]
+    private float MaxBobOffset = 35.0f;
 
     private const string SfxButtonPath = "res://Assets/Audio/button_1.wav";
     private const string PAUSE_SCENE_PATH = "res://Scenes/Pause/Pause.tscn";
@@ -29,6 +47,7 @@ public partial class HUD : Control
     {
         _gameManager = GetNode<GameManager>("/root/GameManager");
         _audioManager = GetNode<AudioManager>("/root/AudioManager");
+        _settingsManager = GetNode<SettingsManager>("/root/SettingsManager");
 
         _timerLabel = GetNodeOrNull<Label>("TopLeftPanel/TopLeftInfo/TimerContainer/TimerLabel");
         _roundLabel = GetNodeOrNull<Label>("TopLeftPanel/TopLeftInfo/RoundContainer/RoundLabel");
@@ -46,93 +65,26 @@ public partial class HUD : Control
             "LeftHealthBars/StatusPanel/BarsContainer/ShipHealthContainer/ShipHeader/ShipHealthValue"
         );
         _pauseButton = GetNodeOrNull<Button>("PauseButton");
-
         _ammoCountLabel = GetNodeOrNull<Label>("AmmoPanel/AmmoContainer/AmmoCount");
+
+        _initialPosition = this.Position;
 
         if (_pauseButton != null)
             _pauseButton.Pressed += OnPauseButtonPressed;
 
+        if (_settingsManager != null)
+        {
+            _hudBobbingEnabled = _settingsManager.HudBobbingEnabled;
+            if (
+                !_settingsManager.IsConnected(
+                    SettingsManager.SignalName.HudBobbingToggled,
+                    Callable.From<bool>(OnHudBobbingToggled)
+                )
+            )
+                _settingsManager.HudBobbingToggled += OnHudBobbingToggled;
+        }
+
         CallDeferred(nameof(ConnectToGameSignals));
-    }
-
-    private void ConnectToGameSignals()
-    {
-        _gameScene = _gameManager?.GetGameScene();
-        if (_gameScene != null)
-        {
-            if (
-                !_gameScene.IsConnected(
-                    Game.SignalName.RoundChanged,
-                    Callable.From<int>(UpdateRound)
-                )
-            )
-                _gameScene.RoundChanged += UpdateRound;
-            if (
-                !_gameScene.IsConnected(
-                    Game.SignalName.RoundTimerUpdate,
-                    Callable.From<float>(UpdateTimer)
-                )
-            )
-                _gameScene.RoundTimerUpdate += UpdateTimer;
-            if (
-                !_gameScene.IsConnected(
-                    Game.SignalName.ScoreUpdated,
-                    Callable.From<int>(UpdateScore)
-                )
-            )
-                _gameScene.ScoreUpdated += UpdateScore;
-
-            UpdateRound(_gameScene.GetCurrentRound());
-            UpdateScore(_gameScene.GetCurrentScore());
-        }
-        else
-            GD.PrintErr("HUD Error:could not find Game scene to connect signals");
-
-        _player = GetNodeFromGroupHelper<Player>(Player.PlayerGroup);
-        if (_player != null)
-        {
-            if (
-                !_player.IsConnected(
-                    Player.SignalName.HealthChanged,
-                    Callable.From<float, float>(UpdatePlayerHealth)
-                )
-            )
-                _player.HealthChanged += UpdatePlayerHealth;
-            UpdatePlayerHealth(_player.CurrentHealth, _player.MaxHealth);
-
-            _playerGun = _player.GetGun();
-            if (_playerGun != null)
-            {
-                if (
-                    !_playerGun.IsConnected(
-                        Gun.SignalName.AmmoChanged,
-                        Callable.From<int, int>(UpdateAmmoCount)
-                    )
-                )
-                {
-                    _playerGun.AmmoChanged += UpdateAmmoCount;
-                }
-            }
-            else
-                GD.PrintErr("HUD Error: could not find Player Gun for ammo signal");
-        }
-        else
-            GD.PrintErr("HUD Error: could not find Player for health/gun signals");
-
-        _ship = GetNodeFromGroupHelper<Ship>(Ship.ShipGroup);
-        if (_ship != null)
-        {
-            if (
-                !_ship.IsConnected(
-                    Ship.SignalName.HullChanged,
-                    Callable.From<float, float>(UpdateShipHealth)
-                )
-            )
-                _ship.HullChanged += UpdateShipHealth;
-            UpdateShipHealth(_ship.CurrentHull, _ship.MaxHull);
-        }
-        else
-            GD.PrintErr("HUD Error:could not find Ship for hull signal");
     }
 
     public override void _ExitTree()
@@ -191,6 +143,125 @@ public partial class HUD : Control
             )
                 _ship.HullChanged -= UpdateShipHealth;
         }
+        if (
+            _settingsManager != null
+            && _settingsManager.IsConnected(
+                SettingsManager.SignalName.HudBobbingToggled,
+                Callable.From<bool>(OnHudBobbingToggled)
+            )
+        )
+        {
+            _settingsManager.HudBobbingToggled -= OnHudBobbingToggled;
+        }
+    }
+
+    public override void _Input(InputEvent @event)
+    {
+        // temporarily use outside input api because of time constraints
+        if (_hudBobbingEnabled && Input.MouseMode == Input.MouseModeEnum.Captured)
+        {
+            if (@event is InputEventMouseMotion mouseMotion)
+            {
+                _targetBobOffset.X -= mouseMotion.Relative.X * BobbingIntensity;
+                _targetBobOffset.Y += mouseMotion.Relative.Y * BobbingIntensity;
+                _targetBobOffset = _targetBobOffset.LimitLength(MaxBobOffset);
+            }
+        }
+    }
+
+    public override void _Process(double delta)
+    {
+        if (_hudBobbingEnabled)
+        {
+            ProcessBobbing((float)delta);
+        }
+        else if (Position != _initialPosition)
+        {
+            _targetBobOffset = Vector2.Zero;
+            _currentBobOffset = _currentBobOffset.Lerp(
+                Vector2.Zero,
+                (float)delta * BobbingReturnSpeed * 2f
+            );
+            Position = _initialPosition + _currentBobOffset;
+        }
+    }
+
+    private void ProcessBobbing(float delta)
+    {
+        _targetBobOffset = _targetBobOffset.Lerp(Vector2.Zero, delta * BobbingReturnSpeed);
+        _currentBobOffset = _currentBobOffset.Lerp(_targetBobOffset, delta * BobbingFollowSpeed);
+        Position = _initialPosition + _currentBobOffset;
+    }
+
+    private void OnHudBobbingToggled(bool enabled)
+    {
+        _hudBobbingEnabled = enabled;
+        if (!_hudBobbingEnabled)
+        {
+            _targetBobOffset = Vector2.Zero;
+        }
+    }
+
+    private void ConnectToGameSignals()
+    {
+        _gameScene = _gameManager?.GetGameScene();
+        if (_gameScene == null)
+        {
+            return;
+        }
+        if (!_gameScene.IsConnected(Game.SignalName.RoundChanged, Callable.From<int>(UpdateRound)))
+            _gameScene.RoundChanged += UpdateRound;
+        if (
+            !_gameScene.IsConnected(
+                Game.SignalName.RoundTimerUpdate,
+                Callable.From<float>(UpdateTimer)
+            )
+        )
+            _gameScene.RoundTimerUpdate += UpdateTimer;
+        if (!_gameScene.IsConnected(Game.SignalName.ScoreUpdated, Callable.From<int>(UpdateScore)))
+            _gameScene.ScoreUpdated += UpdateScore;
+
+        UpdateRound(_gameScene.GetCurrentRound());
+        UpdateScore(_gameScene.GetCurrentScore());
+
+        _player = GetNodeFromGroupHelper<Player>(Player.PlayerGroup);
+        if (_player != null)
+        {
+            if (
+                !_player.IsConnected(
+                    Player.SignalName.HealthChanged,
+                    Callable.From<float, float>(UpdatePlayerHealth)
+                )
+            )
+                _player.HealthChanged += UpdatePlayerHealth;
+            UpdatePlayerHealth(_player.CurrentHealth, _player.MaxHealth);
+
+            _playerGun = _player.GetGun();
+            if (_playerGun != null)
+            {
+                if (
+                    !_playerGun.IsConnected(
+                        Gun.SignalName.AmmoChanged,
+                        Callable.From<int, int>(UpdateAmmoCount)
+                    )
+                )
+                {
+                    _playerGun.AmmoChanged += UpdateAmmoCount;
+                }
+            }
+        }
+        _ship = GetNodeFromGroupHelper<Ship>(Ship.ShipGroup);
+        if (_ship != null)
+        {
+            if (
+                !_ship.IsConnected(
+                    Ship.SignalName.HullChanged,
+                    Callable.From<float, float>(UpdateShipHealth)
+                )
+            )
+                _ship.HullChanged += UpdateShipHealth;
+            UpdateShipHealth(_ship.CurrentHull, _ship.MaxHull);
+        }
     }
 
     public void UpdateTimer(float time)
@@ -209,7 +280,7 @@ public partial class HUD : Control
     {
         if (_scoreLabel != null)
         {
-            _audioManager.PlaySFX("res://Assets/Audio/score_1.wav");
+            _audioManager?.PlaySFX("res://Assets/Audio/score_1.wav");
             _scoreLabel.Text = $"SCORE: {score}";
         }
     }

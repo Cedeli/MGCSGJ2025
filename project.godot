@@ -26,6 +26,7 @@ buses/default_bus_layout="res://Assets/Config/default_bus_layout.tres"
 
 GameManager="*res://Core/GameManager.cs"
 AudioManager="*res://Core/AudioManager.cs"
+SettingsManager="*res://Core/SettingsManager.cs"
 
 [display]
 
