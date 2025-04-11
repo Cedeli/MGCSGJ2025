@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://b38n11hyimrx1"]
+[gd_scene load_steps=20 format=3 uid="uid://b38n11hyimrx1"]
 
 [ext_resource type="PackedScene" uid="uid://dqsf2uo1bqci8" path="res://Input/InputManager.tscn" id="1_1q8bt"]
 [ext_resource type="Script" uid="uid://cwc4n1u7db367" path="res://Scenes/Game/Game.cs" id="1_bsqcq"]
@@ -34,6 +34,11 @@ ambient_light_energy = 0.25
 tonemap_mode = 3
 ssao_enabled = true
 glow_enabled = true
+glow_hdr_threshold = 0.0
+volumetric_fog_density = 0.0025
+volumetric_fog_albedo = Color(1, 1, 0.580392, 1)
+volumetric_fog_emission = Color(0.85, 0.655633, 0.017, 1)
+volumetric_fog_emission_energy = 2.0
 
 [sub_resource type="SphereMesh" id="SphereMesh_1q8bt"]
 resource_local_to_scene = true
@@ -43,17 +48,6 @@ height = 500.0
 [sub_resource type="SphereShape3D" id="SphereShape3D_bsqcq"]
 resource_local_to_scene = true
 radius = 250.0
-
-[sub_resource type="SphereMesh" id="SphereMesh_xbxml"]
-radius = 260.0
-height = 510.0
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xbxml"]
-transparency = 1
-albedo_color = Color(1, 0.5, 0, 0.643137)
-emission_enabled = true
-emission = Color(0.440416, 0.132269, 0.0838032, 1)
-emission_energy_multiplier = 16.0
 
 [node name="Game" type="Node3D"]
 script = ExtResource("1_bsqcq")
@@ -84,10 +78,6 @@ surface_material_override/0 = ExtResource("3_xbxml")
 [node name="CollisionShape3D" parent="SolarSystem/Sun" index="1"]
 shape = SubResource("SphereShape3D_bsqcq")
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="SolarSystem/Sun"]
-mesh = SubResource("SphereMesh_xbxml")
-surface_material_override/0 = SubResource("StandardMaterial3D_xbxml")
-
 [node name="OmniLight3D" type="OmniLight3D" parent="SolarSystem/Sun"]
 light_color = Color(1, 1, 0.784314, 1)
 light_energy = 4096.0
@@ -105,6 +95,7 @@ AutoCalculateOrbitalVelocity = false
 
 [node name="Ship" parent="SolarSystem" instance=ExtResource("13_bsqcq")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3002.31, 16.7895, 300)
+mass = 50.0
 
 [node name="Player" parent="SolarSystem" groups=["input_receivers"] instance=ExtResource("7_gvja8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 16.5291, 300)
