@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dxl4tn3o3jt3e"]
 
-[ext_resource type="Script" uid="uid://cc4ff4qevuaas" path="res://Entity/AmmoItem/AmmoItem.cs" id="1_qqyjt"]
+[ext_resource type="Script" uid="uid://cc4ff4qevuaas" path="res://Entity/Item/AmmoItem/AmmoItem.cs" id="1_qqyjt"]
 [ext_resource type="PackedScene" uid="uid://bojhtxrf84xal" path="res://Assets/Ammo/Yellow Box.glb" id="2_3otp5"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qqyjt"]

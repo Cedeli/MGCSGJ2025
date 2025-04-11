@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://47knx42tism6"]
 
-[ext_resource type="Script" uid="uid://ihx0vqjawna4" path="res://Entity/HealthItem/HealthItem.cs" id="1_lntxa"]
+[ext_resource type="Script" uid="uid://ihx0vqjawna4" path="res://Entity/Item/HealthItem/HealthItem.cs" id="1_lntxa"]
 [ext_resource type="PackedScene" uid="uid://bd7dhyqkrisl6" path="res://Assets/Health/Health.glb" id="2_rjod5"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_rjod5"]

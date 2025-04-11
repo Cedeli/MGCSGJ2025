@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dwtte5rcg7xu7"]
 
-[ext_resource type="Script" uid="uid://dec3vvp5avrjn" path="res://Entity/ScrapItem/ScrapItem.cs" id="1_scrap_cs"]
+[ext_resource type="Script" uid="uid://dec3vvp5avrjn" path="res://Entity/Item/ScrapItem/ScrapItem.cs" id="1_scrap_cs"]
 [ext_resource type="PackedScene" uid="uid://po8kmsl2ia1" path="res://Assets/Scrap/Gear.glb" id="2_4mu3r"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_rq87p"]

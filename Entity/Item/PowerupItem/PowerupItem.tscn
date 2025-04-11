@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://b4n5o6p7q8sat"]
 
-[ext_resource type="Script" uid="uid://bpfxja8q6g5dt" path="res://Entity/PowerupItem/PowerupItem.cs" id="1_powerup_cs"]
+[ext_resource type="Script" uid="uid://bpfxja8q6g5dt" path="res://Entity/Item/PowerupItem/PowerupItem.cs" id="1_powerup_cs"]
 [ext_resource type="PackedScene" uid="uid://bmdai8cwbdwnk" path="res://Assets/PowerUp/Box.glb" id="2_c1tk3"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_c1tk3"]
