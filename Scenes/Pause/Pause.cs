@@ -12,6 +12,8 @@ public partial class Pause : Control
 
     public override void _Ready()
     {
+        ProcessMode = ProcessModeEnum.Always;
+
         _gameManager = GetNode<GameManager>("/root/GameManager");
         _audioManager = GetNode<AudioManager>("/root/AudioManager");
 
@@ -20,6 +22,15 @@ public partial class Pause : Control
 
         _resumeButton.Pressed += OnResumeButtonPressed;
         _quitButton.Pressed += OnQuitButtonPressed;
+    }
+
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        if (@event.IsActionPressed("pause"))
+        {
+            GetViewport().SetInputAsHandled();
+            OnResumeButtonPressed();
+        }
     }
 
     private void OnResumeButtonPressed()
