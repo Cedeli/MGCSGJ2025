@@ -22,6 +22,7 @@ size = Vector3(0.05, 2.735, 0.05)
 
 [node name="AmmoItem" type="RigidBody3D" node_paths=PackedStringArray("_visualNode", "_lootBeam", "GroundCast")]
 script = ExtResource("1_qqyjt")
+AmmoToAdd = 30
 _visualNode = NodePath("Root Scene")
 _lootBeam = NodePath("LootBeam")
 FadeFrequency = 0.25
