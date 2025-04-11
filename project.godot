@@ -28,6 +28,7 @@ AudioManager="*res://Core/AudioManager.cs"
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
+window/size/mode=4
 window/size/borderless=true
 window/stretch/mode="viewport"
 

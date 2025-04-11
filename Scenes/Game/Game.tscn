@@ -4,14 +4,14 @@
 [ext_resource type="Script" uid="uid://cwc4n1u7db367" path="res://Scenes/Game/Game.cs" id="1_bsqcq"]
 [ext_resource type="Shader" uid="uid://dlewbbs8byb86" path="res://Assets/Shaders/Space/space.gdshader" id="1_gwu2e"]
 [ext_resource type="PackedScene" uid="uid://c7kgmaf0g1h2" path="res://Entity/Alien/Alien.tscn" id="2_bsqcq"]
+[ext_resource type="PackedScene" uid="uid://47knx42tism6" path="res://Entity/HealthItem/HealthItem.tscn" id="2_edkrd"]
 [ext_resource type="PackedScene" uid="uid://dsix13euckuf1" path="res://Entity/CelestialBody.tscn" id="2_xbxml"]
-[ext_resource type="PackedScene" uid="uid://47knx42tism6" path="res://Entity/HealthItem/HealthItem.tscn" id="3_jf0ra"]
+[ext_resource type="PackedScene" uid="uid://dxl4tn3o3jt3e" path="res://Entity/AmmoItem/AmmoItem.tscn" id="3_bsqcq"]
 [ext_resource type="Material" uid="uid://c7iwxejaj28u7" path="res://Assets/Materials/Sun.tres" id="3_xbxml"]
-[ext_resource type="PackedScene" uid="uid://dxl4tn3o3jt3e" path="res://Entity/AmmoItem/AmmoItem.tscn" id="4_bsqcq"]
+[ext_resource type="PackedScene" uid="uid://b4n5o6p7q8sat" path="res://Entity/PowerupItem/PowerupItem.tscn" id="4_jf0ra"]
 [ext_resource type="PackedScene" uid="uid://csbonl4sxt823" path="res://Entity/Planet/Planet.tscn" id="4_ln2h6"]
-[ext_resource type="PackedScene" uid="uid://b4n5o6p7q8sat" path="res://Entity/PowerupItem/PowerupItem.tscn" id="5_6581v"]
+[ext_resource type="PackedScene" uid="uid://dwtte5rcg7xu7" path="res://Entity/ScrapItem/ScrapItem.tscn" id="5_fg52j"]
 [ext_resource type="PackedScene" uid="uid://3gendnc4ovb" path="res://Entity/Planet/Moon.tscn" id="5_y3kpf"]
-[ext_resource type="PackedScene" uid="uid://dwtte5rcg7xu7" path="res://Entity/ScrapItem/ScrapItem.tscn" id="6_6hht6"]
 [ext_resource type="PackedScene" uid="uid://cfdmshqym6x8y" path="res://Entity/Player/Player.tscn" id="7_gvja8"]
 [ext_resource type="PackedScene" uid="uid://c7d8eglsg1h2" path="res://Entity/Ship/Ship.tscn" id="13_bsqcq"]
 
@@ -51,11 +51,12 @@ radius = 250.0
 
 [node name="Game" type="Node3D"]
 script = ExtResource("1_bsqcq")
-_alienScene = ExtResource("2_jf0ra")
-_healthItemScene = ExtResource("3_fg52j")
-_ammoItemScene = ExtResource("4_6581v")
-_powerupItemScene = ExtResource("5_6hht6")
-_scrapItemScene = ExtResource("6_kjp6r")
+_alienScene = ExtResource("2_bsqcq")
+_healthItemScene = ExtResource("2_edkrd")
+_ammoItemScene = ExtResource("3_bsqcq")
+_powerupItemScene = ExtResource("4_jf0ra")
+_scrapItemScene = ExtResource("5_fg52j")
+MaxItemsPerRound = 8
 ScrapItemProbability = 0.5
 
 [node name="InputManager" parent="." instance=ExtResource("1_1q8bt")]

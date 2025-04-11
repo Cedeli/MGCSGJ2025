@@ -3,165 +3,175 @@ using Godot;
 
 public partial class Alien : GravityEntity
 {
-	[Signal]
-	public delegate void DiedEventHandler();
+    [Signal]
+    public delegate void DiedEventHandler();
 
-	[ExportGroup("Stats")]
-	[Export]
-	public float Health = 100.0f;
+    [ExportGroup("Stats")] [Export] public float Health = 100.0f;
 
-	[Export]
-	public float AttackDamage = 10.0f;
+    [Export] public float AttackDamage = 10.0f;
 
-	[Export]
-	public float AttackCooldown = 1.0f;
+    [Export] public float AttackCooldown = 1.0f;
 
-	[ExportGroup("AI Behavior")]
-	[Export]
-	public float MoveForce = 10.0f;
+    [ExportGroup("AI Behavior")] [Export] public float MoveForce = 10.0f;
 
-	[Export]
-	public float TargetUpdateInterval = 0.5f;
+    [Export] public float TargetUpdateInterval = 0.5f;
 
-	[Export]
-	public float AttackRange = 3.0f;
+    [Export] public float AttackRange = 3.0f;
 
-	private Node3D _currentTarget = null;
-	private float _targetUpdateTimer = 0.0f;
-	private float _attackTimer = 0.0f;
+    [Export] public float MinSpeedToRotate = 0.1f;
 
-	private Player _playerCache = null;
-	private Ship _shipCache = null;
+    [Export] public float RotationSharpness = 10.0f;
 
-	private AudioManager _audioManager;
-	private const string HIT_SFX_PATH = "res://Assets/Audio/hit_2.wav";
+    private Node3D _currentTarget;
+    private float _targetUpdateTimer;
+    private float _attackTimer;
 
-	public override void _Ready()
-	{
-		base._Ready();
-		_audioManager = GetNode<AudioManager>("/root/AudioManager");
-	}
+    private Player _playerCache;
+    private Ship _shipCache;
 
-	public override void _PhysicsProcess(double delta)
-	{
-		base._PhysicsProcess(delta);
+    private AudioManager _audioManager;
+    private const string HitSfxPath = "res://Assets/Audio/hit_2.wav";
 
-		float fDelta = (float)delta;
-		_targetUpdateTimer -= fDelta;
-		_attackTimer -= fDelta;
+    private Vector3 CurrentVelocity => LinearVelocity;
 
-		if (_targetUpdateTimer <= 0f)
-		{
-			FindClosestTarget();
-			_targetUpdateTimer = TargetUpdateInterval;
-		}
+    public override void _Ready()
+    {
+        base._Ready();
+        _audioManager = GetNode<AudioManager>("/root/AudioManager");
+    }
 
-		if (_currentTarget != null && IsInstanceValid(_currentTarget))
-		{
-			MoveTowardsTarget(fDelta);
-			CheckAttackRange();
-		}
-	}
+    public override void _PhysicsProcess(double delta)
+    {
+        base._PhysicsProcess(delta);
 
-	private void FindClosestTarget()
-	{
-		if (_playerCache == null || !IsInstanceValid(_playerCache))
-			_playerCache = GetNodeFromGroupHelper<Player>(Player.PlayerGroup);
+        var fDelta = (float)delta;
+        _targetUpdateTimer -= fDelta;
+        _attackTimer -= fDelta;
 
-		if (_shipCache == null || !IsInstanceValid(_shipCache))
-			_shipCache = GetNodeFromGroupHelper<Ship>(Ship.ShipGroup);
+        if (_targetUpdateTimer <= 0f)
+        {
+            FindClosestTarget();
+            _targetUpdateTimer = TargetUpdateInterval;
+        }
 
-		Node3D closestTarget = null;
-		float closestDistSq = float.MaxValue;
-		Vector3 currentPos = GlobalPosition;
+        if (_currentTarget != null && IsInstanceValid(_currentTarget))
+        {
+            MoveTowardsTarget(fDelta);
+            CheckAttackRange();
+        }
 
-		if (_playerCache != null && IsInstanceValid(_playerCache) && !_playerCache.IsDead())
-		{
-			float distSq = currentPos.DistanceSquaredTo(_playerCache.GlobalPosition);
-			if (distSq < closestDistSq)
-			{
-				closestDistSq = distSq;
-				closestTarget = _playerCache;
-			}
-		}
+        HandleRotation(fDelta);
+    }
 
-		if (_shipCache != null && IsInstanceValid(_shipCache) && !_shipCache.IsDead())
-		{
-			float distSq = currentPos.DistanceSquaredTo(_shipCache.GlobalPosition);
-			if (distSq < closestDistSq)
-			{
-				if (closestTarget == null || distSq < closestDistSq)
-				{
-					closestTarget = _shipCache;
-					closestDistSq = distSq;
-				}
-			}
-		}
-		_currentTarget = closestTarget;
-	}
+    private void HandleRotation(float delta)
+    {
+        var velocity = CurrentVelocity;
+        var velocityOnPlane = new Vector3(velocity.X, 0, velocity.Z);
 
-	private void MoveTowardsTarget(float delta)
-	{
-		Vector3 directionToTarget = (_currentTarget.GlobalPosition - GlobalPosition).Normalized();
-		ApplyCentralForce(directionToTarget * MoveForce);
-	}
+        if (!(velocityOnPlane.LengthSquared() > MinSpeedToRotate * MinSpeedToRotate)) return;
+        var lookDirection = -velocityOnPlane.Normalized();
+        var targetTransform = Transform.LookingAt(GlobalPosition + lookDirection, Vector3.Up);
 
-	private void CheckAttackRange()
-	{
-		if (_attackTimer > 0f)
-			return;
+        Basis = Basis.Slerp(targetTransform.Basis, delta * RotationSharpness);
+    }
 
-		float distSq = GlobalPosition.DistanceSquaredTo(_currentTarget.GlobalPosition);
-		if (distSq < AttackRange * AttackRange)
-		{
-			Attack(_currentTarget);
-			_attackTimer = AttackCooldown;
-		}
-	}
 
-	private void Attack(Node3D target)
-	{
-		if (target is Player player)
-		{
-			player.TakeDamage(AttackDamage);
-		}
-		else if (target is Ship ship)
-		{
-			ship.TakeDamage(AttackDamage);
-		}
-	}
+    private void FindClosestTarget()
+    {
+        if (_playerCache == null || !IsInstanceValid(_playerCache))
+            _playerCache = GetNodeFromGroupHelper<Player>(Player.PlayerGroup);
 
-	private T GetNodeFromGroupHelper<T>(string group)
-		where T : Node
-	{
-		var nodes = GetTree().GetNodesInGroup(group);
-		if (nodes.Count > 0 && nodes[0] is T typedNode)
-			return typedNode;
-		return null;
-	}
+        if (_shipCache == null || !IsInstanceValid(_shipCache))
+            _shipCache = GetNodeFromGroupHelper<Ship>(Ship.ShipGroup);
 
-	public void TakeDamage(float amount)
-	{
-		if (Health <= 0)
-			return;
+        Node3D closestTarget = null;
+        var closestDistSq = float.MaxValue;
+        var currentPos = GlobalPosition;
 
-		Health -= amount;
-		_audioManager.PlaySFX(HIT_SFX_PATH);
+        if (_playerCache != null && IsInstanceValid(_playerCache) && !_playerCache.IsDead())
+        {
+            var distSq = currentPos.DistanceSquaredTo(_playerCache.GlobalPosition);
+            if (distSq < closestDistSq)
+            {
+                closestDistSq = distSq;
+                closestTarget = _playerCache;
+            }
+        }
 
-		if (Health <= 0)
-		{
-			Die();
-		}
-	}
+        if (_shipCache != null && IsInstanceValid(_shipCache) && !_shipCache.IsDead())
+        {
+            var distSq = currentPos.DistanceSquaredTo(_shipCache.GlobalPosition);
+            if (distSq < closestDistSq)
+            {
+                closestTarget = _shipCache;
+                closestDistSq = distSq;
+            }
+        }
 
-	private void Die()
-	{
-		if (Health <= 0 && !IsQueuedForDeletion())
-		{
-			EmitSignal(SignalName.Died);
-			QueueFree();
-		}
-	}
+        _currentTarget = closestTarget;
+    }
 
-	public bool IsDead() => Health <= 0;
+    private void MoveTowardsTarget(float delta)
+    {
+        if (_currentTarget == null || !IsInstanceValid(_currentTarget)) return;
+
+        var directionToTarget = (GlobalPosition - _currentTarget.GlobalPosition).Normalized();
+        ApplyCentralForce(-directionToTarget * MoveForce);
+    }
+
+    private void CheckAttackRange()
+    {
+        if (_attackTimer > 0f || _currentTarget == null || !IsInstanceValid(_currentTarget))
+            return;
+
+        var distSq = GlobalPosition.DistanceSquaredTo(_currentTarget.GlobalPosition);
+        if (!(distSq < AttackRange * AttackRange)) return;
+        Attack(_currentTarget);
+        _attackTimer = AttackCooldown;
+    }
+
+    private void Attack(Node3D target)
+    {
+        switch (target)
+        {
+            case Player player:
+                player.TakeDamage(AttackDamage);
+                break;
+            case Ship ship:
+                ship.TakeDamage(AttackDamage);
+                break;
+        }
+    }
+
+    private T GetNodeFromGroupHelper<T>(string group)
+        where T : Node
+    {
+        var nodes = GetTree().GetNodesInGroup(group);
+        if (nodes.Count <= 0 || nodes[0] is not T typedNode) return null;
+        return IsInstanceValid(typedNode) ? typedNode : null;
+    }
+
+
+    public void TakeDamage(float amount)
+    {
+        if (Health <= 0)
+            return;
+
+        Health -= amount;
+        _audioManager?.PlaySFX(HitSfxPath);
+
+        if (Health <= 0)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        if (!(Health <= 0) || IsQueuedForDeletion()) return;
+        EmitSignal(SignalName.Died);
+        QueueFree();
+    }
+
+    public bool IsDead() => Health <= 0;
 }

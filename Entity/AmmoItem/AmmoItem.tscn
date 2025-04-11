@@ -10,8 +10,9 @@ height = 2.04976
 [sub_resource type="SphereShape3D" id="SphereShape3D_groundcast_item"]
 radius = 0.1
 
-[node name="AmmoItem" type="RigidBody3D" node_paths=PackedStringArray("GroundCast")]
+[node name="AmmoItem" type="RigidBody3D" node_paths=PackedStringArray("_visualNode", "GroundCast")]
 script = ExtResource("1_qqyjt")
+_visualNode = NodePath("Root Scene")
 GroundCast = NodePath("GroundCast")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

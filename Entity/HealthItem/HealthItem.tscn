@@ -1,15 +1,16 @@
 [gd_scene load_steps=5 format=3 uid="uid://47knx42tism6"]
 
 [ext_resource type="Script" uid="uid://ihx0vqjawna4" path="res://Entity/HealthItem/HealthItem.cs" id="1_lntxa"]
-[ext_resource type="PackedScene" uid="uid://hsxklayspix3" path="res://Assets/Health/Health.glb" id="2_rjod5"]
+[ext_resource type="PackedScene" uid="uid://bd7dhyqkrisl6" path="res://Assets/Health/Health.glb" id="2_rjod5"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_rjod5"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_groundcast_item"]
 radius = 0.1
 
-[node name="HealthItem" type="RigidBody3D" node_paths=PackedStringArray("GroundCast")]
+[node name="HealthItem" type="RigidBody3D" node_paths=PackedStringArray("_visualNode", "GroundCast")]
 script = ExtResource("1_lntxa")
+_visualNode = NodePath("Health")
 GroundCast = NodePath("GroundCast")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
