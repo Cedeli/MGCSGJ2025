@@ -1,0 +1,587 @@
+[gd_scene load_steps=14 format=3 uid="uid://c8as4k7y506p4"]
+
+[ext_resource type="Script" uid="uid://cspsnjubl5hd7" path="res://Scenes/Settings/Settings.cs" id="1_swut7"]
+[ext_resource type="Shader" uid="uid://dnox0thh7iu8c" path="res://Assets/Shaders/Space/space_2d.gdshader" id="2_5k3m9"]
+[ext_resource type="FontFile" uid="uid://citmarc50s2xp" path="res://Assets/Fonts/GameFont.ttf" id="3_font"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1"]
+shader = ExtResource("2_5k3m9")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_PanelGlow"]
+bg_color = Color(0.05, 0.06, 0.08, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.6, 0.9, 0.4)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+shadow_color = Color(0.1, 0.5, 0.9, 0.1)
+shadow_size = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_MainPanel"]
+bg_color = Color(0.06, 0.07, 0.09, 0.92)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.6, 0.9, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0, 0.4, 0.8, 0.15)
+shadow_size = 6
+shadow_offset = Vector2(0, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_TitleBar"]
+bg_color = Color(0.08, 0.12, 0.18, 1)
+border_width_bottom = 1
+border_color = Color(0.2, 0.6, 0.9, 0.8)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_SliderBackground"]
+bg_color = Color(0.08, 0.12, 0.18, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.6, 0.9, 0.4)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_SliderGrabber"]
+bg_color = Color(0.2, 0.6, 0.9, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.3, 0.7, 0.95, 0.8)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0.1, 0.5, 0.9, 0.2)
+shadow_size = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ToggleOn"]
+bg_color = Color(0.2, 0.6, 0.9, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.3, 0.7, 0.95, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0.1, 0.5, 0.9, 0.2)
+shadow_size = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ButtonHover"]
+content_margin_left = 15.0
+content_margin_top = 8.0
+content_margin_right = 15.0
+content_margin_bottom = 8.0
+bg_color = Color(0.1, 0.3, 0.5, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.3, 0.7, 0.95, 0.9)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0.1, 0.5, 0.9, 0.3)
+shadow_size = 4
+shadow_offset = Vector2(0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ButtonNormal"]
+content_margin_left = 15.0
+content_margin_top = 8.0
+content_margin_right = 15.0
+content_margin_bottom = 8.0
+bg_color = Color(0.08, 0.15, 0.22, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.6, 0.9, 0.7)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0, 0.4, 0.8, 0.2)
+shadow_size = 3
+shadow_offset = Vector2(0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ButtonPressed"]
+content_margin_left = 15.0
+content_margin_top = 8.0
+content_margin_right = 15.0
+content_margin_bottom = 8.0
+bg_color = Color(0.06, 0.18, 0.32, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.5, 0.8, 0.8)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0, 0.4, 0.8, 0.1)
+shadow_size = 2
+shadow_offset = Vector2(0, 1)
+
+[node name="Settings" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_swut7")
+
+[node name="Background" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_1")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BackgroundElements" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TopLeftCornerAccent" type="Panel" parent="BackgroundElements"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 245.0
+offset_bottom = 8.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="TopLeftCornerAccentVert" type="Panel" parent="BackgroundElements"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 8.0
+offset_bottom = 145.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="TopRightCornerAccent" type="Panel" parent="BackgroundElements"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -245.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = 8.0
+grow_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="TopRightCornerAccentVert" type="Panel" parent="BackgroundElements"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -8.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = 145.0
+grow_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="BottomLeftCornerAccent" type="Panel" parent="BackgroundElements"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = -8.0
+offset_right = 245.0
+offset_bottom = -5.0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="BottomLeftCornerAccentVert" type="Panel" parent="BackgroundElements"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = -145.0
+offset_right = 8.0
+offset_bottom = -5.0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="BottomRightCornerAccent" type="Panel" parent="BackgroundElements"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -245.0
+offset_top = -8.0
+offset_right = -5.0
+offset_bottom = -5.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="BottomRightCornerAccentVert" type="Panel" parent="BackgroundElements"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -8.0
+offset_top = -145.0
+offset_right = -5.0
+offset_bottom = -5.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="SettingsPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -241.0
+offset_top = -375.0
+offset_right = 241.0
+offset_bottom = 375.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_MainPanel")
+
+[node name="CornerDecoration1" type="Panel" parent="SettingsPanel"]
+layout_mode = 0
+offset_left = -4.0
+offset_top = -4.0
+offset_right = 20.0
+offset_bottom = 20.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="CornerDecoration2" type="Panel" parent="SettingsPanel"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -20.0
+offset_top = -4.0
+offset_right = 4.0
+offset_bottom = 20.0
+grow_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="CornerDecoration3" type="Panel" parent="SettingsPanel"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -4.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 4.0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="CornerDecoration4" type="Panel" parent="SettingsPanel"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 4.0
+offset_bottom = 4.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="TitleBar" type="Panel" parent="SettingsPanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 45.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_TitleBar")
+
+[node name="TitleLabel" type="Label" parent="SettingsPanel/TitleBar"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -80.0
+offset_top = -15.0
+offset_right = 80.0
+offset_bottom = 15.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 0.95)
+theme_override_colors/font_shadow_color = Color(0, 0.4, 0.8, 0.3)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/shadow_outline_size = 1
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 26
+text = "SETTINGS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HexagonDecoration1" type="Polygon2D" parent="SettingsPanel/TitleBar"]
+position = Vector2(74, 23)
+scale = Vector2(0.6, 0.6)
+color = Color(0.2, 0.6, 0.9, 0.4)
+polygon = PackedVector2Array(10, 0, 5, 8.66, -5, 8.66, -10, 0, -5, -8.66, 5, -8.66)
+
+[node name="HexagonDecoration2" type="Polygon2D" parent="SettingsPanel/TitleBar"]
+position = Vector2(397, 23)
+scale = Vector2(0.6, 0.6)
+color = Color(0.2, 0.6, 0.9, 0.4)
+polygon = PackedVector2Array(10, 0, 5, 8.66, -5, 8.66, -10, 0, -5, -8.66, 5, -8.66)
+
+[node name="ContentPanel" type="VBoxContainer" parent="SettingsPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = 55.0
+offset_right = -30.0
+offset_bottom = -120.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="Spacer" type="Control" parent="SettingsPanel/ContentPanel"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="AudioSection" type="VBoxContainer" parent="SettingsPanel/ContentPanel"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="SectionTitle" type="Label" parent="SettingsPanel/ContentPanel/AudioSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.6, 0.9, 0.9)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 22
+text = "AUDIO"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SfxContainer" type="HBoxContainer" parent="SettingsPanel/ContentPanel/AudioSection"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Label" type="Label" parent="SettingsPanel/ContentPanel/AudioSection/SfxContainer"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 0.9)
+theme_override_font_sizes/font_size = 18
+text = "SFX Volume:"
+vertical_alignment = 1
+
+[node name="SfxSlider" type="HSlider" parent="SettingsPanel/ContentPanel/AudioSection"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+theme_override_styles/slider = SubResource("StyleBoxFlat_SliderBackground")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_SliderGrabber")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_SliderGrabber")
+min_value = 0.001
+max_value = 1.0
+step = 0.001
+value = 0.8
+
+[node name="BgmContainer" type="HBoxContainer" parent="SettingsPanel/ContentPanel/AudioSection"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Label" type="Label" parent="SettingsPanel/ContentPanel/AudioSection/BgmContainer"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 0.9)
+theme_override_font_sizes/font_size = 18
+text = "BGM Volume:"
+vertical_alignment = 1
+
+[node name="BgmSlider" type="HSlider" parent="SettingsPanel/ContentPanel/AudioSection"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+theme_override_styles/slider = SubResource("StyleBoxFlat_SliderBackground")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_SliderGrabber")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_SliderGrabber")
+min_value = 0.001
+max_value = 1.0
+step = 0.001
+value = 0.7
+
+[node name="BgmValue" type="Label" parent="SettingsPanel/ContentPanel/AudioSection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.8, 0.9, 0.8)
+theme_override_font_sizes/font_size = 16
+text = "70%"
+horizontal_alignment = 1
+
+[node name="Separator" type="Panel" parent="SettingsPanel/ContentPanel"]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="GameplaySection" type="VBoxContainer" parent="SettingsPanel/ContentPanel"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Spacer" type="Control" parent="SettingsPanel/ContentPanel/GameplaySection"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="SectionTitle" type="Label" parent="SettingsPanel/ContentPanel/GameplaySection"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.6, 0.9, 0.9)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 22
+text = "GAMEPLAY"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HudBobbingContainer" type="HBoxContainer" parent="SettingsPanel/ContentPanel/GameplaySection"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Label" type="Label" parent="SettingsPanel/ContentPanel/GameplaySection/HudBobbingContainer"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 0.9)
+theme_override_font_sizes/font_size = 18
+text = "HUD Bobbing:"
+vertical_alignment = 1
+
+[node name="HudBobbingToggle" type="CheckButton" parent="SettingsPanel/ContentPanel/GameplaySection"]
+layout_mode = 2
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 0.9)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_ToggleOn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ButtonHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ToggleOn")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ButtonNormal")
+button_pressed = true
+text = "ENABLED"
+alignment = 1
+
+[node name="Spacer2" type="Control" parent="SettingsPanel/ContentPanel/GameplaySection"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="WeaponBobbingContainer" type="HBoxContainer" parent="SettingsPanel/ContentPanel/GameplaySection"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Label" type="Label" parent="SettingsPanel/ContentPanel/GameplaySection/WeaponBobbingContainer"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 0.9)
+theme_override_font_sizes/font_size = 18
+text = "Weapon Bobbing:"
+vertical_alignment = 1
+
+[node name="WeaponBobbingToggle" type="CheckButton" parent="SettingsPanel/ContentPanel/GameplaySection"]
+layout_mode = 2
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 0.9)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_ToggleOn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ButtonHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ToggleOn")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ButtonNormal")
+button_pressed = true
+text = "ENABLED"
+alignment = 1
+
+[node name="BottomLine" type="Panel" parent="SettingsPanel/ContentPanel"]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+size_flags_vertical = 10
+theme_override_styles/panel = SubResource("StyleBoxFlat_PanelGlow")
+
+[node name="ButtonContainer" type="HBoxContainer" parent="SettingsPanel"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = -70.0
+offset_right = -30.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="SaveButton" type="Button" parent="SettingsPanel/ButtonContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 0.9)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/hover = SubResource("StyleBoxFlat_ButtonHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ButtonPressed")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ButtonNormal")
+text = "SAVE SETTINGS"
+
+[node name="BackButton" type="Button" parent="SettingsPanel/ButtonContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.8, 0.9, 1, 0.9)
+theme_override_colors/font_focus_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/hover = SubResource("StyleBoxFlat_ButtonHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ButtonPressed")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ButtonNormal")
+text = "BACK"
+
+[connection signal="value_changed" from="SettingsPanel/ContentPanel/AudioSection/SfxSlider" to="." method="_on_sfx_slider_value_changed"]
+[connection signal="value_changed" from="SettingsPanel/ContentPanel/AudioSection/BgmSlider" to="." method="_on_bgm_slider_value_changed"]
+[connection signal="toggled" from="SettingsPanel/ContentPanel/GameplaySection/HudBobbingToggle" to="." method="_on_hud_bobbing_toggle_toggled"]
+[connection signal="toggled" from="SettingsPanel/ContentPanel/GameplaySection/WeaponBobbingToggle" to="." method="_on_weapon_bobbing_toggle_toggled"]
+[connection signal="pressed" from="SettingsPanel/ButtonContainer/SaveButton" to="." method="_on_save_button_pressed"]
+[connection signal="pressed" from="SettingsPanel/ButtonContainer/BackButton" to="." method="_on_back_button_pressed"]

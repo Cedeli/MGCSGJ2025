@@ -3,8 +3,8 @@ using Godot;
 
 public abstract partial class Item : GravityEntity
 {
-    private GameManager _gameManager;
-    private AudioManager _audioManager;
+	private GameManager _gameManager;
+	private AudioManager _audioManager;
 
     private Game _gameScene;
     private Player _player;
@@ -93,5 +93,5 @@ public abstract partial class Item : GravityEntity
         QueueFree();
     }
 
-    protected abstract bool ApplyEffect(Player player);
+	protected abstract bool ApplyEffect(Player player);
 }

@@ -114,7 +114,7 @@ shadow_color = Color(0, 0.3, 0.6, 0.2)
 shadow_size = 3
 shadow_offset = Vector2(0, 1)
 
-[node name="MainMenu" type="Control" node_paths=PackedStringArray("StartButton", "CreditsButton", "QuitButton")]
+[node name="MainMenu" type="Control" node_paths=PackedStringArray("StartButton", "SettingsButton", "CreditsButton", "QuitButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -123,6 +123,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_2k4m3")
 StartButton = NodePath("MainPanel/MenuContainer/StartButton")
+SettingsButton = NodePath("MainPanel/MenuContainer/SettingsButton")
 CreditsButton = NodePath("MainPanel/MenuContainer/CreditsButton")
 QuitButton = NodePath("MainPanel/MenuContainer/QuitButton")
 
@@ -277,9 +278,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -225.0
-offset_top = -60.0
+offset_top = -100.0
 offset_right = 225.0
-offset_bottom = 225.0
+offset_bottom = 260.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_PanelBg")
@@ -339,12 +340,12 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -175.0
-offset_top = -110.0
+offset_top = -140.0
 offset_right = 175.0
-offset_bottom = 110.0
+offset_bottom = 140.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 15
 
 [node name="MenuHeader" type="Label" parent="MainPanel/MenuContainer"]
 layout_mode = 2
@@ -377,6 +378,20 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_ButtonHover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_ButtonPressed")
 theme_override_styles/normal = SubResource("StyleBoxFlat_ButtonNormal")
 text = "START MISSION"
+
+[node name="SettingsButton" type="Button" parent="MainPanel/MenuContainer"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 0.9)
+theme_override_colors/font_pressed_color = Color(0.7, 0.9, 1, 1)
+theme_override_fonts/font = ExtResource("3_game_font")
+theme_override_font_sizes/font_size = 22
+theme_override_styles/hover = SubResource("StyleBoxFlat_ButtonHover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ButtonPressed")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ButtonNormal")
+text = "SETTINGS"
 
 [node name="CreditsButton" type="Button" parent="MainPanel/MenuContainer"]
 custom_minimum_size = Vector2(0, 50)

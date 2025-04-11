@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 public partial class Game : Node3D
@@ -61,8 +62,9 @@ public partial class Game : Node3D
     [Export(PropertyHint.Range, "0.0, 1.0, 0.05")]
     private float _scrapItemProbability = 0.20f;
 
-    private GameManager _gameManager;
-    private AudioManager _audioManager;
+	private GameManager _gameManager;
+	private AudioManager _audioManager;
+	private InputManager _inputManager;
 
     private Timer _roundTimer;
     private Timer _alienSpawnTimer;
@@ -78,17 +80,22 @@ public partial class Game : Node3D
     private int _aliensToSpawnThisRound = 0;
     private float _alienSpawnInterval = 1.0f;
 
-    private const string PauseScenePath = "res://Scenes/Pause/Pause.tscn";
-    private const string ResultScenePath = "res://Scenes/Result/Result.tscn";
+	private bool _canTogglePause = true;
+	private Timer _pauseCooldownTimer;
+
+	private const string PAUSE_SCENE_PATH = "res://Scenes/Pause/Pause.tscn";
+	private const string RESULT_SCENE_PATH = "res://Scenes/Result/Result.tscn";
+	private const float PAUSE_COOLDOWN_TIME = 0.2f;
 
     public int GetCurrentRound() => _currentRound;
 
     public int GetCurrentScore() => _currentScore;
 
-    public override void _Ready()
-    {
-        _gameManager = GetNode<GameManager>("/root/GameManager");
-        _audioManager = GetNode<AudioManager>("/root/AudioManager");
+	public override void _Ready()
+	{
+		_gameManager = GetNode<GameManager>("/root/GameManager");
+		_audioManager = GetNode<AudioManager>("/root/AudioManager");
+		_inputManager = GetNodeOrNull<InputManager>("InputManager");
 
         _roundTimer = new Timer
         {
@@ -103,73 +110,126 @@ public partial class Game : Node3D
         AddChild(_alienSpawnTimer);
         _alienSpawnTimer.Timeout += OnAlienSpawnTimerTimeout;
 
-        _player = GetNodeFromGroupHelper<Player>(Player.PlayerGroup);
-        _ship = GetNodeFromGroupHelper<Ship>(Ship.ShipGroup);
+		_pauseCooldownTimer = new Timer
+		{
+			Name = "PauseCooldownTimer",
+			WaitTime = PAUSE_COOLDOWN_TIME,
+			OneShot = true,
+		};
+		AddChild(_pauseCooldownTimer);
+		_pauseCooldownTimer.Timeout += OnPauseCooldownTimeout;
 
-        if (_player == null)
-            GD.PrintErr("Player not found");
-        if (_ship == null)
-            GD.PrintErr("Ship not found");
-        if (_alienScene == null)
-            GD.PrintErr("Alien scene not assigned");
-        if (_healthItemScene == null)
-            GD.PrintErr("HealthItem scene not assigned");
-        if (_ammoItemScene == null)
-            GD.PrintErr("AmmoItem scene not assigned");
-        if (_powerupItemScene == null)
-            GD.PrintErr("PowerupItem scene not assigned");
-        if (_scrapItemScene == null)
-            GD.PrintErr("ScrapItem scene not assigned");
+		_player = GetNodeFromGroupHelper<Player>(Player.PlayerGroup);
+		_ship = GetNodeFromGroupHelper<Ship>(Ship.ShipGroup);
 
-        var totalProb =
-            _healthItemProbability
-            + _ammoItemProbability
-            + _powerupItemProbability
-            + _scrapItemProbability;
-        if (Math.Abs(totalProb - 1.0f) > 0.01f)
-        {
-            GD.Print($"Item spawn probabilities sum to {totalProb} not be exactly 1.0");
-        }
+		if (_player == null)
+			GD.PrintErr("Player not found");
+		if (_ship == null)
+			GD.PrintErr("Ship not found");
+		if (_alienScene == null)
+			GD.PrintErr("Alien scene not assigned");
+		if (_healthItemScene == null)
+			GD.PrintErr("HealthItem scene not assigned");
+		if (_ammoItemScene == null)
+			GD.PrintErr("AmmoItem scene not assigned");
+		if (_powerupItemScene == null)
+			GD.PrintErr("PowerupItem scene not assigned");
+		if (_scrapItemScene == null)
+			GD.PrintErr("ScrapItem scene not assigned");
 
-        if (_player != null) _player.Died += OnPlayerDied;
-        if (_ship != null) _ship.Died += OnShipDied;
-        _gameManager.SceneChanged += OnSceneChanged;
-        _gameManager.PushScene("res://Scenes/HUD/HUD.tscn");
+		float totalProb =
+			HealthItemProbability
+			+ AmmoItemProbability
+			+ PowerupItemProbability
+			+ ScrapItemProbability;
+		if (Math.Abs(totalProb - 1.0f) > 0.01f)
+		{
+			GD.Print($"Item spawn probabilities sum to {totalProb} not be exactly 1.0");
+		}
 
-        StartGame();
-    }
+		if (_player != null)
+			_player.Died += OnPlayerDied;
+		if (_ship != null)
+			_ship.Died += OnShipDied;
+		_gameManager.SceneChanged += OnSceneChanged;
+		_gameManager.PushScene("res://Scenes/HUD/HUD.tscn");
+		_audioManager.PlayBGM("res://Assets/Audio/combat.mp3");
 
-    public override void _Process(double delta)
-    {
-        if (_currentState != GameState.Playing)
-            return;
-        EmitSignal(SignalName.RoundTimerUpdate, (float)(_roundTimer?.TimeLeft ?? 0));
-    }
+		ConnectInputSignals();
+		StartGame();
+	}
 
-    public override void _ExitTree()
-    {
-        if (_gameManager != null)
-            _gameManager.SceneChanged -= OnSceneChanged;
-        if (IsInstanceValid(_roundTimer))
-            _roundTimer.Timeout -= OnRoundTimerTimeout;
-        if (IsInstanceValid(_alienSpawnTimer))
-            _alienSpawnTimer.Timeout -= OnAlienSpawnTimerTimeout;
-        DisconnectEntitySignals();
-        Input.SetMouseMode(Input.MouseModeEnum.Visible);
-    }
+	private void ConnectInputSignals()
+	{
+		var keyboardInput = _inputManager.GetNodeOrNull<KeyboardMouseInput>("KeyboardMouseInput");
+		if (keyboardInput != null)
+		{
+			if (
+				!keyboardInput.IsConnected(
+					InputProvider.SignalName.PauseInput,
+					Callable.From(OnPauseInputPressed)
+				)
+			)
+			{
+				keyboardInput.PauseInput += OnPauseInputPressed;
+			}
+		}
+	}
 
-    private void StartGame()
-    {
-        _currentState = GameState.Playing;
-        _currentRound = 0;
-        _currentScore = 0;
-        _aliensKilled = 0;
-        _aliensToSpawnThisRound = 0;
-        _gameStartTime = Time.GetTicksMsec();
-        EmitSignal(SignalName.ScoreUpdated, _currentScore);
-        Input.SetMouseMode(Input.MouseModeEnum.Captured);
-        StartNewRound();
-    }
+	public override void _Process(double delta)
+	{
+		if (_currentState != GameState.Playing)
+			return;
+		EmitSignal(SignalName.RoundTimerUpdate, (float)(_roundTimer?.TimeLeft ?? 0));
+	}
+
+	public override void _ExitTree()
+	{
+		if (_gameManager != null)
+			_gameManager.SceneChanged -= OnSceneChanged;
+		if (IsInstanceValid(_roundTimer))
+			_roundTimer.Timeout -= OnRoundTimerTimeout;
+		if (IsInstanceValid(_alienSpawnTimer))
+			_alienSpawnTimer.Timeout -= OnAlienSpawnTimerTimeout;
+		if (IsInstanceValid(_pauseCooldownTimer))
+			_pauseCooldownTimer.Timeout -= OnPauseCooldownTimeout;
+		DisconnectEntitySignals();
+		DisconnectInputSignals();
+		Input.SetMouseMode(Input.MouseModeEnum.Visible);
+	}
+
+	private void DisconnectInputSignals()
+	{
+		if (_inputManager == null)
+			return;
+		var keyboardInput = _inputManager.GetNodeOrNull<KeyboardMouseInput>("KeyboardMouseInput");
+		if (keyboardInput != null)
+		{
+			if (
+				keyboardInput.IsConnected(
+					InputProvider.SignalName.PauseInput,
+					Callable.From(OnPauseInputPressed)
+				)
+			)
+			{
+				keyboardInput.PauseInput -= OnPauseInputPressed;
+			}
+		}
+	}
+
+	private void StartGame()
+	{
+		_currentState = GameState.Playing;
+		_currentRound = 0;
+		_currentScore = 0;
+		_aliensKilled = 0;
+		_aliensToSpawnThisRound = 0;
+		_gameStartTime = Time.GetTicksMsec();
+		EmitSignal(SignalName.ScoreUpdated, _currentScore);
+		Input.SetMouseMode(Input.MouseModeEnum.Captured);
+		_canTogglePause = true;
+		StartNewRound();
+	}
 
     private void StartNewRound()
     {
@@ -191,12 +251,12 @@ public partial class Game : Node3D
 
         _roundTimer.Start(_roundDurationSeconds);
 
-        if (_aliensToSpawnThisRound > 0)
-        {
-            _alienSpawnTimer.WaitTime = _alienSpawnInterval;
-            _alienSpawnTimer.Start();
-            OnAlienSpawnTimerTimeout();
-        }
+		if (_aliensToSpawnThisRound > 0)
+		{
+			_alienSpawnTimer.WaitTime = _alienSpawnInterval;
+			_alienSpawnTimer.Start();
+			OnAlienSpawnTimerTimeout();
+		}
 
         SpawnItems();
     }
@@ -298,9 +358,59 @@ public partial class Game : Node3D
         }
     }
 
-    private void OnPlayerDied() => EndGame("Player Died");
+	private void OnSceneChanged(string scenePath, bool isPushing)
+	{
+		if (scenePath == PAUSE_SCENE_PATH)
+		{
+			bool pausing = isPushing;
+			if (pausing && _currentState == GameState.Playing)
+			{
+				_currentState = GameState.Paused;
+				_roundTimer?.SetPaused(true);
+				_alienSpawnTimer?.SetPaused(true);
+				ProcessMode = ProcessModeEnum.Disabled;
+				Input.SetMouseMode(Input.MouseModeEnum.Visible);
+				_audioManager?.SetBGMPaused(true);
+				_canTogglePause = false;
+			}
+			else if (!pausing && _currentState == GameState.Paused)
+			{
+				_currentState = GameState.Playing;
+				_roundTimer?.SetPaused(false);
+				_alienSpawnTimer?.SetPaused(false);
+				ProcessMode = ProcessModeEnum.Inherit;
+				Input.SetMouseMode(Input.MouseModeEnum.Captured);
+				_audioManager?.SetBGMPaused(false);
+				_pauseCooldownTimer.Start();
+			}
+		}
+	}
 
-    private void OnShipDied() => EndGame("Ship Destroyed");
+	private void OnPauseInputPressed()
+	{
+		if (_currentState == GameState.Playing && _canTogglePause)
+		{
+			TogglePause();
+		}
+	}
+
+	private void OnPauseCooldownTimeout()
+	{
+		_canTogglePause = true;
+	}
+
+	private void TogglePause()
+	{
+		if (_currentState == GameState.Playing)
+		{
+			_gameManager.PushScene(PAUSE_SCENE_PATH);
+		}
+	}
+
+	private void SpawnSingleAlien()
+	{
+		if (_player == null || _alienScene == null || _currentState != GameState.Playing)
+			return;
 
     private void OnSceneChanged(string scenePath, bool isPushing)
     {
