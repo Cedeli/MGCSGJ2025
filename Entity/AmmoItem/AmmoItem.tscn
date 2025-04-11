@@ -1,17 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://dxl4tn3o3jt3e"]
+[gd_scene load_steps=5 format=3 uid="uid://dxl4tn3o3jt3e"]
 
 [ext_resource type="Script" uid="uid://cc4ff4qevuaas" path="res://Entity/AmmoItem/AmmoItem.cs" id="1_qqyjt"]
+[ext_resource type="PackedScene" uid="uid://bojhtxrf84xal" path="res://Assets/Ammo/Yellow Box.glb" id="2_3otp5"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_item"]
-size = Vector3(0.4, 0.4, 0.6)
-
-[sub_resource type="BoxMesh" id="BoxMesh_item"]
-size = Vector3(0.4, 0.4, 0.6)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_item"]
-albedo_color = Color(0.9, 0.6, 0.1, 1)
-metallic = 0.3
-roughness = 0.6
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qqyjt"]
+radius = 1.02488
+height = 2.04976
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_groundcast_item"]
 radius = 0.1
@@ -22,14 +16,12 @@ GroundCast = NodePath("GroundCast")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
-shape = SubResource("BoxShape3D_item")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
-mesh = SubResource("BoxMesh_item")
-surface_material_override/0 = SubResource("StandardMaterial3D_item")
+shape = SubResource("CapsuleShape3D_qqyjt")
 
 [node name="GroundCast" type="ShapeCast3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000461638, 0.363041, 0.00804673)
 shape = SubResource("SphereShape3D_groundcast_item")
 target_position = Vector3(0, -0.5, 0)
+
+[node name="Root Scene" parent="." instance=ExtResource("2_3otp5")]
+transform = Transform3D(0.55, 0, 0, 0, 0.55, 0, 0, 0, 0.55, 0, 0, 0)

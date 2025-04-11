@@ -1,16 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://c7kgmaf0g1h2"]
+[gd_scene load_steps=5 format=3 uid="uid://c7kgmaf0g1h2"]
 
 [ext_resource type="Script" uid="uid://bobkxgwipkcoo" path="res://Entity/Alien/Alien.cs" id="1_alien_cs"]
+[ext_resource type="PackedScene" uid="uid://c5is73x4o7ivw" path="res://Assets/Alien/Slime Enemy.glb" id="2_kc0wc"]
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_alien"]
-height = 1.5
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_alien"]
-height = 1.5
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_alien"]
-albedo_color = Color(0.2, 0.8, 0.3, 1)
-roughness = 0.8
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_lljsh"]
+radius = 0.468
+height = 0.936
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_groundcast_alien"]
 radius = 0.2
@@ -20,14 +15,12 @@ script = ExtResource("1_alien_cs")
 GroundCast = NodePath("GroundCast")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
-shape = SubResource("CapsuleShape3D_alien")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
-mesh = SubResource("CapsuleMesh_alien")
-surface_material_override/0 = SubResource("StandardMaterial3D_alien")
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, -0.0449549, 0.689725, 0)
+shape = SubResource("CapsuleShape3D_lljsh")
 
 [node name="GroundCast" type="ShapeCast3D" parent="."]
 shape = SubResource("SphereShape3D_groundcast_alien")
 target_position = Vector3(0, -0.5, 0)
+
+[node name="Root Scene" parent="." instance=ExtResource("2_kc0wc")]
+transform = Transform3D(0.69, 0, 0, 0, 0.69, 0, 0, 0, 0.69, -0.0342429, 0.417858, 0)

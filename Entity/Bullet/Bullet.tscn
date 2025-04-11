@@ -12,7 +12,7 @@ interpolation_mode = 1
 offsets = PackedFloat32Array(0.0309278, 0.453608, 0.757732, 0.907216, 1)
 colors = PackedColorArray(0, 0, 0, 1, 0.0673077, 0.0673077, 0.0673077, 1, 0.336538, 0.336538, 0.336538, 1, 0.625, 0.625, 0.625, 1, 1, 1, 1, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_0gd3u"]
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_jheo8"]
 gradient = SubResource("Gradient_t4sxe")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6x8n8"]
@@ -26,7 +26,7 @@ emission_on_uv2 = true
 rim_enabled = true
 refraction_scale = -0.22
 detail_enabled = true
-detail_albedo = SubResource("GradientTexture1D_0gd3u")
+detail_albedo = SubResource("GradientTexture1D_jheo8")
 grow = true
 grow_amount = -1.024
 use_point_size = true

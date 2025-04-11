@@ -1,18 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://47knx42tism6"]
+[gd_scene load_steps=5 format=3 uid="uid://47knx42tism6"]
 
 [ext_resource type="Script" uid="uid://ihx0vqjawna4" path="res://Entity/HealthItem/HealthItem.cs" id="1_lntxa"]
+[ext_resource type="PackedScene" uid="uid://hsxklayspix3" path="res://Assets/Health/Health.glb" id="2_rjod5"]
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_item"]
-radius = 0.3
-
-[sub_resource type="SphereMesh" id="SphereMesh_item"]
-radius = 0.3
-height = 0.6
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_item"]
-albedo_color = Color(0.2, 0.9, 0.2, 1)
-metallic = 0.1
-roughness = 0.7
+[sub_resource type="SphereShape3D" id="SphereShape3D_rjod5"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_groundcast_item"]
 radius = 0.1
@@ -22,13 +13,11 @@ script = ExtResource("1_lntxa")
 GroundCast = NodePath("GroundCast")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
-shape = SubResource("SphereShape3D_item")
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0.00280762, -0.00935364, 0.000823975)
+shape = SubResource("SphereShape3D_rjod5")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
-mesh = SubResource("SphereMesh_item")
-surface_material_override/0 = SubResource("StandardMaterial3D_item")
+[node name="Health" parent="." instance=ExtResource("2_rjod5")]
+transform = Transform3D(0.21, 0, 0, 0, 0.21, 0, 0, 0, 0.21, 0, 0, 0)
 
 [node name="GroundCast" type="ShapeCast3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.430864, 0)
