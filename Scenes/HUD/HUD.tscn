@@ -3,9 +3,9 @@
 [ext_resource type="Script" uid="uid://0huiod1t7wn6" path="res://Scenes/HUD/HUD.cs" id="1_hud_cs"]
 [ext_resource type="FontFile" uid="uid://citmarc50s2xp" path="res://Assets/Fonts/GameFont.ttf" id="2_game_font"]
 [ext_resource type="Script" uid="uid://km7fp2yrkpe5" path="res://Scenes/HUD/MiniMap.cs" id="3_eqxii"]
-[ext_resource type="PackedScene" path="res://Scenes/HUD/EnemyMarker.tscn" id="4_7nfgj"]
-[ext_resource type="PackedScene" path="res://Scenes/HUD/PlayerMarker.tscn" id="4_12x1q"]
-[ext_resource type="PackedScene" path="res://Scenes/HUD/ObjectiveMarker.tscn" id="5_lbxf6"]
+[ext_resource type="PackedScene" uid="uid://3xeyj82toyyg" path="res://Scenes/HUD/EnemyMarker.tscn" id="4_7nfgj"]
+[ext_resource type="PackedScene" uid="uid://b5bonce58nogo" path="res://Scenes/HUD/PlayerMarker.tscn" id="4_12x1q"]
+[ext_resource type="PackedScene" uid="uid://2fyja8k10rtp" path="res://Scenes/HUD/ObjectiveMarker.tscn" id="5_lbxf6"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_HealthBg"]
 bg_color = Color(0.0509804, 0.0588235, 0.0784314, 0.0862745)
@@ -283,7 +283,7 @@ theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
 theme_override_fonts/font = ExtResource("2_game_font")
 theme_override_font_sizes/font_size = 16
-text = "OPERATOR HEALTH"
+text = "VITAL SIGNS"
 vertical_alignment = 1
 
 [node name="PlayerHealthValue" type="Label" parent="LeftHealthBars/StatusPanel/BarsContainer/PlayerHealthContainer/PlayerHeader"]
@@ -457,7 +457,7 @@ theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
 theme_override_fonts/font = ExtResource("2_game_font")
 theme_override_font_sizes/font_size = 14
-text = "WEAPONS"
+text = "WEAPON"
 horizontal_alignment = 1
 
 [node name="AmmoContainer" type="HBoxContainer" parent="AmmoPanel"]
@@ -547,7 +547,8 @@ theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
 theme_override_fonts/font = ExtResource("2_game_font")
 theme_override_font_sizes/font_size = 14
-text = "TACTICAL MAP"
+text = "RADAR
+"
 horizontal_alignment = 1
 
 [node name="MapContainer" type="ColorRect" parent="MiniMap"]

@@ -93,6 +93,8 @@ omni_range = 4096.0
 
 [node name="Planet" parent="SolarSystem" groups=["celestial_bodies"] instance=ExtResource("4_ln2h6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3000, 0, 0)
+Resolution = 25
+GenerateCollision = false
 GravitationalConstant = 0.001
 
 [node name="Moon" parent="SolarSystem" groups=["celestial_bodies"] instance=ExtResource("5_y3kpf")]
